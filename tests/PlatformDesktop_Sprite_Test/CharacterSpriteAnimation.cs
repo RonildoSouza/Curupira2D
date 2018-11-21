@@ -1,6 +1,8 @@
 ﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Input;
 using MonoGame.Helper;
+using MonoGame.Helper.Core;
 using System;
 
 namespace PlatformDesktop_Sprite_Test
@@ -9,80 +11,82 @@ namespace PlatformDesktop_Sprite_Test
     {
         GameSpriteAnimation _spriteAnimation;
 
-        public CharacterSpriteAnimation(Game game) : base(game)
+        public CharacterSpriteAnimation()
         {
-            _spriteAnimation = new GameSpriteAnimation(game, "character", 4, 4, TimeSpan.FromMilliseconds(200), new Rectangle(0, 0, 60, 90));
+            Velocity = new Vector2(100);
+            _spriteAnimation = new GameSpriteAnimation("character", 4, 4, TimeSpan.FromMilliseconds(200), new Rectangle(0, 0, 60, 90));
         }
 
-        public void MoveLeft()
-            => HorizontalMove(180, 90, false);
+        public void MoveLeft(RenderContext renderContext)
+            => HorizontalMove(renderContext, 180, 90, false);
 
-        public void MoveUp()
-            => VerticalMove(90, 90, false);
+        public void MoveUp(RenderContext renderContext)
+            => VerticalMove(renderContext, 90, 90, false);
 
-        public void MoveRight()
-            => HorizontalMove(270, 90);
+        public void MoveRight(RenderContext renderContext)
+            => HorizontalMove(renderContext, 270, 90);
 
-        public void MoveDown()
-            => VerticalMove(0, 90);
+        public void MoveDown(RenderContext renderContext)
+            => VerticalMove(renderContext, 0, 90);
 
-        public override void LoadContent()
+        public override void LoadContent(ContentManager contentManager)
         {
-            _spriteAnimation.LoadContent();
-            base.LoadContent();
+            _spriteAnimation.LoadContent(contentManager);
+
+            base.LoadContent(contentManager);
         }
 
-        public override void Update()
+        public override void Update(RenderContext renderContext)
         {
-            base.Update();
-
             var ks = Keyboard.GetState();
-            var deltaTime = RenderContext.GameTime.ElapsedGameTime.TotalSeconds;
 
             if (ks.IsKeyDown(Keys.Left))
-                MoveLeft();
+                MoveLeft(renderContext);
 
             if (ks.IsKeyDown(Keys.Up))
-                MoveUp();
+                MoveUp(renderContext);
 
             if (ks.IsKeyDown(Keys.Right))
-                MoveRight();
+                MoveRight(renderContext);
 
             if (ks.IsKeyDown(Keys.Down))
-                MoveDown();
+                MoveDown(renderContext);
 
-            //_spriteAnimation.AnimateAll(gameTime);
-            _spriteAnimation.Pause();
+            //_spriteAnimation.AnimateAll(renderContext.GameTime);
+            //_spriteAnimation.Pause();
+            Position = _spriteAnimation.Position;
+
+            base.Update(renderContext);
         }
 
-        public override void Draw()
+        public override void Draw(RenderContext renderContext)
         {
-            _spriteAnimation.Draw();
-            base.Draw();
+            _spriteAnimation.Draw(renderContext);
+            base.Draw(renderContext);
         }
 
-        private void HorizontalMove(int sourcePosY, int sourceHeight, bool moveRight = true)
+        private void HorizontalMove(RenderContext renderContext, int sourcePosY, int sourceHeight, bool moveRight = true)
         {
-            var deltaTime = RenderContext.GameTime.ElapsedGameTime.TotalSeconds;
-            var tempPosition = Position;
+            var tempPosition = _spriteAnimation.Position;
             var direction = moveRight ? 1 : -1;
 
             _spriteAnimation.Play();
-            _spriteAnimation.AnimatePerRow(RenderContext.GameTime, sourcePosY, sourceHeight);
-            tempPosition.X += (float)(Velocity.X * deltaTime) * direction;
-            Position = tempPosition;
+            _spriteAnimation.AnimatePerRow(renderContext.GameTime, sourcePosY, sourceHeight);
+
+            tempPosition.X += (float)(Velocity.X * renderContext.DeltaTime) * direction;
+            _spriteAnimation.Position = tempPosition;
         }
 
-        private void VerticalMove(int sourcePosY, int sourceHeight, bool moveDown = true)
+        private void VerticalMove(RenderContext renderContext, int sourcePosY, int sourceHeight, bool moveDown = true)
         {
-            var deltaTime = RenderContext.GameTime.ElapsedGameTime.TotalSeconds;
-            var tempPosition = Position;
+            var tempPosition = _spriteAnimation.Position;
             var direction = moveDown ? 1 : -1;
 
             _spriteAnimation.Play();
-            _spriteAnimation.AnimatePerRow(RenderContext.GameTime, sourcePosY, sourceHeight);
-            tempPosition.Y += (float)(Velocity.Y * deltaTime) * direction;
-            Position = tempPosition;
+            _spriteAnimation.AnimatePerRow(renderContext.GameTime, sourcePosY, sourceHeight);
+
+            tempPosition.Y += (float)(Velocity.Y * renderContext.DeltaTime) * direction;
+            _spriteAnimation.Position = tempPosition;
         }
     }
 }

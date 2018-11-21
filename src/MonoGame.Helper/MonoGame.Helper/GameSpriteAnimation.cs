@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Content;
 using System;
 
 namespace MonoGame.Helper
@@ -13,11 +14,14 @@ namespace MonoGame.Helper
         int _currentFrameRow;
 
         public int FrameWidth { get; set; }
+
         public int FrameHeight { get; set; }
+
         public bool IsLooping { get; set; }
+
         public bool IsPlaying { get; private set; }
 
-        public GameSpriteAnimation(Game game, string assetName, int frameRowsCount, int frameColumnsCount, TimeSpan frameTime, Rectangle sourceRectangle, bool isLooping = true) : base(game, assetName)
+        public GameSpriteAnimation(string assetName, int frameRowsCount, int frameColumnsCount, TimeSpan frameTime, Rectangle sourceRectangle, bool isLooping = true) : base(assetName)
         {
             if (sourceRectangle == Rectangle.Empty || sourceRectangle.Width.Equals(0) || sourceRectangle.Height.Equals(0))
                 throw new ArgumentException("sourceRectangle cannot be Empty or Width or Height be equals Zero!");
@@ -33,9 +37,9 @@ namespace MonoGame.Helper
             _currentFrameRow = 0;
         }
 
-        public override void LoadContent()
+        public override void LoadContent(ContentManager contentManager)
         {
-            base.LoadContent();
+            base.LoadContent(contentManager);
 
             try
             {

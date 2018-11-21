@@ -1,5 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
+using MonoGame.Helper.Core;
 
 namespace MonoGame.Helper
 {
@@ -8,32 +10,37 @@ namespace MonoGame.Helper
         readonly string _assetName;
 
         public Texture2D Texture { get; private set; }
-        protected SpriteEffects SpriteEffect { get; set; }
-        protected Color Color { get; set; }
-        protected Rectangle? SourceRectangle { get; set; }
-        protected float LayerDepth { get; set; }        
 
-        public GameSprite(Game game, string assetName) : base(game)
+        protected SpriteEffects SpriteEffect { get; set; }
+
+        protected Color Color { get; set; }
+
+        protected Rectangle? SourceRectangle { get; set; }
+
+        protected float LayerDepth { get; set; }
+
+        public GameSprite(string assetName)
         {
             _assetName = assetName;
             SpriteEffect = SpriteEffects.None;
             Color = Color.White;
         }
 
-        public override void LoadContent()
+        public override void LoadContent(ContentManager contentManager)
         {
-            if (string.IsNullOrEmpty(_assetName) || RenderContext == null)
+            if (string.IsNullOrEmpty(_assetName))
                 return;
 
-            Texture = RenderContext.ContentManager?.Load<Texture2D>(_assetName);
-            base.LoadContent();
+            Texture = contentManager?.Load<Texture2D>(_assetName);
+
+            base.LoadContent(contentManager);
         }
 
-        public override void Draw()
+        public override void Draw(RenderContext renderContext)
         {
-            if (IsVisible && RenderContext != null)
+            if (IsVisible && renderContext != null)
             {
-                RenderContext.SpriteBatch?.Draw(
+                renderContext.SpriteBatch.Draw(
                     Texture,
                     Position,
                     SourceRectangle,
@@ -44,8 +51,7 @@ namespace MonoGame.Helper
                     SpriteEffect,
                     LayerDepth);
 
-                Position.Normalize();
-                base.Draw();
+                base.Draw(renderContext);
             }
         }
     }

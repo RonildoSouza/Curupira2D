@@ -1,18 +1,19 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using System.Text;
 
 namespace PlatformDesktop_Sprite_Test
 {
     /// <summary>
     /// This is the main type for your game.
     /// </summary>
-    public class Game1 : Game
+    public class Game1 : MonoGame.Helper.Core.Game
     {
         GraphicsDeviceManager graphics;
-        SpriteBatch spriteBatch;
 
         CharacterSpriteAnimation _characterSprite;
+        SpriteFont _spriteFont;
 
         public Game1()
         {
@@ -29,7 +30,7 @@ namespace PlatformDesktop_Sprite_Test
         protected override void Initialize()
         {
             // TODO: Add your initialization logic here
-            _characterSprite = new CharacterSpriteAnimation(this);
+            _characterSprite = new CharacterSpriteAnimation();
 
             base.Initialize();
         }
@@ -40,11 +41,9 @@ namespace PlatformDesktop_Sprite_Test
         /// </summary>
         protected override void LoadContent()
         {
-            // Create a new SpriteBatch, which can be used to draw textures.
-            spriteBatch = new SpriteBatch(GraphicsDevice);
-
             // TODO: use this.Content to load your game content here
-            _characterSprite.LoadContent();
+            _characterSprite.LoadContent(Content);
+            _spriteFont = Content.Load<SpriteFont>("font");
         }
 
         /// <summary>
@@ -57,10 +56,9 @@ namespace PlatformDesktop_Sprite_Test
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
 
-            // TODO: Add your update logic here
-            base.Update(gameTime);
-            _characterSprite.Update();
+            _characterSprite.Update(RenderContext);
 
+            base.Update(gameTime);
         }
 
         /// <summary>
@@ -71,8 +69,16 @@ namespace PlatformDesktop_Sprite_Test
         {
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
-            // TODO: Add your drawing code here
-            _characterSprite.Draw();
+            // TODO: Add your drawing code here           
+            var sb = new StringBuilder();
+            sb.AppendLine($"Position: {_characterSprite.Position}");
+
+            RenderContext.SpriteBatch.Begin();
+
+            RenderContext.SpriteBatch.DrawString(_spriteFont, sb, Vector2.Zero, Color.Black);
+            _characterSprite.Draw(RenderContext);
+
+            RenderContext.SpriteBatch.End();
 
             base.Draw(gameTime);
         }
