@@ -4,7 +4,7 @@ using Microsoft.Xna.Framework.Graphics;
 namespace MonoGame.Helper.Components
 {
     /// <summary>
-    /// Draw Simple Infinity Scroll Scene
+    /// Draw simple infinity scroll scene.
     /// </summary>
     public class BackgroundComponent : DrawableGameComponent
     {

@@ -4,6 +4,9 @@ using System;
 
 namespace MonoGame.Helper.Components
 {
+    /// <summary>
+    /// Draw FPS in the scene.
+    /// </summary>
     public class FPSComponent : DrawableGameComponent
     {
         SpriteBatch _spriteBatch;

@@ -5,20 +5,17 @@ using System.Collections.Generic;
 
 namespace MonoGame.Helper
 {
+    /// <summary>
+    /// Game objects 2D representation.
+    /// </summary>
     public class GameObject2D
     {
         public Vector2 Position { get; set; }
-
         public float Rotation { get; set; }
-
         public Vector2 Scale { get; set; }
-
         public bool IsVisible { get; set; }
-
         public GameObject2D Parent { get; private set; }
-
         public List<GameObject2D> Children { get; }
-
         public Vector2 Velocity { get; set; }
 
         public GameObject2D()
@@ -29,6 +26,10 @@ namespace MonoGame.Helper
             IsVisible = true;
         }
 
+        /// <summary>
+        /// Add child 2D game object.
+        /// </summary>
+        /// <param name="child"></param>
         public void AddChild(GameObject2D child)
         {
             if (Children.Contains(child))
@@ -38,6 +39,10 @@ namespace MonoGame.Helper
             child.Parent = this;
         }
 
+        /// <summary>
+        /// Remove child 2D game object.
+        /// </summary>
+        /// <param name="child"></param>
         public void RemoveChild(GameObject2D child)
         {
             if (!Children.Contains(child))

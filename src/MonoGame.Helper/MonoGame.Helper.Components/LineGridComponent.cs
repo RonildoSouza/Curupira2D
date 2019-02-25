@@ -4,6 +4,9 @@ using System;
 
 namespace MonoGame.Helper.Components
 {
+    /// <summary>
+    /// Draw lines in the scene.
+    /// </summary>
     public class LineGridComponent : DrawableGameComponent
     {
         SpriteBatch _spriteBatch;

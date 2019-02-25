@@ -14,17 +14,20 @@ namespace MonoGame.Helper
         int _currentFrameRow;
 
         public int FrameWidth { get; set; }
-
         public int FrameHeight { get; set; }
-
         public bool IsLooping { get; set; }
-
         public bool IsPlaying { get; private set; }
 
+        /// <param name="assetName">Sprite sheet name.</param>
+        /// <param name="frameRowsCount">Number of rows in the sprite sheet.</param>
+        /// <param name="frameColumnsCount">Number of columns in the sprite sheet.</param>
+        /// <param name="frameTime">Frame rendering time.</param>
+        /// <param name="sourceRectangle">Size of frame.</param>
+        /// <param name="isLooping">Anima sprite sheet in loop.</param>
         public GameSpriteAnimation(string assetName, int frameRowsCount, int frameColumnsCount, TimeSpan frameTime, Rectangle sourceRectangle, bool isLooping = true) : base(assetName)
         {
             if (sourceRectangle == Rectangle.Empty || sourceRectangle.Width.Equals(0) || sourceRectangle.Height.Equals(0))
-                throw new ArgumentException("sourceRectangle cannot be Empty or Width or Height be equals Zero!");
+                throw new ArgumentException("sourceRectangle cannot be Empty or sourceRectangle.Width or sourceRectangle.Height be equals Zero!");
 
             _frameRowsCount = frameRowsCount;
             _frameColumnsCount = frameColumnsCount;
@@ -43,8 +46,8 @@ namespace MonoGame.Helper
 
             try
             {
-                FrameWidth = (int)(Texture?.Width * Scale.X) / _frameColumnsCount;
-                FrameHeight = (int)(Texture?.Height * Scale.Y) / _frameRowsCount;
+                FrameWidth = BoundingBox.Width / _frameColumnsCount;
+                FrameHeight = BoundingBox.Height / _frameRowsCount;
             }
             catch (NullReferenceException e)
             {
@@ -52,6 +55,10 @@ namespace MonoGame.Helper
             }
         }
 
+        /// <summary>
+        /// Anima all rows and columns frames.
+        /// </summary>
+        /// <param name="gameTime"></param>
         public void AnimateAll(GameTime gameTime)
         {
             if (!IsPlaying)
@@ -84,6 +91,12 @@ namespace MonoGame.Helper
             SetSourceRectangle(_currentFrameColumn * FrameWidth, _currentFrameRow * FrameHeight, FrameWidth, FrameHeight);
         }
 
+        /// <summary>
+        /// Anima sprite per row frame.
+        /// </summary>
+        /// <param name="gameTime"></param>
+        /// <param name="sourcePosY"></param>
+        /// <param name="sourceHeight"></param>
         public void AnimatePerRow(GameTime gameTime, int sourcePosY, int sourceHeight)
         {
             if (!IsPlaying)
@@ -96,6 +109,12 @@ namespace MonoGame.Helper
             SetSourceRectangle(_currentFrameColumn * FrameWidth, sourcePosY, FrameWidth, sourceHeight);
         }
 
+        /// <summary>
+        /// Anima sprite per column frame.
+        /// </summary>
+        /// <param name="gameTime"></param>
+        /// <param name="sourcePosX"></param>
+        /// <param name="sourceWidth"></param>
         public void AnimatePerColumn(GameTime gameTime, int sourcePosX, int sourceWidth)
         {
             if (!IsPlaying)
