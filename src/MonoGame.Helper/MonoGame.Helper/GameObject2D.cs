@@ -10,13 +10,29 @@ namespace MonoGame.Helper
     /// </summary>
     public class GameObject2D
     {
+        /// <summary>
+        /// Game object position - default <see cref="Vector2.Zero"/>
+        /// </summary>
         public Vector2 Position { get; set; }
         public float Rotation { get; set; }
+        /// <summary>
+        /// Game object scale - default <see cref="Vector2.One"/>
+        /// </summary>
         public Vector2 Scale { get; set; }
+        /// <summary>
+        /// Game object visibility - default true
+        /// </summary>
         public bool IsVisible { get; set; }
         public GameObject2D Parent { get; private set; }
         public List<GameObject2D> Children { get; }
+        /// <summary>
+        /// Game object velocity - default <see cref="Vector2.Zero"/>
+        /// </summary>
         public Vector2 Velocity { get; set; }
+
+        public Vector2 Acceleration { get; set; }
+        public float Mass { get; set; }
+        public float Gravity { get; set; }
 
         public GameObject2D()
         {
@@ -24,6 +40,7 @@ namespace MonoGame.Helper
             Scale = Vector2.One;
             Children = new List<GameObject2D>();
             IsVisible = true;
+            Velocity = Vector2.Zero;
         }
 
         /// <summary>

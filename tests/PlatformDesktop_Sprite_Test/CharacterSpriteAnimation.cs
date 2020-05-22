@@ -14,7 +14,7 @@ namespace PlatformDesktop_Sprite_Test
         public CharacterSpriteAnimation()
         {
             Velocity = new Vector2(100);
-            _spriteAnimation = new GameSpriteAnimation("character", 4, 4, TimeSpan.FromMilliseconds(200), new Rectangle(0, 0, 60, 90));
+            _spriteAnimation = new GameSpriteAnimation("character", 4, 4, TimeSpan.FromMilliseconds(100), new Rectangle(0, 0, 60, 90));
         }
 
         public void MoveLeft(RenderContext renderContext)
