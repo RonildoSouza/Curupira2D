@@ -6,7 +6,7 @@ using MonoGame.Helper;
 using MonoGame.Helper.ECS;
 using MonoGame.Helper.ECS.Components.Drawables;
 
-namespace SpriteAnimation
+namespace Sample
 {
     public class Game1 : GameCore
     {
