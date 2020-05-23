@@ -16,13 +16,19 @@ namespace SpriteAnimation
             var scene = new Scene()
                 .AddSystem<CharacterMovimentSystem>();
 
-            var texture = Content.Load<Texture2D>("character");
+            var characterTexture = Content.Load<Texture2D>("character");
 
             scene.CreateEntity("character")
                 .SetPosition(100, 100)
                 .AddComponent(new TransformComponent { Velocity = new Vector2(100) })
-                .AddComponent(new SpriteAnimationComponent(texture, 4, 4, 100, AnimateType.PerRow));
+                .AddComponent(new SpriteAnimationComponent(characterTexture, 4, 4, 100, AnimateType.PerRow));
             //.AddComponent(new SpriteComponent(texture));
+
+            var explosionTexture = Content.Load<Texture2D>("explosion");
+
+            scene.CreateEntity("explosion")
+                .SetPosition(300, 200)
+                .AddComponent(new SpriteAnimationComponent(explosionTexture, 5, 5, 150, AnimateType.All, default, true, true));
 
             SetScene(scene);
         }

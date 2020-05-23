@@ -29,10 +29,7 @@ namespace SpriteAnimation
                 VerticalMove(ref characterEntity, 0);
         }
 
-        private void HorizontalMove(
-            ref Entity characterEntity,
-            int sourcePosY,
-            bool moveRight = true)
+        void HorizontalMove(ref Entity characterEntity, int sourcePosY, bool moveRight = true)
         {
             var spriteAnimationComponent = characterEntity.GetComponent<SpriteAnimationComponent>();
             var transformComponent = characterEntity.GetComponent<TransformComponent>();
@@ -58,10 +55,7 @@ namespace SpriteAnimation
             characterEntity.SetPosition(tempPosition);
         }
 
-        private void VerticalMove(
-            ref Entity characterEntity,
-            int sourcePosY,
-            bool moveDown = true)
+        void VerticalMove(ref Entity characterEntity, int sourcePosY, bool moveDown = true)
         {
             var spriteAnimationComponent = characterEntity.GetComponent<SpriteAnimationComponent>();
             var transformComponent = characterEntity.GetComponent<TransformComponent>();

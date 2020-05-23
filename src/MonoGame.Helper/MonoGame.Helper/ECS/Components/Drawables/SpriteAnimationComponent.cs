@@ -68,6 +68,9 @@ namespace MonoGame.Helper.ECS.Components.Drawables
         public AnimateType AnimateType { get; set; }
         public int FrameWidth => TextureSize.X / FrameColumnsCount;
         public int FrameHeight => TextureSize.Y / FrameRowsCount;
+        public TimeSpan ElapsedTime { get; set; } = TimeSpan.Zero;
+        public int CurrentFrameColumn { get; set; }
+        public int CurrentFrameRow { get; set; }
     }
 
     public enum AnimateType
