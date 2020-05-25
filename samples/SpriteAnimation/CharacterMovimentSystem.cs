@@ -1,15 +1,15 @@
 ﻿using Microsoft.Xna.Framework.Input;
 using MonoGame.Helper.ECS;
 using MonoGame.Helper.ECS.Components.Drawables;
-using MonoGame.Helper.ECS.Components.Physics;
 using MonoGame.Helper.ECS.Systems;
 
 namespace SpriteAnimation
 {
-    [RequiredComponent(typeof(TransformComponent))]
     [RequiredComponent(typeof(SpriteAnimationComponent))]
     public class CharacterMovimentSystem : MonoGame.Helper.ECS.System, IUpdatable
     {
+        const float VELOCITY = 100f;
+
         public void Update()
         {
             var characterEntity = Scene.GetEntity("character");
@@ -32,7 +32,6 @@ namespace SpriteAnimation
         void HorizontalMove(ref Entity characterEntity, int sourcePosY, bool moveRight = true)
         {
             var spriteAnimationComponent = characterEntity.GetComponent<SpriteAnimationComponent>();
-            var transformComponent = characterEntity.GetComponent<TransformComponent>();
             var tempPosition = characterEntity.Transform.Position;
             var direction = moveRight ? 1 : -1;
 
@@ -42,7 +41,7 @@ namespace SpriteAnimation
             spriteAnimationComponent.IsPlaying = true;
             spriteAnimationComponent.SourceRectangle = sourceRectangle;
 
-            tempPosition.X += (float)(transformComponent.Velocity.X * Scene.DeltaTime) * direction;
+            tempPosition.X += (float)(VELOCITY * Scene.DeltaTime) * direction;
 
             #region Out of screen in left or right
             if (tempPosition.X + spriteAnimationComponent.FrameWidth < 0f)
@@ -58,7 +57,6 @@ namespace SpriteAnimation
         void VerticalMove(ref Entity characterEntity, int sourcePosY, bool moveDown = true)
         {
             var spriteAnimationComponent = characterEntity.GetComponent<SpriteAnimationComponent>();
-            var transformComponent = characterEntity.GetComponent<TransformComponent>();
             var tempPosition = characterEntity.Transform.Position;
             var direction = moveDown ? 1 : -1;
 
@@ -68,7 +66,7 @@ namespace SpriteAnimation
             spriteAnimationComponent.IsPlaying = true;
             spriteAnimationComponent.SourceRectangle = sourceRectangle;
 
-            tempPosition.Y += (float)(transformComponent.Velocity.Y * Scene.DeltaTime) * direction;
+            tempPosition.Y += (float)(VELOCITY * Scene.DeltaTime) * direction;
 
             #region Out of screen in top or bottom
             if (tempPosition.Y + spriteAnimationComponent.FrameHeight < 0f)
