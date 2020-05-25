@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using MonoGame.Helper.ECS;
 using MonoGame.Helper.ECS.Components.Drawables;
 
 namespace MonoGame.Helper.Extensions
@@ -23,6 +24,9 @@ namespace MonoGame.Helper.Extensions
         public static void Draw(this SpriteBatch spriteBatch, Vector2 position, SpriteComponent spriteComponent)
             => Draw(spriteBatch, position, 0f, spriteComponent);
 
+        public static void Draw(this SpriteBatch spriteBatch, Entity entity, SpriteComponent spriteComponent)
+            => Draw(spriteBatch, entity.Transform.Position, entity.Transform.RotationInDegrees, spriteComponent);
+
         public static void DrawString(this SpriteBatch spriteBatch, Vector2 position, float rotationInDegrees, TextComponent textComponent)
         {
             spriteBatch.DrawString(
@@ -39,5 +43,8 @@ namespace MonoGame.Helper.Extensions
 
         public static void DrawString(this SpriteBatch spriteBatch, Vector2 position, TextComponent textComponent)
             => DrawString(spriteBatch, position, 0f, textComponent);
+
+        public static void DrawString(this SpriteBatch spriteBatch, Entity entity, TextComponent textComponent)
+            => DrawString(spriteBatch, entity.Transform.Position, entity.Transform.RotationInDegrees, textComponent);
     }
 }

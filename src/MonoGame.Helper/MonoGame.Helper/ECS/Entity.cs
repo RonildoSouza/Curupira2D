@@ -36,6 +36,13 @@ namespace MonoGame.Helper.ECS
             return this;
         }
 
+        public Entity SetTransform(Vector2 position, float rotationInDegrees)
+        {
+            SetPosition(position);
+            SetRotation(rotationInDegrees);
+            return this;
+        }
+
         public Entity SetActive(bool active)
         {
             Transform.Active = active;
@@ -60,6 +67,14 @@ namespace MonoGame.Helper.ECS
         {
             if (_components.ContainsKey(typeof(T)))
                 _components.Remove(typeof(T));
+        }
+
+        public void UpdateComponent(IComponent component)
+        {
+            if (component == null || !_components.ContainsKey(component.GetType()))
+                return;
+
+            _components[component.GetType()] = component;
         }
 
         public T GetComponent<T>() where T : IComponent

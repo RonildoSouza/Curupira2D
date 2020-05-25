@@ -16,7 +16,7 @@ namespace MonoGame.Helper.ECS.Systems.Drawable
                 var entity = entities.ElementAt(i);
                 var spriteComponent = entity.GetComponent<SpriteComponent>();
 
-                Scene.SpriteBatch.Draw(entity.Transform.Position, entity.Transform.RotationInDegrees, spriteComponent);
+                Scene.SpriteBatch.Draw(entity, spriteComponent);
             }
         }
     }

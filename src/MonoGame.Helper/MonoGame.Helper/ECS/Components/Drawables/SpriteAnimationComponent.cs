@@ -66,8 +66,8 @@ namespace MonoGame.Helper.ECS.Components.Drawables
         public bool IsLooping { get; set; }
         public bool IsPlaying { get; set; }
         public AnimateType AnimateType { get; set; }
-        public int FrameWidth => TextureSize.X / FrameColumnsCount;
-        public int FrameHeight => TextureSize.Y / FrameRowsCount;
+        public int FrameWidth => (int)TextureSize.X / FrameColumnsCount;
+        public int FrameHeight => (int)TextureSize.Y / FrameRowsCount;
         public TimeSpan ElapsedTime { get; set; } = TimeSpan.Zero;
         public int CurrentFrameColumn { get; set; }
         public int CurrentFrameRow { get; set; }

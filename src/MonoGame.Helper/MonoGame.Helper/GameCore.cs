@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework.Input;
 using MonoGame.Helper.ECS;
 using MonoGame.Helper.GameComponents;
 using System;
+using System.Reflection;
 
 namespace MonoGame.Helper
 {
@@ -43,9 +44,9 @@ namespace MonoGame.Helper
             CurrentScene?.Draw();
 
 #if DEBUG
-            Window.Title = $"{CurrentScene?.Title ?? GetType().Assembly.GetName().Name} | {GraphicsDevice.Viewport.Width}x{GraphicsDevice.Viewport.Height} | FPS: {_fpsCounterComponent.FPS}";
+            Window.Title = $"{CurrentScene?.Title ?? GetType().GetTypeInfo().Assembly.GetName().Name} | {GraphicsDevice.Viewport.Width}x{GraphicsDevice.Viewport.Height} | FPS: {_fpsCounterComponent.FPS}";
 #else
-            Window.Title = $"{CurrentScene.Title}";
+            Window.Title = $"{CurrentScene?.Title}";
 #endif
 
             base.Draw(gameTime);

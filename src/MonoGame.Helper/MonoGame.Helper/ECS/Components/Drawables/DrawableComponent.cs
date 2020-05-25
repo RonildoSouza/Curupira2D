@@ -24,16 +24,5 @@ namespace MonoGame.Helper.ECS.Components.Drawables
         public Rectangle? SourceRectangle { get; set; }
         public float LayerDepth { get; set; }
         public Vector2 Scale { get; set; }
-
-        //public Rectangle BoundingBox
-        //{
-        //    get
-        //    {
-        //        if (Texture == null || Position == null)
-        //            throw new NullReferenceException($"Property {nameof(Texture)} or {nameof(Position)} is null!");
-
-        //        return new Rectangle(Position.ToPoint(), Texture.Bounds.Size * Scale.ToPoint());
-        //    }
-        //}
     }
 }

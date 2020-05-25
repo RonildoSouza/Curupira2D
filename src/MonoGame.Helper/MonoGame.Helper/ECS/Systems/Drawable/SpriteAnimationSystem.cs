@@ -20,7 +20,7 @@ namespace MonoGame.Helper.ECS.Systems.Drawable
 
                 Animate(ref spriteAnimationComponent);
 
-                Scene.SpriteBatch.Draw(entity.Transform.Position, entity.Transform.RotationInDegrees, spriteAnimationComponent);
+                Scene.SpriteBatch.Draw(entity, spriteAnimationComponent);
             }
         }
 

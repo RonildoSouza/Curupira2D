@@ -2,7 +2,7 @@
 using Microsoft.Xna.Framework.Graphics;
 using System.Linq;
 
-namespace MonoGame.ECS.Helpers
+namespace MonoGame.Helper.Extensions
 {
     public static class GeometricPrimitives
     {

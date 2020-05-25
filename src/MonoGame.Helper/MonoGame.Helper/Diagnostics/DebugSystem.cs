@@ -27,64 +27,64 @@ namespace MonoGame.Helper.Diagnostics
 
             _stringBuilder.Clear();
 
-            _stringBuilder.Append(DebugEntityProperties(ref entities));
-            _stringBuilder.Append(DebugComponentProperties(ref entities));
+            //_stringBuilder.Append(DebugEntityProperties(ref entities));
+            //_stringBuilder.Append(DebugComponentProperties(ref entities));
 
             Scene.SpriteBatch.DrawString(_fontArial18, _stringBuilder, Vector2.One, Color.Black,
                 0f, Vector2.Zero, .5f, SpriteEffects.None, 0f);
         }
 
-        private StringBuilder DebugEntityProperties(ref List<Entity> entities)
-        {
-            var debugEntityProperties = entities
-                .Select(_ => new DebugModel<Entity, PropertyInfo>
-                {
-                    Name = _.UniqueId,
-                    MembersInfo = _.GetType().GetProperties(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly)
-                    .Where(p => p.IsDefined(typeof(DebugInspectionAttribute)))
-                    .ToDictionary(v => _, v => new List<PropertyInfo> { v }.AsEnumerable())
-                });
+        //StringBuilder DebugEntityProperties(ref List<Entity> entities)
+        //{
+        //    var debugEntityProperties = entities
+        //        .Select(_ => new DebugModel<Entity, PropertyInfo>
+        //        {
+        //            Name = _.UniqueId,
+        //            MembersInfo = _.GetType().GetProperties(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly)
+        //            .Where(p => p.IsDefined(typeof(DebugInspectionAttribute)))
+        //            .ToDictionary(v => _, v => new List<PropertyInfo> { v }.AsEnumerable())
+        //        });
 
-            var stringBuilder = new StringBuilder();
+        //    var stringBuilder = new StringBuilder();
 
-            foreach (var debugModel in debugEntityProperties)
-                BuildDebugEntityString(ref stringBuilder, debugModel);
+        //    foreach (var debugModel in debugEntityProperties)
+        //        BuildDebugEntityString(ref stringBuilder, debugModel);
 
-            return stringBuilder;
-        }
+        //    return stringBuilder;
+        //}
 
-        private StringBuilder DebugComponentProperties(ref List<Entity> entities)
-        {
-            var debugEntityComponentProperties = entities
-                .Select(_ => new DebugModel<IComponent, PropertyInfo>
-                {
-                    Name = _.UniqueId,
-                    MembersInfo = _.GetComponents()
-                        .ToDictionary(v => v,
-                        v => v.GetType()
-                              .GetProperties(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly)
-                              .Where(p => p.IsDefined(typeof(DebugInspectionAttribute))))
-                });
+        //StringBuilder DebugComponentProperties(ref List<Entity> entities)
+        //{
+        //    var debugEntityComponentProperties = entities
+        //        .Select(_ => new DebugModel<IComponent, PropertyInfo>
+        //        {
+        //            Name = _.UniqueId,
+        //            MembersInfo = _.GetComponents()
+        //                .ToDictionary(v => v,
+        //                v => v.GetType()
+        //                      .GetProperties(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly)
+        //                      .Where(p => p.IsDefined(typeof(DebugInspectionAttribute))))
+        //        });
 
-            var stringBuilder = new StringBuilder();
+        //    var stringBuilder = new StringBuilder();
 
-            foreach (var debugModel in debugEntityComponentProperties)
-                BuildDebugEntityString(ref stringBuilder, debugModel);
+        //    foreach (var debugModel in debugEntityComponentProperties)
+        //        BuildDebugEntityString(ref stringBuilder, debugModel);
 
-            return stringBuilder;
-        }
+        //    return stringBuilder;
+        //}
 
-        private void BuildDebugEntityString<TKey>(ref StringBuilder stringBuilder, DebugModel<TKey, PropertyInfo> debugModel)
-        {
-            foreach (var memInfo in debugModel.MembersInfo)
-            {
-                foreach (var propInfo in memInfo.Value)
-                {
-                    var value = propInfo.GetValue(memInfo.Key);
-                    stringBuilder.AppendLine($"=> ENTITY: {debugModel.Name}\n------ PROPERTY: {propInfo.Name}: {value}");
-                }
-            }
-        }
+        //void BuildDebugEntityString<TKey>(ref StringBuilder stringBuilder, DebugModel<TKey, PropertyInfo> debugModel)
+        //{
+        //    foreach (var memInfo in debugModel.MembersInfo)
+        //    {
+        //        foreach (var propInfo in memInfo.Value)
+        //        {
+        //            var value = propInfo.GetValue(memInfo.Key);
+        //            stringBuilder.AppendLine($"=> ENTITY: {debugModel.Name}\n------ PROPERTY: {propInfo.Name}: {value}");
+        //        }
+        //    }
+        //}
     }
 
     [AttributeUsage(AttributeTargets.Property | AttributeTargets.Field)]
