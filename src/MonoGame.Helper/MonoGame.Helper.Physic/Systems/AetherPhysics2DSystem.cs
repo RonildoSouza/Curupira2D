@@ -1,13 +1,15 @@
-﻿using MonoGame.Helper.ECS.Components.Drawables;
-using MonoGame.Helper.ECS.Components.Physics;
+﻿using MonoGame.Helper.ECS;
+using MonoGame.Helper.ECS.Components.Drawables;
+using MonoGame.Helper.ECS.Systems;
+using MonoGame.Helper.Physic.Components;
 using System.Linq;
 using tainicom.Aether.Physics2D.Dynamics;
 
-namespace MonoGame.Helper.ECS.Systems.Physics
+namespace MonoGame.Helper.Physic.Systems
 {
     [RequiredComponent(typeof(BodyComponent))]
     [RequiredComponent(typeof(SpriteComponent))]
-    public class AetherPhysics2DSystem : System, IInitializable, IUpdatable
+    public class AetherPhysics2DSystem : ECS.System, IInitializable, IUpdatable
     {
         private static World _world;
 
@@ -15,6 +17,8 @@ namespace MonoGame.Helper.ECS.Systems.Physics
         {
             if (_world == null)
                 _world = new World(Scene.Gravity);
+
+            _world.Clear();
 
             var entities = Scene.GetEntities(_ => Matches(_));
 
@@ -26,13 +30,17 @@ namespace MonoGame.Helper.ECS.Systems.Physics
                 BodyType bodyType = (BodyType)bodyComponent.EntityType;
                 Body body = null;
 
+                var bodyPosition = entity.Transform.Position + spriteComponent.TextureOrigin;
+                //bodyPosition.X -= bodyComponent.Radius * 0.5f;
+                bodyPosition.Y -= bodyComponent.Radius * 0.5f;
+
                 switch (bodyComponent.EntityShape)
                 {
                     case EntityShape.Circle:
                         body = _world.CreateCircle(
                             bodyComponent.Radius,
                             bodyComponent.Density,
-                            entity.Transform.Position,
+                            bodyPosition,
                             bodyType);
                         break;
                     case EntityShape.Rectangle:
@@ -40,10 +48,16 @@ namespace MonoGame.Helper.ECS.Systems.Physics
                             spriteComponent.TextureSize.X,
                             spriteComponent.TextureSize.Y,
                             bodyComponent.Density,
-                            entity.Transform.Position,
+                            bodyPosition,
                             entity.Transform.RotationInDegrees,
                             bodyType);
                         break;
+                        //case EntityShape.Polygon:
+                        //    var rect = PolygonTools.CreateRectangle(1f / 2f, 1f / 2f);
+                        //    var shape = new PolygonShape(rect, bodyComponent.Density);
+
+                        //    body = _world.CreatePolygon(rect, )
+                        //    break;
                 }
 
                 if (body == null)
@@ -77,14 +91,23 @@ namespace MonoGame.Helper.ECS.Systems.Physics
                 body.ApplyLinearImpulse(bodyComponent.LinearImpulse);
                 body.ApplyAngularImpulse(bodyComponent.AngularImpulse);
 
-                // Update MonoGame.Helper.ECS.Entity position, rotation and component
-                entity.SetTransform(body.Position, body.Rotation);
-                bodyComponent.Inertia = body.Inertia;
-                bodyComponent.SetTransform(body.Position, body.Rotation);
-                entity.UpdateComponent(bodyComponent);
+                // Update MonoGame.Helper.ECS.Entity position and rotation
+                var newEntityPosition = body.Position - spriteComponent.TextureOrigin;
+                //newEntityPosition.X += bodyComponent.Radius * 0.5f;
+                newEntityPosition.Y += bodyComponent.Radius * 0.5f;
+                entity.SetTransform(newEntityPosition, body.Rotation);
+
 
                 // Update tainicom.Aether.Physics2D.Dynamics.Body position and rotation
-                body.SetTransform(entity.Transform.Position, entity.Transform.RotationInDegrees);
+                var newBodyPosition = entity.Transform.Position + spriteComponent.TextureOrigin;
+                //newBodyPosition.X -= bodyComponent.Radius * 0.5f;
+                newBodyPosition.Y -= bodyComponent.Radius * 0.5f;
+                body.SetTransform(newBodyPosition, entity.Transform.RotationInDegrees);
+
+                //// Update MonoGame.Helper.ECS.Entity component
+                bodyComponent.Inertia = body.Inertia;
+                bodyComponent.SetTransform(newBodyPosition, body.Rotation);
+                entity.UpdateComponent(bodyComponent);
             }
 
             if (Scene.Gravity != _world.Gravity)
