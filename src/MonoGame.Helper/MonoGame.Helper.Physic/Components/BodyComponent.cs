@@ -42,15 +42,6 @@ namespace MonoGame.Helper.Physic.Components
         public EntityType EntityType { get; set; }
         public EntityShape EntityShape { get; set; }
         public bool IgnoreGravity { get; set; }
-
-        public Vector2 Position { get; private set; }
-        public float Rotation { get; private set; }
-
-        public void SetTransform(Vector2 position, float rotation)
-        {
-            Position = position;
-            Rotation = rotation;
-        }
     }
 
     public enum EntityShape

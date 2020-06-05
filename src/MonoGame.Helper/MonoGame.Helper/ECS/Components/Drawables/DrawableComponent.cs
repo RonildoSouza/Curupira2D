@@ -24,5 +24,6 @@ namespace MonoGame.Helper.ECS.Components.Drawables
         public Rectangle? SourceRectangle { get; set; }
         public float LayerDepth { get; set; }
         public Vector2 Scale { get; set; }
+        public abstract Vector2 Origin { get; }
     }
 }

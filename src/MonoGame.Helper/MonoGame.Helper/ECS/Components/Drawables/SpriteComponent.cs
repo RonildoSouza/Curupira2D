@@ -18,6 +18,6 @@ namespace MonoGame.Helper.ECS.Components.Drawables
 
         public Texture2D Texture { get; set; }
         public Vector2 TextureSize => Texture.Bounds.Size.ToVector2() * Scale;
-        public Vector2 TextureOrigin => 0.5f * TextureSize;
+        public override Vector2 Origin => 0.5f * TextureSize;
     }
 }

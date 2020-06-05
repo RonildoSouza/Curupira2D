@@ -17,40 +17,39 @@ namespace Collision
             var scene = new Scene()
                 .AddSystem<AetherPhysics2DSystem>();
 
-            var groundHeight = 25;
-            var ballTexture = GeometricPrimitives.CreateCircle(GraphicsDevice, 50, Color.Black);
-            var squareTexture = GeometricPrimitives.CreateSquare(GraphicsDevice, 50, Color.Black);
-            var groundTexture = GeometricPrimitives.CreateSquare(GraphicsDevice, GraphicsDevice.Viewport.Width, groundHeight, Color.Maroon);
+            var ballRadius = 25;
+            var ballTexture = GraphicsDevice.CreateTextureCircle(ballRadius, Color.Black);
+            var squareTexture = GraphicsDevice.CreateTextureRectangle(50, Color.Black);
+            var groundTexture = GraphicsDevice.CreateTextureRectangle(GraphicsDevice.Viewport.Width, 25, Color.Maroon);
 
             scene.CreateEntity("ball")
-                .SetPosition(GraphicsDevice.Viewport.Width * 0.3f, 10)
+                .SetPosition(GraphicsDevice.Viewport.Width * 0.3f, 100)
                 .AddComponent(new SpriteComponent(ballTexture))
                 .AddComponent(new BodyComponent
                 {
-                    Radius = 50,
+                    Radius = ballRadius,
                     EntityType = EntityType.Dynamic,
                     EntityShape = EntityShape.Circle,
-                    Torque = 100f,
                     LinearImpulse = new Vector2(0, 100),
                     Restitution = 0.6f,
                     Friction = 0.5f,
                 });
 
             scene.CreateEntity("square")
-                .SetPosition(GraphicsDevice.Viewport.Width * 0.6f, 10)
+                .SetPosition(GraphicsDevice.Viewport.Width * 0.6f, 100)
                 .AddComponent(new SpriteComponent(squareTexture))
                 .AddComponent(new BodyComponent
                 {
                     EntityType = EntityType.Dynamic,
-                    Torque = 100f,
                     LinearImpulse = new Vector2(0, 100),
                     Restitution = 0.6f,
                     Friction = 0.5f,
                 });
 
+            var groundSpriteComponent = new SpriteComponent(groundTexture);
             scene.CreateEntity("ground")
-                .SetPosition(0, GraphicsDevice.Viewport.Height - groundHeight)
-                .AddComponent(new SpriteComponent(groundTexture))
+                .SetPosition(groundSpriteComponent.Origin.X, GraphicsDevice.Viewport.Height - groundSpriteComponent.Origin.Y)
+                .AddComponent(groundSpriteComponent)
                 .AddComponent<BodyComponent>();
 
             SetScene(scene);

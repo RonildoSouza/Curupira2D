@@ -36,7 +36,7 @@
     <Compile Include="Diagnostics\DebugSystem.cs" />
     <Compile Include="ECS\Components\Drawables\SpriteAnimationComponent.cs" />
     <Compile Include="ECS\Systems\Drawable\SpriteAnimationSystem.cs" />
-    <Compile Include="Extensions\GeometricPrimitives.cs" />
+    <Compile Include="Extensions\GraphicsDeviceGeometricPrimitivesExtension.cs" />
     <Compile Include="GameComponents\FPSCounterComponent.cs" />
     <Compile Include="ECS\Components\Drawables\DrawableComponent.cs" />
     <Compile Include="ECS\Components\IComponent.cs" />

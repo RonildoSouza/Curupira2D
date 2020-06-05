@@ -71,6 +71,7 @@ namespace MonoGame.Helper.ECS.Components.Drawables
         public TimeSpan ElapsedTime { get; set; } = TimeSpan.Zero;
         public int CurrentFrameColumn { get; set; }
         public int CurrentFrameRow { get; set; }
+        public override Vector2 Origin => Vector2.Zero;
     }
 
     public enum AnimateType

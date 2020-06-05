@@ -20,5 +20,6 @@ namespace MonoGame.Helper.ECS.Components.Drawables
 
         public SpriteFont SpriteFont { get; set; }
         public string Text { get; set; }
+        public override Vector2 Origin => 0.5f * SpriteFont.MeasureString(Text);
     }
 }

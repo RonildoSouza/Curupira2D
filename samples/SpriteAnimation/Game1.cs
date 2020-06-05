@@ -19,7 +19,7 @@ namespace SpriteAnimation
 
             scene.CreateEntity("character")
                 .SetPosition(100, 100)
-                //.AddComponent(new SpriteComponent(texture));
+                //.AddComponent(new SpriteComponent(characterTexture));
                 .AddComponent(new SpriteAnimationComponent(characterTexture, 4, 4, 100, AnimateType.PerRow));
 
             // Create entity explosion in scene

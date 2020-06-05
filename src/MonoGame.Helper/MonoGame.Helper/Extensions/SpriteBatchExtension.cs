@@ -15,7 +15,7 @@ namespace MonoGame.Helper.Extensions
                 spriteComponent.SourceRectangle,
                 spriteComponent.Color,
                 MathHelper.ToRadians(rotationInDegrees),
-                Vector2.Zero,
+                spriteComponent.Origin,
                 spriteComponent.Scale,
                 spriteComponent.SpriteEffect,
                 spriteComponent.LayerDepth);
@@ -35,7 +35,7 @@ namespace MonoGame.Helper.Extensions
                 position,
                 textComponent.Color,
                 MathHelper.ToRadians(rotationInDegrees),
-                Vector2.Zero,
+                textComponent.Origin,
                 textComponent.Scale,
                 textComponent.SpriteEffect,
                 textComponent.LayerDepth);
