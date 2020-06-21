@@ -3,43 +3,36 @@ using MonoGame.Helper.ECS;
 using MonoGame.Helper.ECS.Components.Drawables;
 using MonoGame.Helper.ECS.Systems;
 
-namespace SpriteAnimation
+namespace SpriteAnimation.Systems
 {
     [RequiredComponent(typeof(SpriteAnimationComponent))]
-    public class CharacterMovimentSystem : MonoGame.Helper.ECS.System, IUpdatable
+    public class CharacterMovementSystem : MonoGame.Helper.ECS.System, IUpdatable
     {
         const float VELOCITY = 100f;
 
         public void Update()
         {
             var characterEntity = Scene.GetEntity("character");
-
             var ks = Keyboard.GetState();
 
             if (ks.IsKeyDown(Keys.Left))
-                HorizontalMove(ref characterEntity, 180, false);
+                HorizontalMove(ref characterEntity, false);
 
             if (ks.IsKeyDown(Keys.Up))
-                VerticalMove(ref characterEntity, 90, false);
+                VerticalMove(ref characterEntity, false);
 
             if (ks.IsKeyDown(Keys.Right))
-                HorizontalMove(ref characterEntity, 270);
+                HorizontalMove(ref characterEntity);
 
             if (ks.IsKeyDown(Keys.Down))
-                VerticalMove(ref characterEntity, 0);
+                VerticalMove(ref characterEntity);
         }
 
-        void HorizontalMove(ref Entity characterEntity, int sourcePosY, bool moveRight = true)
+        void HorizontalMove(ref Entity characterEntity, bool moveRight = true)
         {
             var spriteAnimationComponent = characterEntity.GetComponent<SpriteAnimationComponent>();
             var tempPosition = characterEntity.Transform.Position;
             var direction = moveRight ? 1 : -1;
-
-            var sourceRectangle = spriteAnimationComponent.SourceRectangle.Value;
-            sourceRectangle.Y = sourcePosY;
-
-            spriteAnimationComponent.IsPlaying = true;
-            spriteAnimationComponent.SourceRectangle = sourceRectangle;
 
             tempPosition.X += (float)(VELOCITY * Scene.DeltaTime) * direction;
 
@@ -54,17 +47,11 @@ namespace SpriteAnimation
             characterEntity.SetPosition(tempPosition);
         }
 
-        void VerticalMove(ref Entity characterEntity, int sourcePosY, bool moveDown = true)
+        void VerticalMove(ref Entity characterEntity, bool moveDown = true)
         {
             var spriteAnimationComponent = characterEntity.GetComponent<SpriteAnimationComponent>();
             var tempPosition = characterEntity.Transform.Position;
             var direction = moveDown ? 1 : -1;
-
-            var sourceRectangle = spriteAnimationComponent.SourceRectangle.Value;
-            sourceRectangle.Y = sourcePosY;
-
-            spriteAnimationComponent.IsPlaying = true;
-            spriteAnimationComponent.SourceRectangle = sourceRectangle;
 
             tempPosition.Y += (float)(VELOCITY * Scene.DeltaTime) * direction;
 

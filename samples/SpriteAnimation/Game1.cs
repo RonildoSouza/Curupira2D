@@ -2,6 +2,7 @@
 using MonoGame.Helper;
 using MonoGame.Helper.ECS;
 using MonoGame.Helper.ECS.Components.Drawables;
+using SpriteAnimation.Systems;
 
 namespace SpriteAnimation
 {
@@ -12,7 +13,8 @@ namespace SpriteAnimation
         protected override void Initialize()
         {
             var scene = new Scene()
-                .AddSystem<CharacterMovimentSystem>();
+                .AddSystem<CharacterAnimationSystem>()
+                .AddSystem<CharacterMovementSystem>();
 
             // Create entity character in scene
             var characterTexture = Content.Load<Texture2D>("character");
