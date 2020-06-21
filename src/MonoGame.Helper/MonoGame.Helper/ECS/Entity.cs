@@ -9,18 +9,18 @@ namespace MonoGame.Helper.ECS
     public sealed class Entity
     {
         readonly Dictionary<Type, IComponent> _components = new Dictionary<Type, IComponent>();
+        readonly List<Entity> _children = new List<Entity>();
 
         public Entity(string uniqueId)
         {
             UniqueId = uniqueId;
             Transform = new Transform();
-            //Children = new List<Entity>();
         }
 
         public string UniqueId { get; }
         public Transform Transform { get; }
-        //public List<Entity> Children { get; }
-        //public Entity Parent { get; private set; }
+        public Entity Parent { get; private set; }
+        public IReadOnlyList<Entity> Children => _children;
 
         public Entity SetPosition(float x, float y)
         {
@@ -57,9 +57,9 @@ namespace MonoGame.Helper.ECS
             return this;
         }
 
-        public Entity AddComponent<T>() where T : IComponent
+        public Entity AddComponent<T>(params object[] args) where T : IComponent
         {
-            var component = Activator.CreateInstance(typeof(T));
+            var component = Activator.CreateInstance(typeof(T), args);
             return AddComponent(component as IComponent);
         }
 
@@ -83,8 +83,6 @@ namespace MonoGame.Helper.ECS
             return (T)component;
         }
 
-        public List<IComponent> GetComponents() => _components.Select(_ => _.Value).ToList();
-
         public bool HasComponent<T>() where T : IComponent
             => HasComponent(typeof(T));
 
@@ -96,25 +94,25 @@ namespace MonoGame.Helper.ECS
 
         private bool HasComponent(Type componentType) => _components.ContainsKey(componentType);
 
-        //public Entity AddChild(Entity child)
-        //{
-        //    if (Children.Contains(child))
-        //        return this;
+        public Entity AddChild(Entity child)
+        {
+            if (_children.Contains(child))
+                return this;
 
-        //    Children.Add(child);
-        //    child.Parent = this;
-        //    return this;
-        //}
+            _children.Add(child);
+            child.Parent = this;
+            return this;
+        }
 
-        //public Entity RemoveChild(Entity child)
-        //{
-        //    if (!Children.Contains(child))
-        //        return this;
+        public Entity RemoveChild(Entity child)
+        {
+            if (!_children.Contains(child))
+                return this;
 
-        //    Children.Remove(child);
-        //    child.Parent = null;
-        //    return this;
-        //}
+            _children.Remove(child);
+            child.Parent = null;
+            return this;
+        }
 
         public override bool Equals(object obj)
         {
@@ -139,8 +137,8 @@ namespace MonoGame.Helper.ECS
             RotationInDegrees = 0f;
         }
 
-        public bool Active { get; set; }
-        public Vector2 Position { get; set; }
-        public float RotationInDegrees { get; set; }
+        public bool Active { get; internal set; }
+        public Vector2 Position { get; internal set; }
+        public float RotationInDegrees { get; internal set; }
     }
 }

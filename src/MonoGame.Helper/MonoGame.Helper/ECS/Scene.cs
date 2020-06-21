@@ -47,9 +47,9 @@ namespace MonoGame.Helper.ECS
             return this;
         }
 
-        public Scene AddSystem<T>() where T : System
+        public Scene AddSystem<T>(params object[] args) where T : System
         {
-            var system = (T)Activator.CreateInstance(typeof(T));
+            var system = (T)Activator.CreateInstance(typeof(T), args);
             return AddSystem(system);
         }
 
@@ -111,7 +111,7 @@ namespace MonoGame.Helper.ECS
 
         public virtual void Draw()
         {
-            SpriteBatch.Begin();
+            SpriteBatch.Begin(SpriteSortMode.BackToFront);
 
             for (int i = 0; i < _renderableSystems.Count; i++)
                 _renderableSystems[i].Draw();
