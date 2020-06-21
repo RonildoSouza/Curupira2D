@@ -19,7 +19,7 @@ namespace Sample
             var characterTexture = Content.Load<Texture2D>("character");
 
             var characterEntity = scene.CreateEntity("character");
-            characterEntity.AddComponent(new SpriteComponent(characterTexture);
+            characterEntity.AddComponent(new SpriteComponent(characterTexture));
 
             SetScene(scene);
         }
