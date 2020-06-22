@@ -14,17 +14,19 @@ namespace MonoGame.Helper.ECS
         public Entity(string uniqueId)
         {
             UniqueId = uniqueId;
+            Active = true;
             Transform = new Transform();
         }
 
         public string UniqueId { get; }
+        public bool Active { get; private set; }
         public Transform Transform { get; }
         public Entity Parent { get; private set; }
         public IReadOnlyList<Entity> Children => _children;
 
         public Entity SetPosition(float x, float y)
         {
-            Transform.Position = new Vector2(x, y);
+            Transform.SetPosition(x, y);
             return this;
         }
 
@@ -32,20 +34,19 @@ namespace MonoGame.Helper.ECS
 
         public Entity SetRotation(float rotationInDegrees)
         {
-            Transform.RotationInDegrees = rotationInDegrees;
+            Transform.SetRotation(rotationInDegrees);
             return this;
         }
 
         public Entity SetTransform(Vector2 position, float rotationInDegrees)
         {
-            SetPosition(position);
-            SetRotation(rotationInDegrees);
+            Transform.SetTransform(position, rotationInDegrees);
             return this;
         }
 
         public Entity SetActive(bool active)
         {
-            Transform.Active = active;
+            Active = active;
             return this;
         }
 
@@ -126,19 +127,5 @@ namespace MonoGame.Helper.ECS
         {
             return -401120461 + EqualityComparer<string>.Default.GetHashCode(UniqueId);
         }
-    }
-
-    public sealed class Transform
-    {
-        public Transform()
-        {
-            Active = true;
-            Position = Vector2.Zero;
-            RotationInDegrees = 0f;
-        }
-
-        public bool Active { get; internal set; }
-        public Vector2 Position { get; internal set; }
-        public float RotationInDegrees { get; internal set; }
     }
 }

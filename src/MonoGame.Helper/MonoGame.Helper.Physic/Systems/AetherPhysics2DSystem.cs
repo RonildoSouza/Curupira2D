@@ -1,4 +1,5 @@
-﻿using MonoGame.Helper.ECS;
+﻿using MonoGame.Helper.Attributes;
+using MonoGame.Helper.ECS;
 using MonoGame.Helper.ECS.Components.Drawables;
 using MonoGame.Helper.ECS.Systems;
 using MonoGame.Helper.Physic.Components;

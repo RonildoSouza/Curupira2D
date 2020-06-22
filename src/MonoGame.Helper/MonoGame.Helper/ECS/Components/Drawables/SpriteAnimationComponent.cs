@@ -28,9 +28,7 @@ namespace MonoGame.Helper.ECS.Components.Drawables
             IsPlaying = isPlaying;
 
             if (sourceRectangle == default)
-                SourceRectangle = new Rectangle(0, 0,
-                    Texture.Bounds.Width / frameColumnsCount,
-                    Texture.Bounds.Height / frameRowsCount);
+                SourceRectangle = new Rectangle(0, 0, Texture.Bounds.Width / frameColumnsCount, Texture.Bounds.Height / frameRowsCount);
         }
 
         public SpriteAnimationComponent(

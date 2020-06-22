@@ -1,4 +1,5 @@
-﻿using MonoGame.Helper.Diagnostics;
+﻿using MonoGame.Helper.Asserts;
+using MonoGame.Helper.Attributes;
 using MonoGame.Helper.ECS.Components;
 using System;
 using System.Collections.Generic;
@@ -20,7 +21,7 @@ namespace MonoGame.Helper.ECS
 
         public void SetScene(Scene scene)
         {
-            AssertRequiredComponents();
+            this.AssertRequiredComponents(_requiredComponents);
             Scene = scene;
         }
 
@@ -29,8 +30,8 @@ namespace MonoGame.Helper.ECS
 
         protected bool Matches(Entity entity)
         {
-            AssertRequiredComponents();
-            return entity.Transform.Active && entity.HasAllComponentTypes(_requiredComponents);
+            this.AssertRequiredComponents(_requiredComponents);
+            return entity.Active && entity.HasAllComponentTypes(_requiredComponents);
         }
 
         protected virtual void SetupRequiredComponents()
@@ -48,25 +49,5 @@ namespace MonoGame.Helper.ECS
 
             _requiredComponents.Add(type);
         }
-
-        void AssertRequiredComponents()
-        {
-            if (!_requiredComponents.Any() && GetType().Name != nameof(DebugSystem))
-                throw new Exception($"You should add required component for the system {GetType().Name}");
-        }
-    }
-
-    [AttributeUsage(AttributeTargets.Class, AllowMultiple = true)]
-    public class RequiredComponentAttribute : Attribute
-    {
-        public RequiredComponentAttribute(Type componentType)
-        {
-            if (!(componentType.GetTypeInfo().ImplementedInterfaces.Contains(typeof(IComponent))))
-                throw new ArgumentException($"The argument {nameof(componentType)} is not a {nameof(IComponent)}");
-
-            ComponentType = componentType;
-        }
-
-        public Type ComponentType { get; }
     }
 }
