@@ -6,7 +6,12 @@ namespace MonoGame.Helper.ECS
 {
     public sealed class EntityManager : IDisposable
     {
-        List<Entity> _entities = new List<Entity>();
+        readonly List<Entity> _entities = new List<Entity>();
+        static readonly Lazy<EntityManager> _entityManager = new Lazy<EntityManager>(() => new EntityManager());
+
+        EntityManager() { }
+
+        public static EntityManager Instance => _entityManager.Value;
 
         public Entity CreateEntity(string uniqueId)
         {
@@ -30,7 +35,9 @@ namespace MonoGame.Helper.ECS
         public void Dispose()
         {
             _entities.Clear();
-            _entities = null;
+            _entityManager.Value.Dispose();
+
+            GC.Collect();
         }
     }
 }

@@ -1,19 +1,15 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using MonoGame.Helper.ECS.Systems;
 using MonoGame.Helper.ECS.Systems.Drawable;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace MonoGame.Helper.ECS
 {
     public class Scene : IDisposable
     {
-        readonly EntityManager _entityManager = new EntityManager();
-        readonly List<IInitializable> _initializableSystems = new List<IInitializable>();
-        readonly List<IUpdatable> _updatableSystems = new List<IUpdatable>();
-        readonly List<IRenderable> _renderableSystems = new List<IRenderable>();
+        readonly EntityManager _entityManager = EntityManager.Instance;
+        readonly SystemManager _systemManager = SystemManager.Instance;
 
         public GameCore GameCore { get; private set; }
         public SpriteBatch SpriteBatch { get; private set; }
@@ -31,27 +27,20 @@ namespace MonoGame.Helper.ECS
             SpriteBatch = new SpriteBatch(GameCore.GraphicsDevice);
         }
 
-        public Scene AddSystem<T>(T system) where T : System
+        public Scene AddSystem<TSystem>(TSystem system) where TSystem : System
         {
-            if (system is IInitializable && !_initializableSystems.Any(_ => _.GetType().Name == typeof(T).Name))
-                _initializableSystems.Add(system as IInitializable);
-
-            if (system is IUpdatable && !_updatableSystems.Any(_ => _.GetType().Name == typeof(T).Name))
-                _updatableSystems.Add(system as IUpdatable);
-
-            if (system is IRenderable && !_renderableSystems.Any(_ => _.GetType().Name == typeof(T).Name))
-                _renderableSystems.Add(system as IRenderable);
-
-            system.SetScene(this);
-
+            _systemManager.AddSystem(this, system);
             return this;
         }
 
-        public Scene AddSystem<T>(params object[] args) where T : System
+        public Scene AddSystem<TSystem>(params object[] args) where TSystem : System
         {
-            var system = (T)Activator.CreateInstance(typeof(T), args);
-            return AddSystem(system);
+            _systemManager.AddSystem<TSystem>(this, args);
+            return this;
         }
+
+        public void RemoveSystem<TSystem>() where TSystem : System
+            => _systemManager.RemoveSystem<TSystem>();
 
         public Scene SetTitle(string title)
         {
@@ -65,13 +54,6 @@ namespace MonoGame.Helper.ECS
             return this;
         }
 
-        public void RemoveSystem<T>() where T : System
-        {
-            _initializableSystems.RemoveAll(_ => _.GetType().Name == typeof(T).Name);
-            _updatableSystems.RemoveAll(_ => _.GetType().Name == typeof(T).Name);
-            _renderableSystems.RemoveAll(_ => _.GetType().Name == typeof(T).Name);
-        }
-
         public Entity CreateEntity(string uniqueId) => _entityManager.CreateEntity(uniqueId);
 
         public Entity GetEntity(string uniqueId) => _entityManager.GetEntity(uniqueId);
@@ -82,39 +64,26 @@ namespace MonoGame.Helper.ECS
 
         public void DestroyEntity(string uniqueId) => _entityManager.DestroyEntity(uniqueId);
 
-        public void ChangeGameScene(Scene scene)
-        {
-            GameCore.SetScene(scene);
-        }
-
-        public void ChangeGameScene<T>(params object[] args) where T : Scene
-        {
-            GameCore.SetScene<T>(args);
-        }
-
         public virtual void Initialize()
         {
             AddSystem<SpriteSystem>();
             AddSystem<SpriteAnimationSystem>();
 
-            for (int i = 0; i < _initializableSystems.Count; i++)
-                _initializableSystems[i].Initialize();
+            _systemManager.InitializableSystemsIteration();
         }
 
         public virtual void Update(GameTime gameTime)
         {
             GameTime = gameTime;
 
-            for (int i = 0; i < _updatableSystems.Count; i++)
-                _updatableSystems[i].Update();
+            _systemManager.UpdatableSystemsIteration();
         }
 
         public virtual void Draw()
         {
             SpriteBatch.Begin(SpriteSortMode.BackToFront);
 
-            for (int i = 0; i < _renderableSystems.Count; i++)
-                _renderableSystems[i].Draw();
+            _systemManager.RenderableSystemsIteration();
 
             SpriteBatch.End();
         }
@@ -123,6 +92,8 @@ namespace MonoGame.Helper.ECS
         {
             GameCore.Dispose();
             SpriteBatch.Dispose();
+
+            GC.Collect();
         }
     }
 }

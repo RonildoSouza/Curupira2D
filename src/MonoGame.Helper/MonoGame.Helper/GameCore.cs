@@ -2,7 +2,6 @@
 using Microsoft.Xna.Framework.Input;
 using MonoGame.Helper.ECS;
 using MonoGame.Helper.GameComponents;
-using System;
 using System.Reflection;
 
 namespace MonoGame.Helper
@@ -11,8 +10,7 @@ namespace MonoGame.Helper
     {
         readonly GraphicsDeviceManager _graphics;
         readonly FPSCounterComponent _fpsCounterComponent;
-
-        public static Scene CurrentScene { get; private set; }
+        readonly SceneManager _sceneManager = SceneManager.Instance;
 
         public GameCore(int width = 800, int height = 480)
         {
@@ -33,36 +31,35 @@ namespace MonoGame.Helper
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
 
-            CurrentScene?.Update(gameTime);
+            _sceneManager.CurrentScene?.Update(gameTime);
             base.Update(gameTime);
         }
 
         protected override void Draw(GameTime gameTime)
         {
-            GraphicsDevice.Clear(CurrentScene?.CleanColor ?? Color.LightGray);
+            GraphicsDevice.Clear(_sceneManager.CurrentScene?.CleanColor ?? Color.LightGray);
 
-            CurrentScene?.Draw();
+            _sceneManager.CurrentScene?.Draw();
 
 #if DEBUG
-            Window.Title = $"{CurrentScene?.Title ?? GetType().GetTypeInfo().Assembly.GetName().Name} | {GraphicsDevice.Viewport.Width}x{GraphicsDevice.Viewport.Height} | FPS: {_fpsCounterComponent.FPS}";
+            Window.Title = $"{_sceneManager.CurrentScene?.Title ?? GetType().GetTypeInfo().Assembly.GetName().Name} " +
+                           $"| {GraphicsDevice.Viewport.Width}x{GraphicsDevice.Viewport.Height} " +
+                           $"| FPS: {_fpsCounterComponent.FPS}";
 #else
-            Window.Title = $"{CurrentScene?.Title}";
+            Window.Title = $"{_sceneManager.CurrentScene?.Title}";
 #endif
 
             base.Draw(gameTime);
         }
 
-        public void SetScene(Scene scene)
-        {
-            CurrentScene = scene;
-            CurrentScene.SetGameCore(this);
-            CurrentScene.Initialize();
-        }
+        public void SetScene(Scene scene) => _sceneManager.SetScene(this, scene);
 
-        public void SetScene<T>(params object[] args) where T : Scene
-        {
-            var scene = (T)Activator.CreateInstance(typeof(T), args);
-            SetScene(scene);
-        }
+        public void SetScene<TScene>(params object[] args) where TScene : Scene
+             => _sceneManager.SetScene<TScene>(this, args);
+
+        public void AddScene(Scene scene) => _sceneManager.AddScene(scene);
+
+        public void ChangeScene<TScene>() where TScene : Scene
+            => _sceneManager.ChangeScene<TScene>(this);
     }
 }

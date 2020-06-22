@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
+using MonoGame.Helper.Attributes;
 using MonoGame.Helper.ECS.Components.Drawables;
 using MonoGame.Helper.Extensions;
 using System;

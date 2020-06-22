@@ -23,7 +23,7 @@ namespace MonoGame.Helper.Diagnostics
 
         public void Draw()
         {
-            var entities = Scene.GetEntities(_ => _.Transform.Active);
+            var entities = Scene.GetEntities(_ => _.Active);
 
             _stringBuilder.Clear();
 
