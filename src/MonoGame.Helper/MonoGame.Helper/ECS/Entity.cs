@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using MonoGame.Helper.ECS.Components;
+using MonoGame.Helper.ValueObjects;
 using System;
 using System.Collections.Generic;
 using System.Linq;
