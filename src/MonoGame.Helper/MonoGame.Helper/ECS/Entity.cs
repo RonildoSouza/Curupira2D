@@ -1,6 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
 using MonoGame.Helper.ECS.Components;
-using MonoGame.Helper.ValueObjects;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -59,16 +58,16 @@ namespace MonoGame.Helper.ECS
             return this;
         }
 
-        public Entity AddComponent<T>(params object[] args) where T : IComponent
+        public Entity AddComponent<TComponent>(params object[] args) where TComponent : IComponent
         {
-            var component = Activator.CreateInstance(typeof(T), args);
+            var component = Activator.CreateInstance(typeof(TComponent), args);
             return AddComponent(component as IComponent);
         }
 
-        public void RemoveComponent<T>() where T : IComponent
+        public void RemoveComponent<TComponent>() where TComponent : IComponent
         {
-            if (_components.ContainsKey(typeof(T)))
-                _components.Remove(typeof(T));
+            if (_components.ContainsKey(typeof(TComponent)))
+                _components.Remove(typeof(TComponent));
         }
 
         public void UpdateComponent(IComponent component)
@@ -79,14 +78,14 @@ namespace MonoGame.Helper.ECS
             _components[component.GetType()] = component;
         }
 
-        public T GetComponent<T>() where T : IComponent
+        public TComponent GetComponent<TComponent>() where TComponent : IComponent
         {
-            _components.TryGetValue(typeof(T), out IComponent component);
-            return (T)component;
+            _components.TryGetValue(typeof(TComponent), out IComponent component);
+            return (TComponent)component;
         }
 
-        public bool HasComponent<T>() where T : IComponent
-            => HasComponent(typeof(T));
+        public bool HasComponent<TComponent>() where TComponent : IComponent
+            => HasComponent(typeof(TComponent));
 
         public bool HasAllComponentTypes(IEnumerable<Type> componentTypes)
             => componentTypes.All(_ => HasComponent(_));

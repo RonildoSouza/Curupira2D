@@ -3,6 +3,7 @@ using MonoGame.Helper.ECS;
 using MonoGame.Helper.ECS.Components.Drawables;
 using MonoGame.Helper.ECS.Systems;
 using MonoGame.Helper.Physic.Components;
+using MonoGame.Helper.Physic.Extensions;
 using System.Linq;
 using tainicom.Aether.Physics2D.Dynamics;
 
@@ -21,11 +22,8 @@ namespace MonoGame.Helper.Physic.Systems
 
             _world.Clear();
 
-            var entities = Scene.GetEntities(_ => Matches(_));
-
-            for (int i = 0; i < entities.Count(); i++)
+            SceneMatchEntitiesIteration(entity =>
             {
-                var entity = entities.ElementAt(i);
                 var bodyComponent = entity.GetComponent<BodyComponent>();
                 var spriteComponent = entity.GetComponent<SpriteComponent>();
                 BodyType bodyType = (BodyType)bodyComponent.EntityType;
@@ -52,14 +50,14 @@ namespace MonoGame.Helper.Physic.Systems
                 }
 
                 if (body == null)
-                    continue;
+                    return;
 
                 body.Tag = entity.UniqueId;
                 body.IgnoreGravity = bodyComponent.IgnoreGravity;
                 body.Inertia = bodyComponent.Inertia;
                 body.SetRestitution(bodyComponent.Restitution);
                 body.SetFriction(bodyComponent.Friction);
-            }
+            });
         }
 
         public void Update()
@@ -76,11 +74,12 @@ namespace MonoGame.Helper.Physic.Systems
                 var entity = entities.ElementAt(i);
                 var bodyComponent = entity.GetComponent<BodyComponent>();
                 var spriteComponent = entity.GetComponent<SpriteComponent>();
-                var body = _world.BodyList.FirstOrDefault(_ => _.Tag is string && (string)_.Tag == entity.UniqueId);
+                var body = _world.BodyList.GetEntityBody(entity);
 
                 if (body == null)
                     continue;
 
+                body.Enabled = entity.Active;
                 body.ApplyForce(bodyComponent.Force);
                 body.ApplyTorque(bodyComponent.Torque);
                 body.ApplyLinearImpulse(bodyComponent.LinearImpulse);

@@ -3,7 +3,6 @@ using MonoGame.Helper.Attributes;
 using MonoGame.Helper.ECS.Components.Drawables;
 using MonoGame.Helper.Extensions;
 using System;
-using System.Linq;
 
 namespace MonoGame.Helper.ECS.Systems.Drawable
 {
@@ -12,17 +11,12 @@ namespace MonoGame.Helper.ECS.Systems.Drawable
     {
         public void Draw()
         {
-            var entities = Scene.GetEntities(_ => Matches(_));
-
-            for (int i = 0; i < entities.Count(); i++)
+            SceneMatchEntitiesIteration(entity =>
             {
-                var entity = entities.ElementAt(i);
                 var spriteAnimationComponent = entity.GetComponent<SpriteAnimationComponent>();
-
                 Animate(ref spriteAnimationComponent);
-
                 Scene.SpriteBatch.Draw(entity, spriteAnimationComponent);
-            }
+            });
         }
 
         void Animate(ref SpriteAnimationComponent spriteAnimationComponent)

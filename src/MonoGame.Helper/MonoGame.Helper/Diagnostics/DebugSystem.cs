@@ -90,9 +90,9 @@ namespace MonoGame.Helper.Diagnostics
     [AttributeUsage(AttributeTargets.Property | AttributeTargets.Field)]
     public class DebugInspectionAttribute : Attribute { }
 
-    public class DebugModel<TKey, T> where T : MemberInfo
+    public class DebugModel<TKey, TMemberInfo> where TMemberInfo : MemberInfo
     {
         public string Name { get; set; }
-        public IDictionary<TKey, IEnumerable<T>> MembersInfo { get; set; }
+        public IDictionary<TKey, IEnumerable<TMemberInfo>> MembersInfo { get; set; }
     }
 }

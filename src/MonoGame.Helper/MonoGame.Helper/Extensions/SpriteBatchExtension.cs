@@ -7,7 +7,7 @@ namespace MonoGame.Helper.Extensions
 {
     public static class SpriteBatchExtension
     {
-        public static void Draw(this SpriteBatch spriteBatch, Vector2 position, float rotationInDegrees, SpriteComponent spriteComponent)
+        public static void Draw<TSpriteComponent>(this SpriteBatch spriteBatch, Vector2 position, float rotationInDegrees, TSpriteComponent spriteComponent) where TSpriteComponent : SpriteComponent
         {
             spriteBatch.Draw(
                 spriteComponent.Texture,
@@ -21,10 +21,10 @@ namespace MonoGame.Helper.Extensions
                 spriteComponent.LayerDepth);
         }
 
-        public static void Draw(this SpriteBatch spriteBatch, Vector2 position, SpriteComponent spriteComponent)
+        public static void Draw<TSpriteComponent>(this SpriteBatch spriteBatch, Vector2 position, TSpriteComponent spriteComponent) where TSpriteComponent : SpriteComponent
             => Draw(spriteBatch, position, 0f, spriteComponent);
 
-        public static void Draw(this SpriteBatch spriteBatch, Entity entity, SpriteComponent spriteComponent)
+        public static void Draw<TSpriteComponent>(this SpriteBatch spriteBatch, Entity entity, TSpriteComponent spriteComponent) where TSpriteComponent : SpriteComponent
             => Draw(spriteBatch, entity.Transform.Position, entity.Transform.RotationInDegrees, spriteComponent);
 
         public static void DrawString(this SpriteBatch spriteBatch, Vector2 position, float rotationInDegrees, TextComponent textComponent)

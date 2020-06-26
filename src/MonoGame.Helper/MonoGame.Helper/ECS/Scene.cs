@@ -58,7 +58,7 @@ namespace MonoGame.Helper.ECS
 
         public Entity GetEntity(string uniqueId) => _entityManager.GetEntity(uniqueId);
 
-        public List<Entity> GetEntities(Func<Entity, bool> match) => _entityManager.GetEntities(match);
+        public IReadOnlyList<Entity> GetEntities(Func<Entity, bool> match) => _entityManager.GetEntities(match);
 
         public void DestroyEntity(Predicate<Entity> match) => _entityManager.DestroyEntity(match);
 

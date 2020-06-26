@@ -26,7 +26,7 @@ namespace MonoGame.Helper.ECS
 
         public Entity GetEntity(string uniqueId) => _entities.FirstOrDefault(_ => _.UniqueId == uniqueId);
 
-        public List<Entity> GetEntities(Func<Entity, bool> match) => _entities.Where(match).ToList();
+        public IReadOnlyList<Entity> GetEntities(Func<Entity, bool> match) => _entities.Where(match).ToList();
 
         public void DestroyEntity(Predicate<Entity> match) => _entities.RemoveAll(match);
 

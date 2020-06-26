@@ -16,31 +16,31 @@ namespace MonoGame.Helper.ECS
 
         public static SystemManager Instance => _systemManager.Value;
 
-        public void AddSystem<T>(Scene scene, T system) where T : System
+        public void AddSystem<TSystem>(Scene scene, TSystem system) where TSystem : System
         {
-            if (system is IInitializable && !_initializableSystems.Any(_ => _.GetType().Name == typeof(T).Name))
+            if (system is IInitializable && !_initializableSystems.Any(_ => _.GetType().Name == typeof(TSystem).Name))
                 _initializableSystems.Add(system as IInitializable);
 
-            if (system is IUpdatable && !_updatableSystems.Any(_ => _.GetType().Name == typeof(T).Name))
+            if (system is IUpdatable && !_updatableSystems.Any(_ => _.GetType().Name == typeof(TSystem).Name))
                 _updatableSystems.Add(system as IUpdatable);
 
-            if (system is IRenderable && !_renderableSystems.Any(_ => _.GetType().Name == typeof(T).Name))
+            if (system is IRenderable && !_renderableSystems.Any(_ => _.GetType().Name == typeof(TSystem).Name))
                 _renderableSystems.Add(system as IRenderable);
 
             system.SetScene(scene);
         }
 
-        public void AddSystem<T>(Scene scene, params object[] args) where T : System
+        public void AddSystem<TSystem>(Scene scene, params object[] args) where TSystem : System
         {
-            var system = (T)Activator.CreateInstance(typeof(T), args);
+            var system = (TSystem)Activator.CreateInstance(typeof(TSystem), args);
             AddSystem(scene, system);
         }
 
-        public void RemoveSystem<T>() where T : System
+        public void RemoveSystem<TSystem>() where TSystem : System
         {
-            _initializableSystems.RemoveAll(_ => _.GetType().Name == typeof(T).Name);
-            _updatableSystems.RemoveAll(_ => _.GetType().Name == typeof(T).Name);
-            _renderableSystems.RemoveAll(_ => _.GetType().Name == typeof(T).Name);
+            _initializableSystems.RemoveAll(_ => _.GetType().Name == typeof(TSystem).Name);
+            _updatableSystems.RemoveAll(_ => _.GetType().Name == typeof(TSystem).Name);
+            _renderableSystems.RemoveAll(_ => _.GetType().Name == typeof(TSystem).Name);
         }
 
         public void InitializableSystemsIteration()

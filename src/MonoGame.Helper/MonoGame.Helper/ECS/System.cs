@@ -25,8 +25,8 @@ namespace MonoGame.Helper.ECS
             Scene = scene;
         }
 
-        protected void AddRequiredComponent<T>() where T : IComponent
-            => AddRequiredComponent(typeof(T));
+        protected void AddRequiredComponent<TComponent>() where TComponent : IComponent
+            => AddRequiredComponent(typeof(TComponent));
 
         protected bool Matches(Entity entity)
         {
@@ -34,12 +34,20 @@ namespace MonoGame.Helper.ECS
             return entity.Active && entity.HasAllComponentTypes(_requiredComponents);
         }
 
+        protected void SceneMatchEntitiesIteration(Action<Entity> action)
+        {
+            var entities = Scene.GetEntities(_ => Matches(_));
+
+            for (int i = 0; i < entities.Count; i++)
+                action(entities[i]);
+        }
+
         protected virtual void SetupRequiredComponents()
         {
             var requiredComponentAttrs = GetType().GetTypeInfo().GetCustomAttributes<RequiredComponentAttribute>();
 
-            foreach (var rca in requiredComponentAttrs)
-                AddRequiredComponent(rca.ComponentType);
+            foreach (var requiredComponentAttr in requiredComponentAttrs)
+                AddRequiredComponent(requiredComponentAttr.ComponentType);
         }
 
         void AddRequiredComponent(Type type)

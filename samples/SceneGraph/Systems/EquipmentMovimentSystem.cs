@@ -1,8 +1,6 @@
 ﻿using MonoGame.Helper.Attributes;
-using MonoGame.Helper.ECS;
 using MonoGame.Helper.ECS.Systems;
 using SceneGraph.Components;
-using System.Linq;
 
 namespace SceneGraph.Systems
 {
@@ -11,16 +9,13 @@ namespace SceneGraph.Systems
     {
         public void Update()
         {
-            var entities = Scene.GetEntities(_ => Matches(_));
-
-            for (int i = 0; i < entities.Count; i++)
+            SceneMatchEntitiesIteration(entity =>
             {
-                var entity = entities.ElementAt(i);
                 var equipmentComponent = entity.GetComponent<EquipmentComponent>();
                 var newPosition = entity.Parent.Transform.Position - equipmentComponent.OffsetPosition;
 
                 entity.SetPosition(newPosition);
-            }
+            });
         }
     }
 }
