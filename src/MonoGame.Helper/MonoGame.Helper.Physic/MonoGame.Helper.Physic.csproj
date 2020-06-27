@@ -57,4 +57,7 @@
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>IF "$(ConfigurationName)" EQU "Release" COPY $(TargetPath) "$(SolutionDir)..\..\dist"</PostBuildEvent>
+  </PropertyGroup>
 </Project>
