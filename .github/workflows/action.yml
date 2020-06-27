@@ -19,11 +19,16 @@ jobs:
       id: checkout
       uses: actions/checkout@v2
     
-    - name: Compress DLLs # This would actually build your project, using zip for an example artifact
-      run: |
-        zip MonoGame.Helper.zip ./dist/MonoGame.Helper.dll
-        zip MonoGame.Helper.Physic.zip ./dist/MonoGame.Helper.Physic.dll
-          
+    - name: Compress MonoGame.Helper.dll
+      uses: montudor/action-zip@v0.1.0
+      with:
+        args: zip -qq -r ./dist/MonoGame.Helper.zip ./dist/MonoGame.Helper.dll
+        
+    - name: Compress MonoGame.Helper.Physic.dll
+      uses: montudor/action-zip@v0.1.0
+      with:
+        args: zip -qq -r ./dist/MonoGame.Helper.Physic.zip ./dist/MonoGame.Helper.Physic.dll
+        
     - name: Create a Release
       id: create_release
       uses: actions/create-release@v1.1.1
