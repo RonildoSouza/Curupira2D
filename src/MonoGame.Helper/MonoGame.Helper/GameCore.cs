@@ -46,7 +46,7 @@ namespace MonoGame.Helper
                            $"| {GraphicsDevice.Viewport.Width}x{GraphicsDevice.Viewport.Height} " +
                            $"| FPS: {_fpsCounterComponent.FPS}";
 #else
-            Window.Title = $"{_sceneManager.CurrentScene?.Title}";
+            Window.Title = $"{_sceneManager.CurrentScene?.Title ?? GetType().GetTypeInfo().Assembly.GetName().Name}";
 #endif
 
             base.Draw(gameTime);
