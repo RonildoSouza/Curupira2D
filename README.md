@@ -1,4 +1,5 @@
-# MonoGame.Helper
+# MonoGame.Helper 
+![Create Release MonoGame.Helper](https://github.com/RonildoSouza/MonoGame.Helper/workflows/Create%20Release%20MonoGame.Helper/badge.svg)
 
 ## Simple Using
 ```csharp
