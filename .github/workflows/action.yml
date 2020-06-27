@@ -19,10 +19,10 @@ jobs:
       id: checkout
       uses: actions/checkout@v2
     
-    - name: Compress DLL # This would actually build your project, using zip for an example artifact
+    - name: Compress DLLs # This would actually build your project, using zip for an example artifact
       run: |
-        zip --junk-paths MonoGame.Helper ./dist/MonoGame.Helper.dll
-        zip --junk-paths MonoGame.Helper.Physic ./dist/MonoGame.Helper.Physic.dll
+        zip MonoGame.Helper.zip ./dist/MonoGame.Helper.dll
+        zip MonoGame.Helper.Physic.zip ./dist/MonoGame.Helper.Physic.dll
           
     - name: Create a Release
       id: create_release
