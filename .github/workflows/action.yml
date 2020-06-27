@@ -22,8 +22,9 @@ jobs:
     
     - name: Compress DLL # This would actually build your project, using zip for an example artifact
       run: |
-        zip --junk-paths MonoGame.Helper ${{ github.workspace }}/dist/MonoGame.Helper.dll
-        zip --junk-paths MonoGame.Helper.Physic ${{ github.workspace }}/dist/MonoGame.Helper.Physic.dll
+        echo '${{ github.workspace }}/../dist/MonoGame.Helper.dll'
+        zip --junk-paths MonoGame.Helper ${{ github.workspace }}/../dist/MonoGame.Helper.dll
+        zip --junk-paths MonoGame.Helper.Physic ${{ github.workspace }}/../dist/MonoGame.Helper.Physic.dll
           
     - name: Create a Release
       id: create_release
@@ -43,7 +44,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps 
-        asset_path: ./MonoGame.Helper.zip
+        asset_path: ${{ github.workspace }}/../dist/MonoGame.Helper.zip
         asset_name: MonoGame.Helper.zip
         asset_content_type: application/zip  
         
@@ -54,6 +55,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps 
-        asset_path: ./MonoGame.Helper.Physic.zip
+        asset_path: ${{ github.workspace }}/../dist/MonoGame.Helper.Physic.zip
         asset_name: MonoGame.Helper.Physic.zip
         asset_content_type: application/zip
