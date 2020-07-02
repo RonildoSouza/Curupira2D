@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace MonoGame.Helper.ECS
 {
-    public sealed class SceneManager : IDisposable
+    internal sealed class SceneManager : IDisposable
     {
         readonly List<Scene> _scenes = new List<Scene>();
         static readonly Lazy<SceneManager> _sceneManager = new Lazy<SceneManager>(() => new SceneManager());

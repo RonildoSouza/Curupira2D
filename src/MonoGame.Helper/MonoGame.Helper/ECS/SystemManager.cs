@@ -5,7 +5,7 @@ using System.Linq;
 
 namespace MonoGame.Helper.ECS
 {
-    public sealed class SystemManager : IDisposable
+    internal sealed class SystemManager : IDisposable
     {
         readonly List<IInitializable> _initializableSystems = new List<IInitializable>();
         readonly List<IUpdatable> _updatableSystems = new List<IUpdatable>();
