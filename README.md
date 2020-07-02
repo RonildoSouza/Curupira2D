@@ -24,6 +24,8 @@ namespace Sample
             characterEntity.AddComponent(new SpriteComponent(characterTexture));
 
             SetScene(scene);
+
+            base.Initialize();
         }
     }
 }

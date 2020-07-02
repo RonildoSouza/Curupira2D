@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace MonoGame.Helper.ECS
 {
-    public sealed class EntityManager : IDisposable
+    internal sealed class EntityManager : IDisposable
     {
         readonly List<Entity> _entities = new List<Entity>();
         static readonly Lazy<EntityManager> _entityManager = new Lazy<EntityManager>(() => new EntityManager());
