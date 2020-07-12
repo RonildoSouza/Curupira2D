@@ -12,7 +12,9 @@ namespace MonoGame.Helper
         readonly FPSCounterComponent _fpsCounterComponent;
         readonly SceneManager _sceneManager = SceneManager.Instance;
 
-        public GameCore(int width = 800, int height = 480)
+        internal bool DebugActive { get; }
+
+        public GameCore(int width = 800, int height = 480, bool debugActive = false)
         {
             _graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
@@ -20,10 +22,13 @@ namespace MonoGame.Helper
             _graphics.PreferredBackBufferWidth = width;
             _graphics.PreferredBackBufferHeight = height;
 
-#if DEBUG
-            _fpsCounterComponent = new FPSCounterComponent(this);
-            Components.Add(_fpsCounterComponent);
-#endif
+            DebugActive = debugActive;
+
+            if (DebugActive)
+            {
+                _fpsCounterComponent = new FPSCounterComponent(this);
+                Components.Add(_fpsCounterComponent);
+            }
         }
 
         protected override void Update(GameTime gameTime)
@@ -41,13 +46,14 @@ namespace MonoGame.Helper
 
             _sceneManager.CurrentScene?.Draw();
 
-#if DEBUG
-            Window.Title = $"{_sceneManager.CurrentScene?.Title ?? GetType().GetTypeInfo().Assembly.GetName().Name} " +
+            if (DebugActive)
+            {
+                Window.Title = $"{_sceneManager.CurrentScene?.Title ?? GetType().GetTypeInfo().Assembly.GetName().Name} " +
                            $"| {GraphicsDevice.Viewport.Width}x{GraphicsDevice.Viewport.Height} " +
                            $"| FPS: {_fpsCounterComponent.FPS}";
-#else
-            Window.Title = $"{_sceneManager.CurrentScene?.Title ?? GetType().GetTypeInfo().Assembly.GetName().Name}";
-#endif
+            }
+            else
+                Window.Title = $"{_sceneManager.CurrentScene?.Title ?? GetType().GetTypeInfo().Assembly.GetName().Name}";
 
             base.Draw(gameTime);
         }
