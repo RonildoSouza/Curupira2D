@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace SpriteAnimation
+namespace Helper.SpriteAnimation
 {
     /// <summary>
     /// The main class.

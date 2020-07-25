@@ -1,31 +1,42 @@
-﻿using Microsoft.Xna.Framework.Input;
+﻿using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
 using MonoGame.Helper.Attributes;
 using MonoGame.Helper.ECS;
 using MonoGame.Helper.ECS.Components.Drawables;
 using MonoGame.Helper.ECS.Systems;
 
-namespace SpriteAnimation.Systems
+namespace Helper.SpriteAnimation.Systems
 {
     [RequiredComponent(typeof(SpriteAnimationComponent))]
-    public class CharacterAnimationSystem : MonoGame.Helper.ECS.System, IUpdatable
+    public class CharacterAnimationSystem : MonoGame.Helper.ECS.System, IInitializable, IUpdatable
     {
+        Entity _characterEntity;
+
+        public void Initialize()
+        {
+            // Create entity character in scene
+            var characterTexture = Scene.GameCore.Content.Load<Texture2D>("character");
+
+            _characterEntity = Scene.CreateEntity("character")
+                .SetPosition(100, 100)
+                .AddComponent(new SpriteAnimationComponent(characterTexture, 4, 4, 100, AnimateType.PerRow));
+        }
+
         public void Update()
         {
-            var characterEntity = Scene.GetEntity("character");
-
             var ks = Keyboard.GetState();
 
             if (ks.IsKeyDown(Keys.Left))
-                HorizontalAnimation(ref characterEntity, 180);
+                HorizontalAnimation(ref _characterEntity, 180);
 
             if (ks.IsKeyDown(Keys.Up))
-                VerticalAnimation(ref characterEntity, 90);
+                VerticalAnimation(ref _characterEntity, 90);
 
             if (ks.IsKeyDown(Keys.Right))
-                HorizontalAnimation(ref characterEntity, 270);
+                HorizontalAnimation(ref _characterEntity, 270);
 
             if (ks.IsKeyDown(Keys.Down))
-                VerticalAnimation(ref characterEntity, 0);
+                VerticalAnimation(ref _characterEntity, 0);
         }
 
         void HorizontalAnimation(ref Entity characterEntity, int sourcePosY)

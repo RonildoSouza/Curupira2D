@@ -34,6 +34,12 @@ namespace MonoGame.Helper.ECS
             return entity.Active && entity.HasAllComponentTypes(_requiredComponents);
         }
 
+        protected bool MatcheComponents(Entity entity)
+        {
+            this.AssertRequiredComponents(_requiredComponents);
+            return entity.HasAllComponentTypes(_requiredComponents);
+        }
+
         protected void SceneMatchEntitiesIteration(Action<Entity> action)
         {
             var entities = Scene.GetEntities(_ => Matches(_));

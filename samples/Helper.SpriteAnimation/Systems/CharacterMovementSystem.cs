@@ -4,7 +4,7 @@ using MonoGame.Helper.ECS;
 using MonoGame.Helper.ECS.Components.Drawables;
 using MonoGame.Helper.ECS.Systems;
 
-namespace SpriteAnimation.Systems
+namespace Helper.SpriteAnimation.Systems
 {
     [RequiredComponent(typeof(SpriteAnimationComponent))]
     public class CharacterMovementSystem : MonoGame.Helper.ECS.System, IUpdatable

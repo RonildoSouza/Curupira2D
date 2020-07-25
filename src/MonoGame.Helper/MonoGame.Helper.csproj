@@ -57,6 +57,7 @@
     <Compile Include="ECS\Systems\Drawable\TextSystem.cs" />
     <Compile Include="Extensions\EnumerableExtension.cs" />
     <Compile Include="Extensions\SpriteBatchExtension.cs" />
+    <Compile Include="GameComponents\LineGridComponent.cs" />
     <Compile Include="GameCore.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ECS\Transform.cs" />

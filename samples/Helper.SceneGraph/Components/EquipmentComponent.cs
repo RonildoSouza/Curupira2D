@@ -1,7 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using MonoGame.Helper.ECS.Components;
 
-namespace SceneGraph.Components
+namespace Helper.SceneGraph.Components
 {
     public class EquipmentComponent : IComponent
     {
