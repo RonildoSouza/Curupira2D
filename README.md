@@ -36,8 +36,7 @@ namespace Sample
 
 ## Third Party
 
-|                                         |                                                |                                              |
-|-----------------------------------------|------------------------------------------------|----------------------------------------------|
-| MonoGame.Helper, MonoGame.Helper.Physic | MonoGame                                       | https://github.com/MonoGame/MonoGame         |
-| MonoGame.Helper.Physic                  | Aether.Physics2D, Aether.Physics2D.Diagnostics | https://github.com/tainicom/Aether.Physics2D |
-|||
+|                                                |                                              |
+|------------------------------------------------|----------------------------------------------|
+| MonoGame                                       | https://github.com/MonoGame/MonoGame         |
+| Aether.Physics2D, Aether.Physics2D.Diagnostics | https://github.com/tainicom/Aether.Physics2D |
