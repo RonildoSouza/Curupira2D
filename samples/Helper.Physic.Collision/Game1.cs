@@ -1,10 +1,9 @@
 ﻿using Microsoft.Xna.Framework;
 using MonoGame.Helper;
-using MonoGame.Helper.ECS;
 using MonoGame.Helper.ECS.Components.Drawables;
 using MonoGame.Helper.Extensions;
+using MonoGame.Helper.Physic;
 using MonoGame.Helper.Physic.Components;
-using MonoGame.Helper.Physic.Systems;
 
 namespace Collision
 {
@@ -14,16 +13,15 @@ namespace Collision
 
         protected override void Initialize()
         {
-            var scene = new Scene()
-                .AddSystem<AetherPhysics2DSystem>();
+            var scenePhysics = new ScenePhysics(default, true);
 
             var ballRadius = 25;
-            var ballTexture = GraphicsDevice.CreateTextureCircle(ballRadius, Color.Black);
-            var squareTexture = GraphicsDevice.CreateTextureRectangle(50, Color.Black);
+            var ballTexture = GraphicsDevice.CreateTextureCircle(ballRadius, Color.Black * 0.6f);
+            var squareTexture = GraphicsDevice.CreateTextureRectangle(50, Color.Black * 0.6f);
             var groundTexture = GraphicsDevice.CreateTextureRectangle(GraphicsDevice.Viewport.Width, 25, Color.Maroon);
 
-            scene.CreateEntity("ball")
-                .SetPosition(GraphicsDevice.Viewport.Width * 0.3f, 100)
+            scenePhysics.CreateEntity("ball")
+                .SetPosition(GraphicsDevice.Viewport.Width * 0.4f, 100)
                 .AddComponent(new SpriteComponent(ballTexture))
                 .AddComponent(new BodyComponent
                 {
@@ -35,8 +33,9 @@ namespace Collision
                     Friction = 0.5f,
                 });
 
-            scene.CreateEntity("square")
+            scenePhysics.CreateEntity("square")
                 .SetPosition(GraphicsDevice.Viewport.Width * 0.6f, 100)
+                .SetRotation(45)
                 .AddComponent(new SpriteComponent(squareTexture))
                 .AddComponent(new BodyComponent
                 {
@@ -47,12 +46,12 @@ namespace Collision
                 });
 
             var groundSpriteComponent = new SpriteComponent(groundTexture);
-            scene.CreateEntity("ground")
+            scenePhysics.CreateEntity("ground")
                 .SetPosition(groundSpriteComponent.Origin.X, GraphicsDevice.Viewport.Height - groundSpriteComponent.Origin.Y)
                 .AddComponent(groundSpriteComponent)
                 .AddComponent<BodyComponent>();
 
-            SetScene(scene);
+            SetScene(scenePhysics);
         }
     }
 }
