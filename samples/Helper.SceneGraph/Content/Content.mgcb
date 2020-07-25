@@ -25,6 +25,13 @@
 /processorParam:TextureFormat=Color
 /build:character.png
 
+#begin FontArial.spritefont
+/importer:FontDescriptionImporter
+/processor:FontDescriptionProcessor
+/processorParam:PremultiplyAlpha=True
+/processorParam:TextureFormat=Compressed
+/build:FontArial.spritefont
+
 #begin hat.png
 /importer:TextureImporter
 /processor:TextureProcessor

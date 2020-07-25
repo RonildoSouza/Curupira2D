@@ -1,19 +1,29 @@
-﻿using Microsoft.Xna.Framework.Input;
+﻿using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
 using MonoGame.Helper.Attributes;
 using MonoGame.Helper.ECS;
 using MonoGame.Helper.ECS.Components.Drawables;
 using MonoGame.Helper.ECS.Systems;
 
-namespace SceneGraph.Systems
+namespace Helper.SceneGraph.Systems
 {
     [RequiredComponent(typeof(SpriteComponent))]
-    public class CharacterMovementSystem : MonoGame.Helper.ECS.System, IUpdatable
+    public class CharacterMovementSystem : MonoGame.Helper.ECS.System, IInitializable, IUpdatable
     {
         const float VELOCITY = 100f;
+        Entity characterEntity;
+
+        public void Initialize()
+        {
+            var characterTexture = Scene.GameCore.Content.Load<Texture2D>("character");
+
+            characterEntity = Scene.CreateEntity("character")
+                .SetPosition(400, 240)
+                .AddComponent(new SpriteComponent(characterTexture));
+        }
 
         public void Update()
         {
-            var characterEntity = Scene.GetEntity("character");
             var ks = Keyboard.GetState();
 
             if (ks.IsKeyDown(Keys.Left))

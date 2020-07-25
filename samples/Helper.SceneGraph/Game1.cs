@@ -1,11 +1,12 @@
-﻿using Microsoft.Xna.Framework.Graphics;
+﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Helper;
 using MonoGame.Helper.ECS;
 using MonoGame.Helper.ECS.Components.Drawables;
-using SceneGraph.Components;
-using SceneGraph.Systems;
+using MonoGame.Helper.ECS.Systems;
+using Helper.SceneGraph.Systems;
 
-namespace SceneGraph
+namespace Helper.SceneGraph
 {
     public class Game1 : GameCore
     {
@@ -15,26 +16,20 @@ namespace SceneGraph
         {
             var scene = new Scene()
                 .AddSystem<CharacterMovementSystem>()
-                .AddSystem<EquipmentMovimentSystem>();
+                .AddSystem<EquipmentMovimentSystem>()
+                .AddSystem<TextSystem>();
 
-            var characterTexture = Content.Load<Texture2D>("character");
-            var hatTexture = Content.Load<Texture2D>("hat");
-            var staffTexture = Content.Load<Texture2D>("staff");
-
-            var characterEntity = scene.CreateEntity("character")
-                                       .SetPosition(400, 240)
-                                       .AddComponent(new SpriteComponent(characterTexture));
-
-            var hatEntity = scene.CreateEntity("hat")
-                                 .AddComponent<EquipmentComponent>(0f, 90f)
-                                 .AddComponent(new SpriteComponent(hatTexture));
-
-            var staffEntity = scene.CreateEntity("staff")
-                                 .AddComponent<EquipmentComponent>(-80f, 10f)
-                                 .AddComponent(new SpriteComponent(staffTexture));
-
-            characterEntity.AddChild(hatEntity);
-            characterEntity.AddChild(staffEntity);
+            #region Controls Tips
+            var fontArial = Content.Load<SpriteFont>("FontArial");
+            scene.CreateEntity("controls")
+                .SetPosition(120, 50)
+                .AddComponent(new TextComponent(
+                    fontArial,
+                    "CONTROLS" +
+                    "\nMOVIMENT: Keyboard Arrows" +
+                    "\nEQUIPMENTS: Key 1, 2",
+                    color: Color.Black));
+            #endregion
 
             SetScene(scene);
         }

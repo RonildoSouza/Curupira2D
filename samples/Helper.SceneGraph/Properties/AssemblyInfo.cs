@@ -5,8 +5,8 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("SceneGraph")]
-[assembly: AssemblyProduct("SceneGraph")]
+[assembly: AssemblyTitle("Helper.SceneGraph")]
+[assembly: AssemblyProduct("Helper.SceneGraph")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyCompany("")]

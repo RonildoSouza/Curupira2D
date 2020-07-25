@@ -2,11 +2,8 @@
 using Microsoft.Xna.Framework.Graphics;
 using System;
 
-namespace MonoGame.Helper.Components
+namespace MonoGame.Helper.GameComponents
 {
-    /// <summary>
-    /// Draw lines in the scene.
-    /// </summary>
     public class LineGridComponent : DrawableGameComponent
     {
         SpriteBatch _spriteBatch;
@@ -19,21 +16,8 @@ namespace MonoGame.Helper.Components
         {
             Size = size;
             Color = color;
-        }
 
-        public void Load() => LoadContent();
-
-        protected override void LoadContent()
-        {
-            _spriteBatch = Game.Services.GetService<SpriteBatch>();
-
-            if (_spriteBatch == null)
-                _spriteBatch = new SpriteBatch(GraphicsDevice);
-
-            _texture = new Texture2D(GraphicsDevice, 1, 1, false, SurfaceFormat.Color);
-            _texture.SetData(new[] { Color.White });
-
-            base.LoadContent();
+            Load(game);
         }
 
         public override void Draw(GameTime gameTime)
@@ -45,19 +29,30 @@ namespace MonoGame.Helper.Components
 
             for (float x = -cols; x < cols; x++)
             {
-                Rectangle rectangle = new Rectangle((int)(x * Size.X), 0, 1, GraphicsDevice.Viewport.Height);
+                var rectangle = new Rectangle((int)(x * Size.X), 0, 1, GraphicsDevice.Viewport.Height);
                 _spriteBatch.Draw(_texture, rectangle, Color);
             }
 
             for (float y = -rows; y < rows; y++)
             {
-                Rectangle rectangle = new Rectangle(0, (int)(y * Size.Y), GraphicsDevice.Viewport.Width, 1);
+                var rectangle = new Rectangle(0, (int)(y * Size.Y), GraphicsDevice.Viewport.Width, 1);
                 _spriteBatch.Draw(_texture, rectangle, Color);
             }
 
             _spriteBatch.End();
 
             base.Draw(gameTime);
+        }
+
+        void Load(Game game)
+        {
+            _spriteBatch = game.Services.GetService<SpriteBatch>();
+
+            if (_spriteBatch == null)
+                _spriteBatch = new SpriteBatch(GraphicsDevice);
+
+            _texture = new Texture2D(GraphicsDevice, 1, 1, false, SurfaceFormat.Color);
+            _texture.SetData(new[] { Color.White });
         }
     }
 }

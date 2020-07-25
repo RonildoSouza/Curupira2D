@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Collision
+namespace Helper.Physic.Collision
 {
     /// <summary>
     /// The main class.

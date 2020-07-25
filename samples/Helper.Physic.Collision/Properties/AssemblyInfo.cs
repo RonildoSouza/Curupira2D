@@ -5,8 +5,8 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("Collision")]
-[assembly: AssemblyProduct("Collision")]
+[assembly: AssemblyTitle("Helper.Physic.Collision")]
+[assembly: AssemblyProduct("Helper.Physic.Collision")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyCompany("")]

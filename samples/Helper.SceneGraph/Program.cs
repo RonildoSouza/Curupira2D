@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace SceneGraph
+namespace Helper.SceneGraph
 {
     /// <summary>
     /// The main class.
