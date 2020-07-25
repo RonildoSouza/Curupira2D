@@ -19,7 +19,7 @@ namespace MonoGame.Helper.ECS
 
         protected Scene Scene { get; private set; }
 
-        public void SetScene(Scene scene)
+        public virtual void SetScene(Scene scene)
         {
             this.AssertRequiredComponents(_requiredComponents);
             Scene = scene;

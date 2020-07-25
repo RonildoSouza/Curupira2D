@@ -16,7 +16,6 @@ namespace MonoGame.Helper.ECS
         public GameTime GameTime { get; private set; }
         public string Title { get; private set; }
         public Color CleanColor { get; private set; } = Color.LightGray;
-        public Vector2 Gravity { get; set; } = new Vector2(0f, 9.80665f);
         public float DeltaTime => (float)GameTime.ElapsedGameTime.TotalSeconds;
         public int ScreenWidth => GameCore.GraphicsDevice.Viewport.Width;
         public int ScreenHeight => GameCore.GraphicsDevice.Viewport.Height;
@@ -88,7 +87,7 @@ namespace MonoGame.Helper.ECS
             SpriteBatch.End();
         }
 
-        public void Dispose()
+        public virtual void Dispose()
         {
             GameCore.Dispose();
             SpriteBatch.Dispose();

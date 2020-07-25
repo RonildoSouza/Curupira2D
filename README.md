@@ -1,7 +1,10 @@
-# MonoGame.Helper 
+# MonoGame.Helper
+
+Simple helper library to development 2D games with MonoGame using ECS (_Entity-Component-System_) game architecture.
+
 ![Create Release MonoGame.Helper](https://github.com/RonildoSouza/MonoGame.Helper/workflows/Create%20Release%20MonoGame.Helper/badge.svg)
 
-## Simple Using
+## Basic Using
 ```csharp
 using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Helper;
@@ -30,3 +33,11 @@ namespace Sample
     }
 }
 ```
+
+## Third Party
+
+|                                         |                                                |                                              |
+|-----------------------------------------|------------------------------------------------|----------------------------------------------|
+| MonoGame.Helper, MonoGame.Helper.Physic | MonoGame                                       | https://github.com/MonoGame/MonoGame         |
+| MonoGame.Helper.Physic                  | Aether.Physics2D, Aether.Physics2D.Diagnostics | https://github.com/tainicom/Aether.Physics2D |
+|||

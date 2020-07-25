@@ -1,5 +1,5 @@
-﻿using MonoGame.Helper.Attributes;
-using MonoGame.Helper.ECS;
+﻿using Microsoft.Xna.Framework;
+using MonoGame.Helper.Attributes;
 using MonoGame.Helper.ECS.Components.Drawables;
 using MonoGame.Helper.ECS.Systems;
 using MonoGame.Helper.Physic.Components;
@@ -11,17 +11,10 @@ namespace MonoGame.Helper.Physic.Systems
 {
     [RequiredComponent(typeof(BodyComponent))]
     [RequiredComponent(typeof(SpriteComponent))]
-    public class AetherPhysics2DSystem : ECS.System, IInitializable, IUpdatable
+    public class AetherPhysics2DSystem : SystemPhysics, IInitializable, IUpdatable
     {
-        private static World _world;
-
         public void Initialize()
         {
-            if (_world == null)
-                _world = new World(Scene.Gravity);
-
-            _world.Clear();
-
             SceneMatchEntitiesIteration(entity =>
             {
                 var bodyComponent = entity.GetComponent<BodyComponent>();
@@ -32,14 +25,14 @@ namespace MonoGame.Helper.Physic.Systems
                 switch (bodyComponent.EntityShape)
                 {
                     case EntityShape.Circle:
-                        body = _world.CreateCircle(
+                        body = Scene.World.CreateCircle(
                             bodyComponent.Radius,
                             bodyComponent.Density,
                             entity.Transform.Position,
                             bodyType);
                         break;
                     case EntityShape.Rectangle:
-                        body = _world.CreateRectangle(
+                        body = Scene.World.CreateRectangle(
                             spriteComponent.TextureSize.X,
                             spriteComponent.TextureSize.Y,
                             bodyComponent.Density,
@@ -62,11 +55,11 @@ namespace MonoGame.Helper.Physic.Systems
 
         public void Update()
         {
-            _world.Step(Scene.DeltaTime);
+            Scene.World.Step(Scene.DeltaTime);
 
             var entities = Scene.GetEntities(_ => Matches(_));
 
-            if (entities.Count != _world.BodyList.Count)
+            if (entities.Count != Scene.World.BodyList.Count)
                 Initialize();
 
             for (int i = 0; i < entities.Count(); i++)
@@ -74,7 +67,7 @@ namespace MonoGame.Helper.Physic.Systems
                 var entity = entities.ElementAt(i);
                 var bodyComponent = entity.GetComponent<BodyComponent>();
                 var spriteComponent = entity.GetComponent<SpriteComponent>();
-                var body = _world.BodyList.GetEntityBody(entity);
+                var body = Scene.World.BodyList.GetEntityBody(entity);
 
                 if (body == null)
                     continue;
@@ -86,15 +79,12 @@ namespace MonoGame.Helper.Physic.Systems
                 body.ApplyAngularImpulse(bodyComponent.AngularImpulse);
 
                 // Update MonoGame.Helper.ECS.Entity position and rotation
-                entity.SetTransform(body.Position, body.Rotation);
+                entity.SetTransform(body.Position, MathHelper.ToDegrees(body.Rotation));
 
                 // Update MonoGame.Helper.ECS.Entity component
                 bodyComponent.Inertia = body.Inertia;
                 entity.UpdateComponent(bodyComponent);
             }
-
-            if (Scene.Gravity != _world.Gravity)
-                _world.Gravity = Scene.Gravity;
         }
     }
 }

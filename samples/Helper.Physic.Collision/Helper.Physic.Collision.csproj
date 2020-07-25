@@ -1,20 +1,19 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\MonoGame\v3.0\MonoGame.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\MonoGame\v3.0\MonoGame.Common.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>8.0.30703</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{1D9A14B4-19C2-4CC5-A855-1D983E08446B}</ProjectGuid>
+    <ProjectGuid>{427E77E6-4D9D-49AB-BB5E-D236AE82E53A}</ProjectGuid>
     <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>SpriteAnimation</RootNamespace>
-    <AssemblyName>SpriteAnimation</AssemblyName>
+    <RootNamespace>Collision</RootNamespace>
+    <AssemblyName>Collision</AssemblyName>
     <FileAlignment>512</FileAlignment>
     <MonoGamePlatform>DesktopGL</MonoGamePlatform>
-    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
-    <TargetFrameworkProfile />
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
     <DebugSymbols>true</DebugSymbols>
@@ -43,8 +42,6 @@
     <ApplicationManifest>app.manifest</ApplicationManifest>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="Systems\CharacterAnimationSystem.cs" />
-    <Compile Include="Systems\CharacterMovementSystem.cs" />
     <Compile Include="Game1.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -106,12 +103,15 @@
       <Link>MonoGame.Framework.dll.config</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="app.config" />
     <None Include="app.manifest" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\src\MonoGame.Helper\MonoGame.Helper\MonoGame.Helper.csproj">
-      <Project>{7f314260-2d61-4b87-b3bc-8acf08b1ef1d}</Project>
+    <ProjectReference Include="..\..\src\MonoGame.Helper.Physic\MonoGame.Helper.Physic.csproj">
+      <Project>{03db0411-24be-4197-b670-99b6eab3c7c0}</Project>
+      <Name>MonoGame.Helper.Physic</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\src\MonoGame.Helper\MonoGame.Helper.csproj">
+      <Project>{A54124E1-122A-42C6-A20A-49141223DBA5}</Project>
       <Name>MonoGame.Helper</Name>
     </ProjectReference>
   </ItemGroup>

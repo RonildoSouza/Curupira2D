@@ -36,7 +36,10 @@
     <Compile Include="Components\BodyComponent.cs" />
     <Compile Include="Extensions\BodyExtension.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ScenePhysics.cs" />
+    <Compile Include="Systems\AetherPhysics2DDiagnosticsSystem.cs" />
     <Compile Include="Systems\AetherPhysics2DSystem.cs" />
+    <Compile Include="SystemPhysics.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\MonoGame.Helper\MonoGame.Helper.csproj">
@@ -48,16 +51,20 @@
     <Reference Include="Aether.Physics2D, Version=1.4.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Aether.Physics2D.1.4.0\lib\portable-net45+win8+wpa81\Aether.Physics2D.dll</HintPath>
     </Reference>
+    <Reference Include="Aether.Physics2D.Diagnostics, Version=1.4.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Aether.Physics2D.Diagnostics.1.4.0\lib\portable-net45+win8+wpa81\Aether.Physics2D.Diagnostics.dll</HintPath>
+    </Reference>
     <Reference Include="MonoGame.Framework, Version=3.7.1.189, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\MonoGame.Framework.Portable.3.7.1.189\lib\portable-net45+win8+wpa81\MonoGame.Framework.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <None Include="Content\DiagnosticsFont.xnb" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>IF "$(ConfigurationName)" EQU "Release" COPY $(TargetPath) "$(SolutionDir)..\..\dist"</PostBuildEvent>
+    <PostBuildEvent>IF "$(ConfigurationName)" EQU "Release" COPY $(TargetPath) "$(SolutionDir)..\dist"</PostBuildEvent>
   </PropertyGroup>
 </Project>

@@ -109,7 +109,7 @@
     <None Include="app.manifest" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\src\MonoGame.Helper\MonoGame.Helper\MonoGame.Helper.csproj">
+    <ProjectReference Include="..\..\src\MonoGame.Helper\MonoGame.Helper.csproj">
       <Project>{A54124E1-122A-42C6-A20A-49141223DBA5}</Project>
       <Name>MonoGame.Helper</Name>
     </ProjectReference>
