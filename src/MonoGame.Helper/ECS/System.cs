@@ -28,25 +28,14 @@ namespace MonoGame.Helper.ECS
         protected void AddRequiredComponent<TComponent>() where TComponent : IComponent
             => AddRequiredComponent(typeof(TComponent));
 
-        protected bool Matches(Entity entity)
-        {
-            this.AssertRequiredComponents(_requiredComponents);
-            return entity.Active && entity.HasAllComponentTypes(_requiredComponents);
-        }
-
-        protected bool MatcheComponents(Entity entity)
+        protected bool MatchComponents(Entity entity)
         {
             this.AssertRequiredComponents(_requiredComponents);
             return entity.HasAllComponentTypes(_requiredComponents);
         }
 
-        protected void SceneMatchEntitiesIteration(Action<Entity> action)
-        {
-            var entities = Scene.GetEntities(_ => Matches(_));
-
-            for (int i = 0; i < entities.Count; i++)
-                action(entities[i]);
-        }
+        protected bool MatchActiveEntitiesAndComponents(Entity entity)
+            => entity.Active && MatchComponents(entity);
 
         protected virtual void SetupRequiredComponents()
         {

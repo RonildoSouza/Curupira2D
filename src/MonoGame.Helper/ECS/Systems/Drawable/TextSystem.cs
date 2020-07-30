@@ -1,19 +1,22 @@
 ﻿using MonoGame.Helper.Attributes;
 using MonoGame.Helper.ECS.Components.Drawables;
 using MonoGame.Helper.Extensions;
+using System.Collections.Generic;
 
 namespace MonoGame.Helper.ECS.Systems
 {
     [RequiredComponent(typeof(TextComponent))]
-    public class TextSystem : System, IRenderable
+    public sealed class TextSystem : DrawableSystem<TextComponent>
     {
-        public virtual void Draw()
+        protected override void DrawEntities(ref IReadOnlyList<Entity> entities)
         {
-            SceneMatchEntitiesIteration(entity =>
+            for (int i = 0; i < entities.Count; i++)
             {
+                var entity = entities[i];
                 var textComponent = entity.GetComponent<TextComponent>();
+
                 Scene.SpriteBatch.DrawString(entity, textComponent);
-            });
+            }
         }
     }
 }

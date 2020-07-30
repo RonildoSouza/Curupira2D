@@ -15,8 +15,11 @@ namespace MonoGame.Helper.Physic.Systems
     {
         public void Initialize()
         {
-            SceneMatchEntitiesIteration(entity =>
+            var entities = Scene.GetEntities(_ => MatchActiveEntitiesAndComponents(_));
+
+            for (int i = 0; i < entities.Count; i++)
             {
+                var entity = entities[i];
                 var bodyComponent = entity.GetComponent<BodyComponent>();
                 var spriteComponent = entity.GetComponent<SpriteComponent>();
                 BodyType bodyType = (BodyType)bodyComponent.EntityType;
@@ -50,14 +53,14 @@ namespace MonoGame.Helper.Physic.Systems
                 body.Inertia = bodyComponent.Inertia;
                 body.SetRestitution(bodyComponent.Restitution);
                 body.SetFriction(bodyComponent.Friction);
-            });
+            };
         }
 
         public void Update()
         {
             Scene.World.Step(Scene.DeltaTime);
 
-            var entities = Scene.GetEntities(_ => Matches(_));
+            var entities = Scene.GetEntities(_ => MatchActiveEntitiesAndComponents(_));
 
             if (entities.Count != Scene.World.BodyList.Count)
                 Initialize();

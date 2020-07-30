@@ -33,7 +33,7 @@ namespace Helper.SceneGraph.Systems
         public void Update()
         {
             var ks = Keyboard.GetState();
-            var entities = Scene.GetEntities(_ => MatcheComponents(_));
+            var entities = Scene.GetEntities(_ => MatchComponents(_));
 
             for (int i = 0; i < entities.Count; i++)
             {

@@ -15,6 +15,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MonoGame.Helper.Physic", "M
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Helper.SceneGraph", "..\samples\Helper.SceneGraph\Helper.SceneGraph.csproj", "{7F4ED9DE-C994-43CF-BE68-DD21C595B7E8}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Helper.Camera", "..\samples\Helper.Camera\Helper.Camera.csproj", "{11104F35-5687-4CFE-AA1B-D45C7AA947DC}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -41,6 +43,10 @@ Global
 		{7F4ED9DE-C994-43CF-BE68-DD21C595B7E8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7F4ED9DE-C994-43CF-BE68-DD21C595B7E8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7F4ED9DE-C994-43CF-BE68-DD21C595B7E8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{11104F35-5687-4CFE-AA1B-D45C7AA947DC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{11104F35-5687-4CFE-AA1B-D45C7AA947DC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{11104F35-5687-4CFE-AA1B-D45C7AA947DC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{11104F35-5687-4CFE-AA1B-D45C7AA947DC}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -49,6 +55,7 @@ Global
 		{1D9A14B4-19C2-4CC5-A855-1D983E08446B} = {7D9A889A-E4B6-40EF-9ECE-2B97EEEF66CB}
 		{427E77E6-4D9D-49AB-BB5E-D236AE82E53A} = {7D9A889A-E4B6-40EF-9ECE-2B97EEEF66CB}
 		{7F4ED9DE-C994-43CF-BE68-DD21C595B7E8} = {7D9A889A-E4B6-40EF-9ECE-2B97EEEF66CB}
+		{11104F35-5687-4CFE-AA1B-D45C7AA947DC} = {7D9A889A-E4B6-40EF-9ECE-2B97EEEF66CB}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {8E2088FF-0034-4E96-8A9D-2266246A7EA2}

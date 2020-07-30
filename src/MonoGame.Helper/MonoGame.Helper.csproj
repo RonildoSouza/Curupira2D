@@ -39,6 +39,7 @@
     <Compile Include="ECS\Components\Drawables\SpriteAnimationComponent.cs" />
     <Compile Include="ECS\SceneManager.cs" />
     <Compile Include="ECS\SystemManager.cs" />
+    <Compile Include="ECS\Systems\Drawable\DrawableSystem.cs" />
     <Compile Include="ECS\Systems\Drawable\SpriteAnimationSystem.cs" />
     <Compile Include="Extensions\GraphicsDeviceGeometricPrimitivesExtension.cs" />
     <Compile Include="GameComponents\FPSCounterComponent.cs" />
@@ -63,6 +64,9 @@
     <Compile Include="ECS\Transform.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Reference Include="Comora, Version=0.5.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Comora.0.5.0\lib\portable-net45+win8+wpa81+MonoAndroid10+MonoTouch10+Xamarin.iOS10\Comora.dll</HintPath>
+    </Reference>
     <Reference Include="MonoGame.Framework, Version=3.7.1.189, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\MonoGame.Framework.Portable.3.7.1.189\lib\portable-net45+win8+wpa81\MonoGame.Framework.dll</HintPath>
     </Reference>

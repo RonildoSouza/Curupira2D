@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using Comora;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Helper.ECS.Systems.Drawable;
 using System;
@@ -14,6 +15,7 @@ namespace MonoGame.Helper.ECS
         public GameCore GameCore { get; private set; }
         public SpriteBatch SpriteBatch { get; private set; }
         public GameTime GameTime { get; private set; }
+        public Camera Camera { get; private set; }
         public string Title { get; private set; }
         public Color CleanColor { get; private set; } = Color.LightGray;
         public float DeltaTime => (float)GameTime.ElapsedGameTime.TotalSeconds;
@@ -65,6 +67,12 @@ namespace MonoGame.Helper.ECS
 
         public virtual void Initialize()
         {
+            Camera = new Camera(GameCore.GraphicsDevice)
+            {
+                Position = new Vector2(ScreenWidth * 0.5f, ScreenHeight * 0.5f)
+            };
+            Camera.LoadContent();
+
             AddSystem<SpriteSystem>();
             AddSystem<SpriteAnimationSystem>();
 
@@ -74,17 +82,14 @@ namespace MonoGame.Helper.ECS
         public virtual void Update(GameTime gameTime)
         {
             GameTime = gameTime;
-
+            Camera.Update(gameTime);
             _systemManager.UpdatableSystemsIteration();
         }
 
         public virtual void Draw()
         {
-            SpriteBatch.Begin(SpriteSortMode.BackToFront);
-
+            SpriteBatch.Draw(Camera.Debug);
             _systemManager.RenderableSystemsIteration();
-
-            SpriteBatch.End();
         }
 
         public virtual void Dispose()

@@ -1,22 +1,26 @@
-﻿using Microsoft.Xna.Framework;
+﻿using Comora;
+using Microsoft.Xna.Framework;
 using MonoGame.Helper.Attributes;
 using MonoGame.Helper.ECS.Components.Drawables;
 using MonoGame.Helper.Extensions;
 using System;
+using System.Collections.Generic;
 
 namespace MonoGame.Helper.ECS.Systems.Drawable
 {
     [RequiredComponent(typeof(SpriteAnimationComponent))]
-    public class SpriteAnimationSystem : System, IRenderable
+    public sealed class SpriteAnimationSystem : DrawableSystem<SpriteAnimationComponent>
     {
-        public void Draw()
+        protected override void DrawEntities(ref IReadOnlyList<Entity> entities)
         {
-            SceneMatchEntitiesIteration(entity =>
+            for (int i = 0; i < entities.Count; i++)
             {
+                var entity = entities[i];
                 var spriteAnimationComponent = entity.GetComponent<SpriteAnimationComponent>();
+
                 Animate(ref spriteAnimationComponent);
                 Scene.SpriteBatch.Draw(entity, spriteAnimationComponent);
-            });
+            }
         }
 
         void Animate(ref SpriteAnimationComponent spriteAnimationComponent)
