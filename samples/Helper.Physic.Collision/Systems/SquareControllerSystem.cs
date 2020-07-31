@@ -1,9 +1,9 @@
 ﻿using Microsoft.Xna.Framework;
 using MonoGame.Helper.ECS;
 using MonoGame.Helper.ECS.Components.Drawables;
+using MonoGame.Helper.ECS.Components.Physics;
 using MonoGame.Helper.ECS.Systems;
 using MonoGame.Helper.Extensions;
-using MonoGame.Helper.Physic.Components;
 
 namespace Collision.Systems
 {

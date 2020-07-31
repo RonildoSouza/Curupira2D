@@ -3,7 +3,7 @@ using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Helper.ECS.Components.Drawables;
 using System.Collections.Generic;
 
-namespace MonoGame.Helper.ECS.Systems
+namespace MonoGame.Helper.ECS.Systems.Drawables
 {
     public abstract class DrawableSystem<TDrawableComponent> : System, IRenderable
         where TDrawableComponent : DrawableComponent

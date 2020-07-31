@@ -37,10 +37,15 @@
     <Compile Include="Attributes\RequiredComponentAttribute.cs" />
     <Compile Include="Diagnostics\DebugSystem.cs" />
     <Compile Include="ECS\Components\Drawables\SpriteAnimationComponent.cs" />
+    <Compile Include="ECS\Components\Drawables\TiledMapComponent.cs" />
+    <Compile Include="ECS\Components\Physics\BodyComponent.cs" />
     <Compile Include="ECS\SceneManager.cs" />
     <Compile Include="ECS\SystemManager.cs" />
-    <Compile Include="ECS\Systems\Drawable\DrawableSystem.cs" />
-    <Compile Include="ECS\Systems\Drawable\SpriteAnimationSystem.cs" />
+    <Compile Include="ECS\Systems\Drawables\DrawableSystem.cs" />
+    <Compile Include="ECS\Systems\Drawables\SpriteAnimationSystem.cs" />
+    <Compile Include="ECS\Systems\Drawables\TiledMapSystem.cs" />
+    <Compile Include="ECS\Systems\Physics\PhysicsSystem.cs" />
+    <Compile Include="Extensions\BodyExtension.cs" />
     <Compile Include="Extensions\GraphicsDeviceGeometricPrimitivesExtension.cs" />
     <Compile Include="GameComponents\FPSCounterComponent.cs" />
     <Compile Include="ECS\Components\Drawables\DrawableComponent.cs" />
@@ -54,8 +59,8 @@
     <Compile Include="ECS\Systems\IInitializable.cs" />
     <Compile Include="ECS\Systems\IRenderable.cs" />
     <Compile Include="ECS\Systems\IUpdatable.cs" />
-    <Compile Include="ECS\Systems\Drawable\SpriteSystem.cs" />
-    <Compile Include="ECS\Systems\Drawable\TextSystem.cs" />
+    <Compile Include="ECS\Systems\Drawables\SpriteSystem.cs" />
+    <Compile Include="ECS\Systems\Drawables\TextSystem.cs" />
     <Compile Include="Extensions\EnumerableExtension.cs" />
     <Compile Include="Extensions\SpriteBatchExtension.cs" />
     <Compile Include="GameComponents\LineGridComponent.cs" />
@@ -64,14 +69,30 @@
     <Compile Include="ECS\Transform.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Reference Include="Aether.Physics2D, Version=1.4.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Aether.Physics2D.1.4.0\lib\portable-net45+win8+wpa81\Aether.Physics2D.dll</HintPath>
+    </Reference>
+    <Reference Include="Aether.Physics2D.Diagnostics, Version=1.4.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Aether.Physics2D.Diagnostics.1.4.0\lib\portable-net45+win8+wpa81\Aether.Physics2D.Diagnostics.dll</HintPath>
+    </Reference>
     <Reference Include="Comora, Version=0.5.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Comora.0.5.0\lib\portable-net45+win8+wpa81+MonoAndroid10+MonoTouch10+Xamarin.iOS10\Comora.dll</HintPath>
     </Reference>
     <Reference Include="MonoGame.Framework, Version=3.7.1.189, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\MonoGame.Framework.Portable.3.7.1.189\lib\portable-net45+win8+wpa81\MonoGame.Framework.dll</HintPath>
     </Reference>
+    <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.12.0.2\lib\portable-net45+win8+wp8+wpa81\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Runtime.InteropServices.RuntimeInformation, Version=4.0.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Runtime.InteropServices.RuntimeInformation.4.3.0\lib\netstandard1.1\System.Runtime.InteropServices.RuntimeInformation.dll</HintPath>
+    </Reference>
+    <Reference Include="TiledLib, Version=3.2.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\TiledLib.3.2.0\lib\netstandard1.0\TiledLib.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
+    <None Include="Content\DiagnosticsFont.xnb" />
     <None Include="packages.config">
       <SubType>Designer</SubType>
     </None>

@@ -1,7 +1,7 @@
 ﻿using Comora;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using MonoGame.Helper.ECS.Systems.Drawable;
+using MonoGame.Helper.ECS.Systems.Drawables;
 using System;
 using System.Collections.Generic;
 
@@ -73,6 +73,7 @@ namespace MonoGame.Helper.ECS
             };
             Camera.LoadContent();
 
+            AddSystem<TextSystem>();
             AddSystem<SpriteSystem>();
             AddSystem<SpriteAnimationSystem>();
 

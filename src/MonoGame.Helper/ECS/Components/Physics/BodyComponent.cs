@@ -1,7 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
-using MonoGame.Helper.ECS.Components;
 
-namespace MonoGame.Helper.Physic.Components
+namespace MonoGame.Helper.ECS.Components.Physics
 {
     public class BodyComponent : IComponent
     {
@@ -47,6 +46,7 @@ namespace MonoGame.Helper.Physic.Components
     public enum EntityShape
     {
         Circle,
+        Ellipse,
         Rectangle,
         Polygon,
     }

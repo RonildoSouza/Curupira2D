@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using tainicom.Aether.Physics2D.Dynamics;
 
-namespace MonoGame.Helper.Physic.Extensions
+namespace MonoGame.Helper.Extensions
 {
     public static class BodyExtension
     {

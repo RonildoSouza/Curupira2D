@@ -1,23 +1,21 @@
-﻿using Microsoft.Xna.Framework;
+﻿using Helper.SpriteAnimation.Systems;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Helper;
 using MonoGame.Helper.ECS;
 using MonoGame.Helper.ECS.Components.Drawables;
-using MonoGame.Helper.ECS.Systems;
-using Helper.SpriteAnimation.Systems;
 
 namespace Helper.SpriteAnimation
 {
     public class Game1 : GameCore
     {
-        public Game1() : base() { }
+        public Game1() : base(debugActive: true) { }
 
         protected override void Initialize()
         {
             var scene = new Scene()
                 .AddSystem<CharacterAnimationSystem>()
-                .AddSystem<CharacterMovementSystem>()
-                .AddSystem<TextSystem>();
+                .AddSystem<CharacterMovementSystem>();
 
             // Create entity explosion in scene
             var explosionTexture = Content.Load<Texture2D>("explosion");

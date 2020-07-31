@@ -12,7 +12,7 @@ namespace MonoGame.Helper.ECS.Components.Drawables
             int frameColumnsCount,
             TimeSpan frameTime,
             AnimateType animateType = AnimateType.All,
-            Rectangle sourceRectangle = default,
+            Rectangle? sourceRectangle = null,
             bool isLooping = false,
             bool isPlaying = false,
             SpriteEffects spriteEffect = SpriteEffects.None,
@@ -28,8 +28,8 @@ namespace MonoGame.Helper.ECS.Components.Drawables
             IsLooping = isLooping;
             IsPlaying = isPlaying;
 
-            if (sourceRectangle == default)
-                SourceRectangle = new Rectangle(0, 0, Texture.Bounds.Width / frameColumnsCount, Texture.Bounds.Height / frameRowsCount);
+            if (sourceRectangle == null)
+                SourceRectangle = new Rectangle(0, 0, FrameWidth, FrameHeight);
         }
 
         public SpriteAnimationComponent(
@@ -38,7 +38,7 @@ namespace MonoGame.Helper.ECS.Components.Drawables
             int frameColumnsCount,
             int frameTimeMilliseconds,
             AnimateType animateType = AnimateType.All,
-            Rectangle sourceRectangle = default,
+            Rectangle? sourceRectangle = null,
             bool isLooping = false,
             bool isPlaying = false,
             SpriteEffects spriteEffect = SpriteEffects.None,
@@ -61,7 +61,7 @@ namespace MonoGame.Helper.ECS.Components.Drawables
                 fixedPosition)
         { }
 
-        public override Vector2 Origin => Vector2.Zero;
+        public override Vector2 Origin => new Vector2(FrameWidth * 0.5f, FrameHeight * 0.5f);
         public int FrameRowsCount { get; set; }
         public int FrameColumnsCount { get; set; }
         public TimeSpan FrameTime { get; set; }

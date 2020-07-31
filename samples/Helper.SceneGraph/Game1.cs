@@ -1,23 +1,21 @@
-﻿using Microsoft.Xna.Framework;
+﻿using Helper.SceneGraph.Systems;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Helper;
 using MonoGame.Helper.ECS;
 using MonoGame.Helper.ECS.Components.Drawables;
-using MonoGame.Helper.ECS.Systems;
-using Helper.SceneGraph.Systems;
 
 namespace Helper.SceneGraph
 {
     public class Game1 : GameCore
     {
-        public Game1() : base() { }
+        public Game1() : base(debugActive: true) { }
 
         protected override void Initialize()
         {
             var scene = new Scene()
                 .AddSystem<CharacterMovementSystem>()
-                .AddSystem<EquipmentMovimentSystem>()
-                .AddSystem<TextSystem>();
+                .AddSystem<EquipmentMovimentSystem>();
 
             #region Controls Tips
             var fontArial = Content.Load<SpriteFont>("FontArial");

@@ -3,7 +3,7 @@ using MonoGame.Helper.ECS.Components.Drawables;
 using MonoGame.Helper.Extensions;
 using System.Collections.Generic;
 
-namespace MonoGame.Helper.ECS.Systems
+namespace MonoGame.Helper.ECS.Systems.Drawables
 {
     [RequiredComponent(typeof(TextComponent))]
     public sealed class TextSystem : DrawableSystem<TextComponent>

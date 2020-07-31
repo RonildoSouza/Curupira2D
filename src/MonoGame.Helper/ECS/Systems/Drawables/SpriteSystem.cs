@@ -4,7 +4,7 @@ using MonoGame.Helper.ECS.Components.Drawables;
 using MonoGame.Helper.Extensions;
 using System.Collections.Generic;
 
-namespace MonoGame.Helper.ECS.Systems.Drawable
+namespace MonoGame.Helper.ECS.Systems.Drawables
 {
     [RequiredComponent(typeof(SpriteComponent))]
     public sealed class SpriteSystem : DrawableSystem<SpriteComponent>

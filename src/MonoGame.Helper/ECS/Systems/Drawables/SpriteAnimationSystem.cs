@@ -6,7 +6,7 @@ using MonoGame.Helper.Extensions;
 using System;
 using System.Collections.Generic;
 
-namespace MonoGame.Helper.ECS.Systems.Drawable
+namespace MonoGame.Helper.ECS.Systems.Drawables
 {
     [RequiredComponent(typeof(SpriteAnimationComponent))]
     public sealed class SpriteAnimationSystem : DrawableSystem<SpriteAnimationComponent>

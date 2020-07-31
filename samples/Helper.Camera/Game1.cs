@@ -4,7 +4,6 @@ using Microsoft.Xna.Framework.Input;
 using MonoGame.Helper;
 using MonoGame.Helper.ECS;
 using MonoGame.Helper.ECS.Components.Drawables;
-using MonoGame.Helper.ECS.Systems;
 using MonoGame.Helper.Extensions;
 
 namespace Helper.Camera
@@ -12,15 +11,14 @@ namespace Helper.Camera
     public class Game1 : GameCore
     {
         Scene _scene;
-        public Game1() : base()
+        public Game1() : base(debugActive: true)
         {
             IsMouseVisible = true;
         }
 
         protected override void Initialize()
         {
-            _scene = new Scene()
-                .AddSystem<TextSystem>();
+            _scene = new Scene();
 
             var blockTexture = GraphicsDevice.CreateTextureRectangle(100, Color.Red * 0.8f);
 

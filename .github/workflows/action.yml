@@ -24,11 +24,6 @@ jobs:
       with:
         args: zip -qq -r ./dist/MonoGame.Helper.zip ./dist/MonoGame.Helper.dll
         
-    - name: Compress MonoGame.Helper.Physic.dll
-      uses: montudor/action-zip@v0.1.0
-      with:
-        args: zip -qq -r ./dist/MonoGame.Helper.Physic.zip ./dist/MonoGame.Helper.Physic.dll
-        
     - name: Create a Release
       id: create_release
       uses: actions/create-release@v1.1.1
@@ -49,15 +44,4 @@ jobs:
         upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps 
         asset_path: ./dist/MonoGame.Helper.zip
         asset_name: MonoGame.Helper.zip
-        asset_content_type: application/zip  
-        
-    - name: Upload a Release Asset - MonoGame.Helper.Physic
-      id: upload-release-asset-mhp 
-      uses: actions/upload-release-asset@v1.0.2
-      env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps 
-        asset_path: ./dist/MonoGame.Helper.Physic.zip
-        asset_name: MonoGame.Helper.Physic.zip
         asset_content_type: application/zip
