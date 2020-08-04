@@ -25,7 +25,7 @@ namespace MonoGame.Helper.Extensions
             => Draw(spriteBatch, position, 0f, spriteComponent);
 
         public static void Draw<TSpriteComponent>(this SpriteBatch spriteBatch, Entity entity, TSpriteComponent spriteComponent) where TSpriteComponent : SpriteComponent
-            => Draw(spriteBatch, entity.Transform.Position, entity.Transform.RotationInDegrees, spriteComponent);
+            => Draw(spriteBatch, entity.Transform.Position, entity.Transform.Rotation, spriteComponent);
 
         public static void DrawString(this SpriteBatch spriteBatch, Vector2 position, float rotationInDegrees, TextComponent textComponent)
         {
@@ -45,6 +45,6 @@ namespace MonoGame.Helper.Extensions
             => DrawString(spriteBatch, position, 0f, textComponent);
 
         public static void DrawString(this SpriteBatch spriteBatch, Entity entity, TextComponent textComponent)
-            => DrawString(spriteBatch, entity.Transform.Position, entity.Transform.RotationInDegrees, textComponent);
+            => DrawString(spriteBatch, entity.Transform.Position, entity.Transform.Rotation, textComponent);
     }
 }

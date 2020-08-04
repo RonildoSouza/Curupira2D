@@ -1,18 +1,18 @@
 ﻿using Microsoft.Xna.Framework;
 
-namespace MonoGame.Helper.ECS
+namespace MonoGame.Helper
 {
     public sealed class Transform
     {
         public Transform()
         {
             Position = Vector2.Zero;
-            RotationInDegrees = 0f;
+            Rotation = 0f;
         }
 
         public Vector2 Position { get; private set; }
-        public float RotationInDegrees { get; private set; }
-        public float RotationInRadians => MathHelper.ToRadians(RotationInDegrees);
+        public float Rotation { get; private set; }
+        public float RotationInRadians => MathHelper.ToRadians(Rotation);
 
         public void SetPosition(float x, float y)
         {
@@ -21,15 +21,15 @@ namespace MonoGame.Helper.ECS
 
         public void SetPosition(Vector2 position) => SetPosition(position.X, position.Y);
 
-        public void SetRotation(float rotationInDegrees)
+        public void SetRotation(float rotation)
         {
-            RotationInDegrees = rotationInDegrees;
+            Rotation = rotation;
         }
 
-        public void SetTransform(Vector2 position, float rotationInDegrees)
+        public void SetTransform(Vector2 position, float rotation)
         {
             SetPosition(position);
-            SetRotation(rotationInDegrees);
+            SetRotation(rotation);
         }
     }
 }

@@ -2,20 +2,30 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Helper.ECS.Systems.Drawables;
+using MonoGame.Helper.ECS.Systems.Physics;
 using System;
 using System.Collections.Generic;
+using tainicom.Aether.Physics2D.Dynamics;
 
 namespace MonoGame.Helper.ECS
 {
     public class Scene : IDisposable
     {
+        Vector2 _gravity;
         readonly EntityManager _entityManager = EntityManager.Instance;
         readonly SystemManager _systemManager = SystemManager.Instance;
+
+        public Scene(Vector2 gravity = default)
+        {
+            if (gravity == default)
+                SetGravity(new Vector2(0f, 9.80665f));
+        }
 
         public GameCore GameCore { get; private set; }
         public SpriteBatch SpriteBatch { get; private set; }
         public GameTime GameTime { get; private set; }
         public Camera Camera { get; private set; }
+        public World World { get; private set; }
         public string Title { get; private set; }
         public Color CleanColor { get; private set; } = Color.LightGray;
         public float DeltaTime => (float)GameTime.ElapsedGameTime.TotalSeconds;
@@ -55,6 +65,16 @@ namespace MonoGame.Helper.ECS
             return this;
         }
 
+        public Scene SetGravity(Vector2 gravity)
+        {
+            if (World == null)
+                _gravity = gravity;
+            else
+                World.Gravity = gravity;
+
+            return this;
+        }
+
         public Entity CreateEntity(string uniqueId) => _entityManager.CreateEntity(uniqueId);
 
         public Entity GetEntity(string uniqueId) => _entityManager.GetEntity(uniqueId);
@@ -73,9 +93,15 @@ namespace MonoGame.Helper.ECS
             };
             Camera.LoadContent();
 
+            World = new World(_gravity);
+
             AddSystem<TextSystem>();
             AddSystem<SpriteSystem>();
             AddSystem<SpriteAnimationSystem>();
+            AddSystem<TiledMapSystem>();
+
+            // Always keep this system at the end
+            AddSystem<PhysicsSystem>();
 
             _systemManager.InitializableSystemsIteration();
         }
@@ -84,6 +110,7 @@ namespace MonoGame.Helper.ECS
         {
             GameTime = gameTime;
             Camera.Update(gameTime);
+            World.Step(DeltaTime);
             _systemManager.UpdatableSystemsIteration();
         }
 

@@ -1,17 +1,24 @@
 ﻿using Microsoft.Xna.Framework;
+using System.Collections.Generic;
 
 namespace MonoGame.Helper.ECS.Components.Physics
 {
     public class BodyComponent : IComponent
     {
-        public BodyComponent()
+        public BodyComponent(Vector2 size, float density = 1f)
         {
+            Size = size;
             Force = Vector2.Zero;
             Mass = 1f;
-            Density = 1f;
+            Density = density;
             EntityType = EntityType.Static;
             EntityShape = EntityShape.Rectangle;
+            LinearVelocity = Vector2.Zero;
         }
+
+        public BodyComponent(float width, float height, float density = 1f) : this(new Vector2(width, height), density) { }
+
+        public Vector2 Size { get; }
 
         /// <summary>
         /// The world force vector, usually in Newtons (N).
@@ -32,7 +39,7 @@ namespace MonoGame.Helper.ECS.Components.Physics
         public float Radius { get; set; }
         public float Mass { get; set; }
         public float Inertia { get; set; }
-        public float Density { get; set; }
+        public float Density { get; }
         /// <summary>
         /// Value between 0 and 1
         /// </summary>
@@ -41,6 +48,9 @@ namespace MonoGame.Helper.ECS.Components.Physics
         public EntityType EntityType { get; set; }
         public EntityShape EntityShape { get; set; }
         public bool IgnoreGravity { get; set; }
+        public IEnumerable<Vector2> Vertices { get; set; }
+        public Vector2 LinearVelocity { get; set; }
+        public bool FixedRotation { get; set; }
     }
 
     public enum EntityShape

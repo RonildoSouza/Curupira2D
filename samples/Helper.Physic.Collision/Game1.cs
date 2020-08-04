@@ -4,7 +4,6 @@ using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Helper;
 using MonoGame.Helper.ECS;
 using MonoGame.Helper.ECS.Components.Drawables;
-using MonoGame.Helper.ECS.Systems.Physics;
 
 namespace Helper.Physic.Collision
 {
@@ -14,13 +13,7 @@ namespace Helper.Physic.Collision
 
         protected override void Initialize()
         {
-            var aetherPhysics2DSystem = new PhysicsSystem
-            {
-                DebugActive = true
-            };
-
             var scene = new Scene()
-                .AddSystem(aetherPhysics2DSystem)
                 .AddSystem<BallControllerSystem>()
                 .AddSystem<SquareControllerSystem>()
                 .AddSystem<BorderControllerSystem>();
@@ -37,6 +30,8 @@ namespace Helper.Physic.Collision
             #endregion
 
             SetScene(scene);
+
+            base.Initialize();
         }
     }
 }

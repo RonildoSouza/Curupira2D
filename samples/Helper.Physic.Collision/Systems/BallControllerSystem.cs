@@ -23,7 +23,7 @@ namespace Collision.Systems
             _ballEntity = Scene.CreateEntity("ball")
                 .SetPosition(Scene.ScreenWidth * 0.4f, 300)
                 .AddComponent(new SpriteComponent(ballTexture))
-                .AddComponent(new BodyComponent
+                .AddComponent(new BodyComponent(ballTexture.Bounds.Size.ToVector2())
                 {
                     Radius = ballRadius,
                     EntityType = EntityType.Dynamic,

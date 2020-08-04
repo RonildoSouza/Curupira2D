@@ -19,22 +19,22 @@ namespace Collision.Systems
             Scene.CreateEntity("left-border")
                 .SetPosition(verticalBorderSpriteComponent.Origin.X, verticalBorderSpriteComponent.Origin.Y)
                 .AddComponent(verticalBorderSpriteComponent)
-                .AddComponent<BodyComponent>();
+                .AddComponent<BodyComponent>(verticalBorderTexture.Bounds.Size.ToVector2());
 
             Scene.CreateEntity("up-border")
                 .SetPosition(horizontalBorderSpriteComponent.Origin.X, horizontalBorderSpriteComponent.Origin.Y)
                 .AddComponent(horizontalBorderSpriteComponent)
-                .AddComponent<BodyComponent>();
+                .AddComponent<BodyComponent>(horizontalBorderTexture.Bounds.Size.ToVector2());
 
             Scene.CreateEntity("right-border")
                 .SetPosition(Scene.ScreenWidth - verticalBorderSpriteComponent.Origin.X, verticalBorderSpriteComponent.Origin.Y)
                 .AddComponent(verticalBorderSpriteComponent)
-                .AddComponent<BodyComponent>();
+                .AddComponent<BodyComponent>(verticalBorderTexture.Bounds.Size.ToVector2());
 
             Scene.CreateEntity("down-border")
                 .SetPosition(horizontalBorderSpriteComponent.Origin.X, Scene.ScreenHeight - horizontalBorderSpriteComponent.Origin.Y)
                 .AddComponent(horizontalBorderSpriteComponent)
-                .AddComponent<BodyComponent>();
+                .AddComponent<BodyComponent>(horizontalBorderTexture.Bounds.Size.ToVector2());
         }
     }
 }

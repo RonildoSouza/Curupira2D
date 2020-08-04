@@ -30,6 +30,8 @@ namespace Helper.SceneGraph
             #endregion
 
             SetScene(scene);
+
+            base.Initialize();
         }
     }
 }

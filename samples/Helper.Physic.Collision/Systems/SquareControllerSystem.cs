@@ -17,7 +17,7 @@ namespace Collision.Systems
                 .SetPosition(Scene.ScreenWidth * 0.6f, 100)
                 .SetRotation(45)
                 .AddComponent(new SpriteComponent(squareTexture))
-                .AddComponent(new BodyComponent
+                .AddComponent(new BodyComponent(squareTexture.Bounds.Size.ToVector2())
                 {
                     EntityType = EntityType.Dynamic,
                     Restitution = 1f,
