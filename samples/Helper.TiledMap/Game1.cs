@@ -11,11 +11,11 @@ namespace Helper.TiledMap
 
         protected override void Initialize()
         {
-            var _scene = new Scene(new Vector2(0f, 58.842f))
+            var scene = new Scene(new Vector2(0f, 58.842f))
                 .AddSystem<MapSystem>()
                 .AddSystem<CharacterMovementSystem>();
 
-            SetScene(_scene);
+            SetScene(scene);
 
             base.Initialize();
         }

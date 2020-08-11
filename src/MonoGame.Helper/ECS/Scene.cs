@@ -116,14 +116,16 @@ namespace MonoGame.Helper.ECS
 
         public virtual void Draw()
         {
-            SpriteBatch.Draw(Camera.Debug);
             _systemManager.RenderableSystemsIteration();
+            SpriteBatch.Draw(Camera.Debug);
         }
 
         public virtual void Dispose()
         {
             GameCore.Dispose();
             SpriteBatch.Dispose();
+            Camera = null;
+            World = null;
 
             GC.Collect();
         }

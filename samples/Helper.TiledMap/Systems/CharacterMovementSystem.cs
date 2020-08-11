@@ -63,15 +63,15 @@ namespace Helper.TiledMap.Systems
                 _isMoving = true;
             }
 
-            //if (ks.IsKeyDown(Keys.Up) && _oldKS.IsKeyUp(Keys.Up))
-            //{
-            //    bodyComponent.Force = new Vector2(0f, -1000f);
-            //    _isJumping = true;
-            //}
+            if (ks.IsKeyDown(Keys.Up) && _oldKS.IsKeyUp(Keys.Up))
+            {
+                //bodyComponent.Force = new Vector2(0f, -1000f);
+                _isJumping = true;
+            }
 
 
-            //if (!_isMoving && !_isJumping)
-            if (!_isMoving)
+            if (!_isMoving && !_isJumping)
+            //if (!_isMoving)
                 bodyComponent.LinearVelocity = new Vector2(0f, _characterEntity.Transform.Position.Y);
 
             _isMoving = false;

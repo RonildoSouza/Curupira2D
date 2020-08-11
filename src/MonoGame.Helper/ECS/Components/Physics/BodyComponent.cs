@@ -9,7 +9,6 @@ namespace MonoGame.Helper.ECS.Components.Physics
         {
             Size = size;
             Force = Vector2.Zero;
-            Mass = 1f;
             Density = density;
             EntityType = EntityType.Static;
             EntityShape = EntityShape.Rectangle;
@@ -37,8 +36,8 @@ namespace MonoGame.Helper.ECS.Components.Physics
         /// </summary>
         public float AngularImpulse { get; set; }
         public float Radius { get; set; }
-        public float Mass { get; set; }
-        public float Inertia { get; set; }
+        public float? Mass { get; set; }
+        public float? Inertia { get; set; }
         public float Density { get; }
         /// <summary>
         /// Value between 0 and 1

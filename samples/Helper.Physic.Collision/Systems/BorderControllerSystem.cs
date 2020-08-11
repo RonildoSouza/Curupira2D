@@ -10,8 +10,8 @@ namespace Collision.Systems
     {
         public void Initialize()
         {
-            var horizontalBorderTexture = Scene.GameCore.GraphicsDevice.CreateTextureRectangle(Scene.ScreenWidth, 25, Color.Maroon);
-            var verticalBorderTexture = Scene.GameCore.GraphicsDevice.CreateTextureRectangle(25, Scene.ScreenHeight, Color.Maroon);
+            var horizontalBorderTexture = Scene.GameCore.GraphicsDevice.CreateTextureRectangle(Scene.ScreenWidth, 25, Color.LightCoral);
+            var verticalBorderTexture = Scene.GameCore.GraphicsDevice.CreateTextureRectangle(25, Scene.ScreenHeight, Color.LightCoral);
 
             var horizontalBorderSpriteComponent = new SpriteComponent(horizontalBorderTexture);
             var verticalBorderSpriteComponent = new SpriteComponent(verticalBorderTexture);
@@ -19,22 +19,22 @@ namespace Collision.Systems
             Scene.CreateEntity("left-border")
                 .SetPosition(verticalBorderSpriteComponent.Origin.X, verticalBorderSpriteComponent.Origin.Y)
                 .AddComponent(verticalBorderSpriteComponent)
-                .AddComponent<BodyComponent>(verticalBorderTexture.Bounds.Size.ToVector2());
+                .AddComponent<BodyComponent>(verticalBorderTexture.Bounds.Size.ToVector2(), 1);
 
             Scene.CreateEntity("up-border")
                 .SetPosition(horizontalBorderSpriteComponent.Origin.X, horizontalBorderSpriteComponent.Origin.Y)
                 .AddComponent(horizontalBorderSpriteComponent)
-                .AddComponent<BodyComponent>(horizontalBorderTexture.Bounds.Size.ToVector2());
+                .AddComponent<BodyComponent>(horizontalBorderTexture.Bounds.Size.ToVector2(), 1);
 
             Scene.CreateEntity("right-border")
                 .SetPosition(Scene.ScreenWidth - verticalBorderSpriteComponent.Origin.X, verticalBorderSpriteComponent.Origin.Y)
                 .AddComponent(verticalBorderSpriteComponent)
-                .AddComponent<BodyComponent>(verticalBorderTexture.Bounds.Size.ToVector2());
+                .AddComponent<BodyComponent>(verticalBorderTexture.Bounds.Size.ToVector2(), 1);
 
             Scene.CreateEntity("down-border")
                 .SetPosition(horizontalBorderSpriteComponent.Origin.X, Scene.ScreenHeight - horizontalBorderSpriteComponent.Origin.Y)
                 .AddComponent(horizontalBorderSpriteComponent)
-                .AddComponent<BodyComponent>(horizontalBorderTexture.Bounds.Size.ToVector2());
+                .AddComponent<BodyComponent>(horizontalBorderTexture.Bounds.Size.ToVector2(), 1);
         }
     }
 }

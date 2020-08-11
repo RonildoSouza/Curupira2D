@@ -97,7 +97,10 @@ namespace MonoGame.Helper.ECS.Systems.Physics
             var entities = Scene.GetEntities(_ => MatchActiveEntitiesAndComponents(_));
 
             if (entities.Count != Scene.World.BodyList.Count)
+            {
+                Scene.World.BodyList.Clear();
                 Initialize();
+            }
 
             for (int i = 0; i < entities.Count(); i++)
             {
@@ -109,27 +112,28 @@ namespace MonoGame.Helper.ECS.Systems.Physics
                     continue;
 
                 body.Enabled = entity.Active;
-                body.Mass = bodyComponent.Mass;
-                body.Inertia = bodyComponent.Inertia;
                 body.IgnoreGravity = bodyComponent.IgnoreGravity;
                 body.FixedRotation = bodyComponent.FixedRotation;
+
+                if (bodyComponent.Inertia != null)
+                    body.Inertia = bodyComponent.Inertia.Value;
+
+                if (bodyComponent.Mass != null)
+                    body.Mass = bodyComponent.Mass.Value;
 
                 body.ApplyForce(bodyComponent.Force);
                 body.ApplyTorque(bodyComponent.Torque);
                 body.ApplyLinearImpulse(bodyComponent.LinearImpulse);
                 body.ApplyAngularImpulse(bodyComponent.AngularImpulse);
 
+                if (bodyComponent.LinearVelocity != Vector2.Zero)
+                {
+                    if (bodyComponent.LinearVelocity.X != body.LinearVelocity.X)
+                        body.LinearVelocity = new Vector2(bodyComponent.LinearVelocity.X, body.LinearVelocity.Y);
 
-
-                if (bodyComponent.LinearVelocity == body.LinearVelocity)
-                    bodyComponent.LinearVelocity = body.LinearVelocity;
-
-                if (bodyComponent.LinearVelocity.X != body.LinearVelocity.X)
-                    body.LinearVelocity = new Vector2(bodyComponent.LinearVelocity.X, body.LinearVelocity.Y);
-
-                if (bodyComponent.LinearVelocity.Y != body.LinearVelocity.Y)
-                    body.LinearVelocity = new Vector2(body.LinearVelocity.X, bodyComponent.LinearVelocity.Y);
-
+                    if (bodyComponent.LinearVelocity.Y != body.LinearVelocity.Y)
+                        body.LinearVelocity = new Vector2(body.LinearVelocity.X, bodyComponent.LinearVelocity.Y);
+                }
 
                 // Update MonoGame.Helper.ECS.Entity position and rotation
                 entity.SetTransform(body.Position, MathHelper.ToDegrees(body.Rotation));
