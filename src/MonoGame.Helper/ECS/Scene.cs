@@ -1,8 +1,8 @@
-﻿using Comora;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Helper.ECS.Systems.Drawables;
 using MonoGame.Helper.ECS.Systems.Physics;
+using MonoGame.Helper.GameComponents.Camera2D;
 using System;
 using System.Collections.Generic;
 using tainicom.Aether.Physics2D.Dynamics;
@@ -24,7 +24,7 @@ namespace MonoGame.Helper.ECS
         public GameCore GameCore { get; private set; }
         public SpriteBatch SpriteBatch { get; private set; }
         public GameTime GameTime { get; private set; }
-        public Camera Camera { get; private set; }
+        public ICamera2D Camera2D { get; private set; }
         public World World { get; private set; }
         public string Title { get; private set; }
         public Color CleanColor { get; private set; } = Color.LightGray;
@@ -87,11 +87,13 @@ namespace MonoGame.Helper.ECS
 
         public virtual void Initialize()
         {
-            Camera = new Camera(GameCore.GraphicsDevice)
+            Camera2D = new Camera2DComponent(GameCore)
             {
+                Origin = new Vector2(ScreenWidth * 0.5f, ScreenHeight * 0.5f),
                 Position = new Vector2(ScreenWidth * 0.5f, ScreenHeight * 0.5f)
             };
-            Camera.LoadContent();
+
+            GameCore.Components.Add(Camera2D);
 
             World = new World(_gravity);
 
@@ -109,7 +111,6 @@ namespace MonoGame.Helper.ECS
         public virtual void Update(GameTime gameTime)
         {
             GameTime = gameTime;
-            Camera.Update(gameTime);
             World.Step(DeltaTime);
             _systemManager.UpdatableSystemsIteration();
         }
@@ -117,14 +118,13 @@ namespace MonoGame.Helper.ECS
         public virtual void Draw()
         {
             _systemManager.RenderableSystemsIteration();
-            SpriteBatch.Draw(Camera.Debug);
         }
 
         public virtual void Dispose()
         {
             GameCore.Dispose();
             SpriteBatch.Dispose();
-            Camera = null;
+            Camera2D = null;
             World = null;
 
             GC.Collect();

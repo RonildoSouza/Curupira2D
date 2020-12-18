@@ -152,7 +152,7 @@ namespace MonoGame.Helper.ECS.Systems.Physics
             var entities = Scene.GetEntities(_ => MatchActiveEntitiesAndComponents(_));
 
             if (Scene.GameCore.DebugActive && entities.Any())
-                _debugView.RenderDebugData(Scene.Camera.Projection, Scene.Camera.View);
+                _debugView.RenderDebugData(Scene.Camera2D.Projection, Scene.Camera2D.View);
         }
     }
 }

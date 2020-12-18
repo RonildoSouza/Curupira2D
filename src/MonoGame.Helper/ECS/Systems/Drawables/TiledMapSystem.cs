@@ -20,13 +20,14 @@ namespace MonoGame.Helper.ECS.Systems.Drawables
 
             for (int i = 0; i < entities.Count; i++)
             {
-                var entity = entities[i];
-                var tiledMapComponent = entity.GetComponent<TiledMapComponent>();
+                var tiledMapEntity = entities[i];
+                var tiledMapComponent = tiledMapEntity.GetComponent<TiledMapComponent>();
 
                 foreach (var objectLayer in tiledMapComponent.Map.Layers.OfType<ObjectLayer>().Where(_ => _.Visible))
                 {
                     foreach (var baseObject in objectLayer.Objects)
                     {
+                        // Creates ellipse type collision entity
                         if (baseObject is EllipseObject ellipseObject)
                         {
                             var posX = (float)ellipseObject.X + (float)ellipseObject.Width * 0.5f;
@@ -40,6 +41,7 @@ namespace MonoGame.Helper.ECS.Systems.Drawables
                                 });
                         }
 
+                        // Creates rectangle type collision entity
                         if (baseObject is RectangleObject rectangleObject)
                         {
                             var posX = (float)rectangleObject.X + (float)rectangleObject.Width * 0.5f;
@@ -50,6 +52,7 @@ namespace MonoGame.Helper.ECS.Systems.Drawables
                                 .AddComponent(new BodyComponent((float)rectangleObject.Width, (float)rectangleObject.Height));
                         }
 
+                        // Creates polygon type collision entity
                         if (baseObject is PolygonObject polygonObject)
                         {
                             Scene.CreateEntity($"{nameof(PolygonObject)}_{polygonObject.Id}")
@@ -61,14 +64,15 @@ namespace MonoGame.Helper.ECS.Systems.Drawables
                                 });
                         }
 
+                        // Gets entity with the same name as the point object and sets the position
                         if (baseObject is PointObject pointObject)
                         {
-                            var playableEntity = Scene
+                            var entity = Scene
                                 .GetEntities(_ => _.UniqueId == pointObject.Name || _.UniqueId == pointObject.Properties.GetValue("mgh.entityUniqueId"))
                                 .FirstOrDefault();
 
-                            if (playableEntity != null)
-                                playableEntity.SetPosition((float)pointObject.X, (float)pointObject.Y);
+                            if (entity != null)
+                                entity.SetPosition((float)pointObject.X, (float)pointObject.Y);
                         }
                     }
                 }
@@ -79,8 +83,8 @@ namespace MonoGame.Helper.ECS.Systems.Drawables
         {
             for (int i = 0; i < entities.Count; i++)
             {
-                var entity = entities[i];
-                var tiledMapComponent = entity.GetComponent<TiledMapComponent>();
+                var tiledMapEntity = entities[i];
+                var tiledMapComponent = tiledMapEntity.GetComponent<TiledMapComponent>();
                 var layers = tiledMapComponent.Map.Layers
                     .OfType<TileLayer>()
                     .OrderBy(_ =>

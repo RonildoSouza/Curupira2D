@@ -1,5 +1,4 @@
-﻿using Comora;
-using Microsoft.Xna.Framework.Graphics;
+﻿using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Helper.ECS.Components.Drawables;
 using System.Collections.Generic;
 
@@ -31,7 +30,10 @@ namespace MonoGame.Helper.ECS.Systems.Drawables
 
         protected void DrawNonFixedPositionEntities()
         {
-            Scene.SpriteBatch.Begin(Scene.Camera, SpriteSortMode.BackToFront);
+            Scene.SpriteBatch.Begin(
+                sortMode: SpriteSortMode.BackToFront,
+                blendState: BlendState.AlphaBlend,
+                transformMatrix: Scene.Camera2D.TransformationMatrix);
 
             var nonFixedPositionEntities = Scene.GetEntities(_ =>
             {

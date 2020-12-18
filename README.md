@@ -19,6 +19,8 @@ namespace Sample
 
         protected override void Initialize()
         {
+            base.Initialize();
+
             var scene = new Scene();
 
             var characterTexture = Content.Load<Texture2D>("character");
@@ -27,8 +29,6 @@ namespace Sample
             characterEntity.AddComponent(new SpriteComponent(characterTexture));
 
             SetScene(scene);
-
-            base.Initialize();
         }
     }
 }
@@ -40,6 +40,5 @@ namespace Sample
 |------------------------------------------------------|----------------------------------------------|
 | MonoGame                                             | https://github.com/MonoGame/MonoGame         |
 | Aether.Physics2D.MG, Aether.Physics2D.Diagnostics.MG | https://github.com/tainicom/Aether.Physics2D |
-| Comora                                               | https://github.com/dotnet-ad/Comora          |
 | Transform                                            | https://github.com/dotnet-ad/Transform       |
 | TiledLib.Net                                         | https://github.com/Ragath/TiledLib.Net       |
