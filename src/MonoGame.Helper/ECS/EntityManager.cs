@@ -32,6 +32,8 @@ namespace MonoGame.Helper.ECS
 
         public void DestroyEntity(string uniqueId) => DestroyEntity(_ => _.UniqueId == uniqueId);
 
+        public void DestroyAllEntities() => DestroyEntity(_ => true);
+
         public void Dispose()
         {
             _entities.Clear();

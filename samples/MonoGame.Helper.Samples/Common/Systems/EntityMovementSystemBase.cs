@@ -4,7 +4,7 @@ using MonoGame.Helper.ECS;
 using MonoGame.Helper.ECS.Components.Drawables;
 using MonoGame.Helper.ECS.Systems;
 
-namespace MonoGame.Helper.Samples.Systems
+namespace MonoGame.Helper.Common.Systems
 {
     abstract class EntityMovementSystemBase : ECS.System, IInitializable, IUpdatable
     {

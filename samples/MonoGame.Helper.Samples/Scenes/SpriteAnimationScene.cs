@@ -1,11 +1,11 @@
 ﻿using Microsoft.Xna.Framework.Graphics;
-using MonoGame.Helper.ECS;
+using MonoGame.Helper.Common.Scenes;
 using MonoGame.Helper.ECS.Components.Drawables;
 using MonoGame.Helper.Samples.Systems.SpriteAnimation;
 
 namespace MonoGame.Helper.Samples.Scenes
 {
-    class SpriteAnimationScene : Scene
+    class SpriteAnimationScene : SceneBase
     {
         public override void Initialize()
         {
@@ -20,7 +20,9 @@ namespace MonoGame.Helper.Samples.Scenes
             CreateEntity("explosion")
                 .SetPosition(300, 200)
                 .AddComponent(new SpriteAnimationComponent(explosionTexture, 5, 5, 150, AnimateType.All, default, true, true));
-            
+
+            ShowControlTips(120, 40, "MOVIMENT: Keyboard Arrows");
+
             base.Initialize();
         }
     }

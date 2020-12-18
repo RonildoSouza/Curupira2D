@@ -1,9 +1,9 @@
-﻿using MonoGame.Helper.ECS;
+﻿using MonoGame.Helper.Common.Scenes;
 using MonoGame.Helper.Samples.Systems.Physic;
 
 namespace MonoGame.Helper.Samples.Scenes
 {
-    class PhysicScene : Scene
+    class PhysicScene : SceneBase
     {
         public override void Initialize()
         {
@@ -12,6 +12,8 @@ namespace MonoGame.Helper.Samples.Scenes
             AddSystem<BallControllerSystem>();
             AddSystem<SquareControllerSystem>();
             AddSystem<BorderControllerSystem>();
+
+            ShowControlTips(140, 60, "MOVIMENT: Keyboard Arrows");
 
             base.Initialize();
         }

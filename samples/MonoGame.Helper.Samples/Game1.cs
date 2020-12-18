@@ -1,4 +1,6 @@
-﻿using MonoGame.Helper.Samples.Scenes;
+﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Input;
+using MonoGame.Helper.Samples.Scenes;
 
 namespace MonoGame.Helper.Samples
 {
@@ -10,12 +12,26 @@ namespace MonoGame.Helper.Samples
         {
             base.Initialize();
 
-            //SetScene<MenuScene>();
-            //SetScene<SpriteAnimationScene>();
-            //SetScene<SceneGraphScene>();
-            //SetScene<CameraScene>();
-            //SetScene<PhysicScene>();
-            SetScene<TiledMapScene>();
+            AddScene<MenuScene>();
+            AddScene<SpriteAnimationScene>();
+            AddScene<SceneGraphScene>();
+            AddScene<CameraScene>();
+            AddScene<PhysicScene>();
+            AddScene<TiledMapScene>();
+
+            ChangeScene<MenuScene>();
+        }
+
+        protected override void Update(GameTime gameTime)
+        {
+            var ks = Keyboard.GetState();
+
+            if (ks.IsKeyDown(Keys.Q) && !CurrentSceneIs<MenuScene>())
+            {
+                ChangeScene<MenuScene>();
+            }
+
+            base.Update(gameTime);
         }
     }
 }

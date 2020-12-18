@@ -53,6 +53,9 @@ namespace MonoGame.Helper.ECS
         public void RemoveSystem<TSystem>() where TSystem : System
             => _systemManager.RemoveSystem<TSystem>();
 
+        public void RemoveAllSystems()
+            => _systemManager.RemoveAllSystems();
+
         public Scene SetTitle(string title)
         {
             Title = title;
@@ -84,6 +87,8 @@ namespace MonoGame.Helper.ECS
         public void DestroyEntity(Predicate<Entity> match) => _entityManager.DestroyEntity(match);
 
         public void DestroyEntity(string uniqueId) => _entityManager.DestroyEntity(uniqueId);
+
+        public void DestroyAllEntities() => _entityManager.DestroyAllEntities();
 
         public virtual void Initialize()
         {

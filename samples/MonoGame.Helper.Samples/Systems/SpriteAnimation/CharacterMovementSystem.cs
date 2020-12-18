@@ -1,4 +1,5 @@
 ﻿using MonoGame.Helper.Attributes;
+using MonoGame.Helper.Common.Systems;
 using MonoGame.Helper.ECS.Components.Drawables;
 
 namespace MonoGame.Helper.Samples.Systems.SpriteAnimation

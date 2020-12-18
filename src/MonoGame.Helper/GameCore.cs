@@ -76,7 +76,13 @@ namespace MonoGame.Helper
 
         public void AddScene(Scene scene) => _sceneManager.AddScene(scene);
 
+        public void AddScene<TScene>(params object[] args) where TScene : Scene
+            => _sceneManager.AddScene<TScene>(args);
+
         public void ChangeScene<TScene>() where TScene : Scene
             => _sceneManager.ChangeScene<TScene>(this);
+
+        public bool CurrentSceneIs<TScene>() where TScene : Scene
+            => _sceneManager.CurrentScene.GetType() == typeof(TScene);
     }
 }

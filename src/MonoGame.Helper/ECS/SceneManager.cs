@@ -17,6 +17,10 @@ namespace MonoGame.Helper.ECS
 
         public void SetScene(GameCore gameCore, Scene scene)
         {
+            // Clean current scene before change
+            CurrentScene?.RemoveAllSystems();
+            CurrentScene?.DestroyAllEntities();
+
             CurrentScene = scene;
             CurrentScene.SetGameCore(gameCore);
             CurrentScene.Initialize();
@@ -34,6 +38,12 @@ namespace MonoGame.Helper.ECS
                 return;
 
             _scenes.Add(scene);
+        }
+
+        public void AddScene<TScene>(params object[] args) where TScene : Scene
+        {
+            var scene = (TScene)Activator.CreateInstance(typeof(TScene), args);
+            AddScene(scene);
         }
 
         public void ChangeScene<TScene>(GameCore gameCore) where TScene : Scene
