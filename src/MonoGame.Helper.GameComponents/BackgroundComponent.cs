@@ -1,7 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace MonoGame.Helper.Components
+namespace MonoGame.Helper.GameComponents
 {
     /// <summary>
     /// Draw simple infinity scroll scene.

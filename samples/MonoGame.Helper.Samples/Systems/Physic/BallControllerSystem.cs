@@ -1,15 +1,15 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
-using MonoGame.Helper.Attributes;
 using MonoGame.Helper.ECS;
 using MonoGame.Helper.ECS.Components.Drawables;
 using MonoGame.Helper.ECS.Components.Physics;
 using MonoGame.Helper.ECS.Systems;
+using MonoGame.Helper.ECS.Systems.Attributes;
 using MonoGame.Helper.Extensions;
 
 namespace MonoGame.Helper.Samples.Systems.Physic
 {
-    [RequiredComponent(typeof(SpriteComponent))]
+    [RequiredComponent(typeof(BallControllerSystem), typeof(SpriteComponent))]
     class BallControllerSystem : ECS.System, IInitializable, IUpdatable
     {
         const float IMPULSE = 1000f;

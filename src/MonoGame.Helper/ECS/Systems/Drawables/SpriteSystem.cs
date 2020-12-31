@@ -1,11 +1,11 @@
-﻿using MonoGame.Helper.Attributes;
-using MonoGame.Helper.ECS.Components.Drawables;
+﻿using MonoGame.Helper.ECS.Components.Drawables;
+using MonoGame.Helper.ECS.Systems.Attributes;
 using MonoGame.Helper.Extensions;
 using System.Collections.Generic;
 
 namespace MonoGame.Helper.ECS.Systems.Drawables
 {
-    [RequiredComponent(typeof(SpriteComponent))]
+    [RequiredComponent(typeof(SpriteSystem), typeof(SpriteComponent))]
     public sealed class SpriteSystem : DrawableSystem<SpriteComponent>
     {
         protected override void DrawEntities(ref IReadOnlyList<Entity> entities)

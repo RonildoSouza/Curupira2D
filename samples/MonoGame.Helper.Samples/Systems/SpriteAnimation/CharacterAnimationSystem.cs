@@ -1,13 +1,13 @@
 ﻿using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-using MonoGame.Helper.Attributes;
 using MonoGame.Helper.ECS;
 using MonoGame.Helper.ECS.Components.Drawables;
 using MonoGame.Helper.ECS.Systems;
+using MonoGame.Helper.ECS.Systems.Attributes;
 
 namespace MonoGame.Helper.Samples.Systems.SpriteAnimation
 {
-    [RequiredComponent(typeof(SpriteAnimationComponent))]
+    [RequiredComponent(typeof(CharacterAnimationSystem), typeof(SpriteAnimationComponent))]
     class CharacterAnimationSystem : ECS.System, IInitializable, IUpdatable
     {
         Entity _characterEntity;

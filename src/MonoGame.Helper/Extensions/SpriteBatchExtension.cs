@@ -7,6 +7,7 @@ namespace MonoGame.Helper.Extensions
 {
     public static class SpriteBatchExtension
     {
+        #region Draw Methods
         public static void Draw<TSpriteComponent>(this SpriteBatch spriteBatch, Vector2 position, float rotationInDegrees, TSpriteComponent spriteComponent) where TSpriteComponent : SpriteComponent
         {
             spriteBatch.Draw(
@@ -26,7 +27,9 @@ namespace MonoGame.Helper.Extensions
 
         public static void Draw<TSpriteComponent>(this SpriteBatch spriteBatch, Entity entity, TSpriteComponent spriteComponent) where TSpriteComponent : SpriteComponent
             => Draw(spriteBatch, entity.Transform.Position, entity.Transform.Rotation, spriteComponent);
+        #endregion
 
+        #region DrawString Methods
         public static void DrawString(this SpriteBatch spriteBatch, Vector2 position, float rotationInDegrees, TextComponent textComponent)
         {
             spriteBatch.DrawString(
@@ -46,5 +49,6 @@ namespace MonoGame.Helper.Extensions
 
         public static void DrawString(this SpriteBatch spriteBatch, Entity entity, TextComponent textComponent)
             => DrawString(spriteBatch, entity.Transform.Position, entity.Transform.Rotation, textComponent);
+        #endregion
     }
 }

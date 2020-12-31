@@ -1,15 +1,15 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
-using MonoGame.Helper.Attributes;
 using MonoGame.Helper.ECS;
 using MonoGame.Helper.ECS.Components.Drawables;
 using MonoGame.Helper.ECS.Components.Physics;
 using MonoGame.Helper.ECS.Systems;
+using MonoGame.Helper.ECS.Systems.Attributes;
 using MonoGame.Helper.Extensions;
 
 namespace MonoGame.Helper.Samples.Systems.TiledMap
 {
-    [RequiredComponent(typeof(BodyComponent))]
+    [RequiredComponent(typeof(CharacterMovementSystem), typeof(BodyComponent))]
     class CharacterMovementSystem : ECS.System, IInitializable, IUpdatable
     {
         Entity _characterEntity;

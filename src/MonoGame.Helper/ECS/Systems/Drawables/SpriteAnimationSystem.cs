@@ -1,13 +1,13 @@
 ﻿using Microsoft.Xna.Framework;
-using MonoGame.Helper.Attributes;
 using MonoGame.Helper.ECS.Components.Drawables;
+using MonoGame.Helper.ECS.Systems.Attributes;
 using MonoGame.Helper.Extensions;
 using System;
 using System.Collections.Generic;
 
 namespace MonoGame.Helper.ECS.Systems.Drawables
 {
-    [RequiredComponent(typeof(SpriteAnimationComponent))]
+    [RequiredComponent(typeof(SpriteAnimationSystem), typeof(SpriteAnimationComponent))]
     public sealed class SpriteAnimationSystem : DrawableSystem<SpriteAnimationComponent>
     {
         protected override void DrawEntities(ref IReadOnlyList<Entity> entities)

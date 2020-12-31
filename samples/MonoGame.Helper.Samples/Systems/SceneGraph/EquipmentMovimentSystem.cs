@@ -1,13 +1,13 @@
 ﻿using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-using MonoGame.Helper.Attributes;
 using MonoGame.Helper.ECS.Components.Drawables;
 using MonoGame.Helper.ECS.Systems;
+using MonoGame.Helper.ECS.Systems.Attributes;
 using MonoGame.Helper.Samples.Components.SceneGraph;
 
 namespace MonoGame.Helper.Samples.Systems.SceneGraph
 {
-    [RequiredComponent(typeof(EquipmentComponent))]
+    [RequiredComponent(typeof(EquipmentMovimentSystem), typeof(EquipmentComponent))]
     class EquipmentMovimentSystem : ECS.System, IInitializable, IUpdatable
     {
         KeyboardState _oldKS;

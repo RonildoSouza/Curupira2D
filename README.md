@@ -2,7 +2,7 @@
 
 Simple helper library to development 2D games with MonoGame using ECS (_Entity-Component-System_) game architecture.
 
-![Create Release MonoGame.Helper](https://github.com/RonildoSouza/MonoGame.Helper/workflows/Create%20Release%20MonoGame.Helper/badge.svg)
+<!-- ![Create Release MonoGame.Helper](https://github.com/RonildoSouza/MonoGame.Helper/workflows/Create%20Release%20MonoGame.Helper/badge.svg) -->
 
 ## Basic Using
 ```csharp
@@ -40,5 +40,4 @@ namespace Sample
 |------------------------------------------------------|----------------------------------------------|
 | MonoGame                                             | https://github.com/MonoGame/MonoGame         |
 | Aether.Physics2D.MG, Aether.Physics2D.Diagnostics.MG | https://github.com/tainicom/Aether.Physics2D |
-| Transform                                            | https://github.com/dotnet-ad/Transform       |
 | TiledLib.Net                                         | https://github.com/Ragath/TiledLib.Net       |

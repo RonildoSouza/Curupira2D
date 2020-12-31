@@ -1,8 +1,8 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using MonoGame.Helper.Attributes;
 using MonoGame.Helper.ECS.Components.Drawables;
 using MonoGame.Helper.ECS.Components.Physics;
+using MonoGame.Helper.ECS.Systems.Attributes;
 using System.Collections.Generic;
 using System.Linq;
 using TiledLib;
@@ -11,7 +11,7 @@ using TiledLib.Objects;
 
 namespace MonoGame.Helper.ECS.Systems.Drawables
 {
-    [RequiredComponent(typeof(TiledMapComponent))]
+    [RequiredComponent(typeof(TiledMapSystem), typeof(TiledMapComponent))]
     public class TiledMapSystem : DrawableSystem<TiledMapComponent>, IInitializable
     {
         public void Initialize()

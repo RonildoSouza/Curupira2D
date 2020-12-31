@@ -1,11 +1,11 @@
 ﻿using Microsoft.Xna.Framework.Graphics;
-using MonoGame.Helper.Attributes;
 using MonoGame.Helper.Common.Systems;
 using MonoGame.Helper.ECS.Components.Drawables;
+using MonoGame.Helper.ECS.Systems.Attributes;
 
 namespace MonoGame.Helper.Samples.Systems.SceneGraph
 {
-    [RequiredComponent(typeof(SpriteComponent))]
+    [RequiredComponent(typeof(CharacterMovementSystem), typeof(SpriteComponent))]
     class CharacterMovementSystem : EntityMovementSystemBase
     {
         protected override string EntityUniqueId => "character";

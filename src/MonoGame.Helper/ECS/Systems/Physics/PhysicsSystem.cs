@@ -1,6 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
-using MonoGame.Helper.Attributes;
 using MonoGame.Helper.ECS.Components.Physics;
+using MonoGame.Helper.ECS.Systems.Attributes;
 using MonoGame.Helper.Extensions;
 using System.Linq;
 using tainicom.Aether.Physics2D.Common;
@@ -9,7 +9,7 @@ using tainicom.Aether.Physics2D.Dynamics;
 
 namespace MonoGame.Helper.ECS.Systems.Physics
 {
-    [RequiredComponent(typeof(BodyComponent))]
+    [RequiredComponent(typeof(PhysicsSystem), typeof(BodyComponent))]
     public class PhysicsSystem : System, IInitializable, IUpdatable, IRenderable
     {
         DebugView _debugView;

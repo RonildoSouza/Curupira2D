@@ -38,6 +38,7 @@ namespace MonoGame.Helper.ECS
             SpriteBatch = new SpriteBatch(GameCore.GraphicsDevice);
         }
 
+        #region Methods of managing systems
         public Scene AddSystem<TSystem>(TSystem system) where TSystem : System
         {
             _systemManager.AddSystem(this, system);
@@ -55,7 +56,9 @@ namespace MonoGame.Helper.ECS
 
         public void RemoveAllSystems()
             => _systemManager.RemoveAllSystems();
+        #endregion
 
+        #region Methods of managing scenes
         public Scene SetTitle(string title)
         {
             Title = title;
@@ -77,7 +80,9 @@ namespace MonoGame.Helper.ECS
 
             return this;
         }
+        #endregion
 
+        #region Methods of managing entities
         public Entity CreateEntity(string uniqueId) => _entityManager.CreateEntity(uniqueId);
 
         public Entity GetEntity(string uniqueId) => _entityManager.GetEntity(uniqueId);
@@ -89,6 +94,7 @@ namespace MonoGame.Helper.ECS
         public void DestroyEntity(string uniqueId) => _entityManager.DestroyEntity(uniqueId);
 
         public void DestroyAllEntities() => _entityManager.DestroyAllEntities();
+        #endregion
 
         public virtual void Initialize()
         {
