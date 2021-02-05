@@ -6,6 +6,7 @@ namespace MonoGame.Helper.Extensions
 {
     public static class GraphicsDeviceGeometricPrimitivesExtension
     {
+        #region CreateTextureRectangle Methods
         public static Texture2D CreateTextureRectangle(this GraphicsDevice graphicsDevice, Point size, Color color)
         {
             var colorData = Enumerable.Range(0, size.X * size.Y)
@@ -29,7 +30,9 @@ namespace MonoGame.Helper.Extensions
 
         public static Texture2D CreateTextureRectangle(this GraphicsDevice graphicsDevice, int size, Color color)
            => CreateTextureRectangle(graphicsDevice, new Point(size), color);
+        #endregion
 
+        #region CreateTextureCircle Methods
         public static Texture2D CreateTextureCircle(this GraphicsDevice graphicsDevice, int radius, Color color, int tickenes = 0)
         {
             var diameter = 2 * radius;
@@ -66,5 +69,6 @@ namespace MonoGame.Helper.Extensions
 
         public static Texture2D CreateTextureCircle(this GraphicsDevice graphicsDevice, float radius, Color color, int tickenes = 0)
             => CreateTextureCircle(graphicsDevice, (int)radius * 2, color, tickenes);
+        #endregion
     }
 }

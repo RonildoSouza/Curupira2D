@@ -2,7 +2,7 @@
 
 Simple helper library to development 2D games with MonoGame using ECS (_Entity-Component-System_) game architecture.
 
-![Create Release MonoGame.Helper](https://github.com/RonildoSouza/MonoGame.Helper/workflows/Create%20Release%20MonoGame.Helper/badge.svg)
+<!-- ![Create Release MonoGame.Helper](https://github.com/RonildoSouza/MonoGame.Helper/workflows/Create%20Release%20MonoGame.Helper/badge.svg) -->
 
 ## Basic Using
 ```csharp
@@ -19,6 +19,8 @@ namespace Sample
 
         protected override void Initialize()
         {
+            base.Initialize();
+
             var scene = new Scene();
 
             var characterTexture = Content.Load<Texture2D>("character");
@@ -27,8 +29,6 @@ namespace Sample
             characterEntity.AddComponent(new SpriteComponent(characterTexture));
 
             SetScene(scene);
-
-            base.Initialize();
         }
     }
 }
@@ -36,7 +36,8 @@ namespace Sample
 
 ## Third Party
 
-| Name                                           | Link                                         |
-|------------------------------------------------|----------------------------------------------|
-| MonoGame                                       | https://github.com/MonoGame/MonoGame         |
-| Aether.Physics2D, Aether.Physics2D.Diagnostics | https://github.com/tainicom/Aether.Physics2D |
+| Name                                                 | Link                                         |
+|------------------------------------------------------|----------------------------------------------|
+| MonoGame                                             | https://github.com/MonoGame/MonoGame         |
+| Aether.Physics2D.MG, Aether.Physics2D.Diagnostics.MG | https://github.com/tainicom/Aether.Physics2D |
+| TiledLib.Net                                         | https://github.com/Ragath/TiledLib.Net       |

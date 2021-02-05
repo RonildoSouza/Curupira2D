@@ -43,6 +43,13 @@ namespace MonoGame.Helper.ECS
             _renderableSystems.RemoveAll(_ => _.GetType().Name == typeof(TSystem).Name);
         }
 
+        public void RemoveAllSystems()
+        {
+            _initializableSystems.RemoveAll(_ => true);
+            _updatableSystems.RemoveAll(_ => true);
+            _renderableSystems.RemoveAll(_ => true);
+        }
+
         public void InitializableSystemsIteration()
         {
             for (int i = 0; i < _initializableSystems.Count; i++)

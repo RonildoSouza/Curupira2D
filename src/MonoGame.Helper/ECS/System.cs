@@ -1,6 +1,7 @@
-﻿using MonoGame.Helper.Asserts;
-using MonoGame.Helper.Attributes;
+﻿using MonoGame.Helper.Diagnostics;
 using MonoGame.Helper.ECS.Components;
+using MonoGame.Helper.ECS.Systems;
+using MonoGame.Helper.ECS.Systems.Attributes;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,7 +9,9 @@ using System.Reflection;
 
 namespace MonoGame.Helper.ECS
 {
-    public abstract class System
+    internal interface ISystem { }
+
+    public abstract class System : ISystem
     {
         readonly List<Type> _requiredComponents = new List<Type>();
 
@@ -21,47 +24,49 @@ namespace MonoGame.Helper.ECS
 
         public virtual void SetScene(Scene scene)
         {
-            this.AssertRequiredComponents(_requiredComponents);
+            AssertRequiredComponents(_requiredComponents);
             Scene = scene;
         }
 
         protected void AddRequiredComponent<TComponent>() where TComponent : IComponent
-            => AddRequiredComponent(typeof(TComponent));
+            => AddRequiredComponent(new Type[] { typeof(TComponent) });
 
-        protected bool Matches(Entity entity)
+        protected bool MatchComponents(Entity entity)
         {
-            this.AssertRequiredComponents(_requiredComponents);
-            return entity.Active && entity.HasAllComponentTypes(_requiredComponents);
-        }
-
-        protected bool MatcheComponents(Entity entity)
-        {
-            this.AssertRequiredComponents(_requiredComponents);
+            AssertRequiredComponents(_requiredComponents);
             return entity.HasAllComponentTypes(_requiredComponents);
         }
 
-        protected void SceneMatchEntitiesIteration(Action<Entity> action)
-        {
-            var entities = Scene.GetEntities(_ => Matches(_));
-
-            for (int i = 0; i < entities.Count; i++)
-                action(entities[i]);
-        }
+        protected bool MatchActiveEntitiesAndComponents(Entity entity)
+            => entity.Active && MatchComponents(entity);
 
         protected virtual void SetupRequiredComponents()
         {
             var requiredComponentAttrs = GetType().GetTypeInfo().GetCustomAttributes<RequiredComponentAttribute>();
 
             foreach (var requiredComponentAttr in requiredComponentAttrs)
-                AddRequiredComponent(requiredComponentAttr.ComponentType);
+                AddRequiredComponent(requiredComponentAttr.ComponentTypes);
         }
 
-        void AddRequiredComponent(Type type)
+        void AddRequiredComponent(Type[] types)
         {
-            if (_requiredComponents.Contains(type) || !type.GetTypeInfo().ImplementedInterfaces.Contains(typeof(IComponent)))
-                return;
+            foreach (var type in types)
+            {
+                if (_requiredComponents.Contains(type) || !type.GetTypeInfo().ImplementedInterfaces.Contains(typeof(IComponent)))
+                    continue;
 
-            _requiredComponents.Add(type);
+                _requiredComponents.Add(type);
+            }
+        }
+
+        void AssertRequiredComponents(List<Type> requiredComponentTypes)
+        {
+            var implementOnlyIInitializable = GetType().GetTypeInfo().ImplementedInterfaces.Count() == 2
+                && GetType().GetTypeInfo().ImplementedInterfaces.Contains(typeof(ISystem))
+                && GetType().GetTypeInfo().ImplementedInterfaces.Contains(typeof(IInitializable));
+
+            if (!requiredComponentTypes.Any() && GetType().Name != nameof(DebugSystem) && !implementOnlyIInitializable)
+                throw new Exception($"You should add required component for the system {GetType().Name}");
         }
     }
 }

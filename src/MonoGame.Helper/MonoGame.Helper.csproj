@@ -1,80 +1,28 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <MinimumVisualStudioVersion>10.0</MinimumVisualStudioVersion>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{A54124E1-122A-42C6-A20A-49141223DBA5}</ProjectGuid>
-    <OutputType>Library</OutputType>
-    <RootNamespace>MonoGame.Helper</RootNamespace>
-    <AssemblyName>MonoGame.Helper</AssemblyName>
-    <DefaultLanguage>en-US</DefaultLanguage>
-    <FileAlignment>512</FileAlignment>
-    <ProjectTypeGuids>{786C830F-07A1-408B-BD7F-6EE04809D6DB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
-    <TargetFrameworkProfile>Profile7</TargetFrameworkProfile>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
+    <TargetFramework>netstandard2.1</TargetFramework>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="Asserts\AssertSystem.cs" />
-    <Compile Include="Attributes\RequiredComponentAttribute.cs" />
-    <Compile Include="Diagnostics\DebugSystem.cs" />
-    <Compile Include="ECS\Components\Drawables\SpriteAnimationComponent.cs" />
-    <Compile Include="ECS\SceneManager.cs" />
-    <Compile Include="ECS\SystemManager.cs" />
-    <Compile Include="ECS\Systems\Drawable\SpriteAnimationSystem.cs" />
-    <Compile Include="Extensions\GraphicsDeviceGeometricPrimitivesExtension.cs" />
-    <Compile Include="GameComponents\FPSCounterComponent.cs" />
-    <Compile Include="ECS\Components\Drawables\DrawableComponent.cs" />
-    <Compile Include="ECS\Components\IComponent.cs" />
-    <Compile Include="ECS\Components\Drawables\SpriteComponent.cs" />
-    <Compile Include="ECS\Components\Drawables\TextComponent.cs" />
-    <Compile Include="ECS\Entity.cs" />
-    <Compile Include="ECS\EntityManager.cs" />
-    <Compile Include="ECS\Scene.cs" />
-    <Compile Include="ECS\System.cs" />
-    <Compile Include="ECS\Systems\IInitializable.cs" />
-    <Compile Include="ECS\Systems\IRenderable.cs" />
-    <Compile Include="ECS\Systems\IUpdatable.cs" />
-    <Compile Include="ECS\Systems\Drawable\SpriteSystem.cs" />
-    <Compile Include="ECS\Systems\Drawable\TextSystem.cs" />
-    <Compile Include="Extensions\EnumerableExtension.cs" />
-    <Compile Include="Extensions\SpriteBatchExtension.cs" />
-    <Compile Include="GameComponents\LineGridComponent.cs" />
-    <Compile Include="GameCore.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="ECS\Transform.cs" />
+    <Compile Remove="Camera.cs" />
+    <Compile Remove="Extensions\EntityExtension.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Reference Include="MonoGame.Framework, Version=3.7.1.189, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\MonoGame.Framework.Portable.3.7.1.189\lib\portable-net45+win8+wpa81\MonoGame.Framework.dll</HintPath>
-    </Reference>
+    <None Remove="Content\DiagnosticsFont.xnb" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="packages.config">
-      <SubType>Designer</SubType>
-    </None>
+    <Content Include="Content\DiagnosticsFont.xnb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
-  <ItemGroup />
-  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
-  <PropertyGroup>
-    <PostBuildEvent>IF "$(ConfigurationName)" EQU "Release" COPY $(TargetPath) "$(SolutionDir)..\dist"</PostBuildEvent>
-  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Aether.Physics2D.Diagnostics.MG" Version="1.5.0" />
+    <PackageReference Include="Aether.Physics2D.MG" Version="1.5.0" />
+    <PackageReference Include="MonoGame.Framework.DesktopGL" Version="3.8.0.1641">
+      <PrivateAssets>All</PrivateAssets>
+    </PackageReference>
+    <PackageReference Include="TiledLib" Version="3.2.0" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\MonoGame.Helper.GameComponents\MonoGame.Helper.GameComponents.csproj" />
+  </ItemGroup>
 </Project>
