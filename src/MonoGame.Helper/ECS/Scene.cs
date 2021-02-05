@@ -93,6 +93,8 @@ namespace MonoGame.Helper.ECS
 
         public void DestroyEntity(string uniqueId) => _entityManager.DestroyEntity(uniqueId);
 
+        public void DestroyEntity(Entity entity) => DestroyEntity(entity?.UniqueId);
+
         public void DestroyAllEntities() => _entityManager.DestroyAllEntities();
         #endregion
 

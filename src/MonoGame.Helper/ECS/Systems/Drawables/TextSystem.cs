@@ -6,7 +6,7 @@ using System.Collections.Generic;
 namespace MonoGame.Helper.ECS.Systems.Drawables
 {
     [RequiredComponent(typeof(TextSystem), typeof(TextComponent))]
-    public sealed class TextSystem : DrawableSystem<TextComponent>
+    public class TextSystem : DrawableSystem<TextComponent>
     {
         protected override void DrawEntities(ref IReadOnlyList<Entity> entities)
         {

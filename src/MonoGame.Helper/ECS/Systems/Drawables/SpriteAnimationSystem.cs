@@ -8,7 +8,7 @@ using System.Collections.Generic;
 namespace MonoGame.Helper.ECS.Systems.Drawables
 {
     [RequiredComponent(typeof(SpriteAnimationSystem), typeof(SpriteAnimationComponent))]
-    public sealed class SpriteAnimationSystem : DrawableSystem<SpriteAnimationComponent>
+    public class SpriteAnimationSystem : DrawableSystem<SpriteAnimationComponent>
     {
         protected override void DrawEntities(ref IReadOnlyList<Entity> entities)
         {

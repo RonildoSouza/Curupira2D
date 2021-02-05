@@ -32,6 +32,10 @@ namespace MonoGame.Helper.ECS
 
         public Entity SetPosition(Vector2 position) => SetPosition(position.X, position.Y);
 
+        public Entity SetPositionX(float x) => SetPosition(x, Transform.Position.Y);
+
+        public Entity SetPositionY(float y) => SetPosition(Transform.Position.X, y);
+
         public Entity SetRotation(float rotationInDegrees)
         {
             Transform.SetRotation(rotationInDegrees);
