@@ -1,0 +1,30 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>netstandard2.1</TargetFramework>
+    <Authors>Ronildo Souza</Authors>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Remove="Camera.cs" />
+    <Compile Remove="Extensions\EntityExtension.cs" />
+    <Compile Remove="Extensions\EntityExtensions.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Remove="Content\DiagnosticsFont.xnb" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Content\DiagnosticsFont.xnb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Aether.Physics2D.Diagnostics.MG" Version="1.5.0" />
+    <PackageReference Include="Aether.Physics2D.MG" Version="1.5.0" />
+    <PackageReference Include="MonoGame.Framework.DesktopGL" Version="3.8.0.1641">
+      <PrivateAssets>All</PrivateAssets>
+    </PackageReference>
+    <PackageReference Include="TiledLib" Version="3.2.0" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Curupira2D.GameComponents\Curupira2D.GameComponents.csproj" />
+  </ItemGroup>
+</Project>
