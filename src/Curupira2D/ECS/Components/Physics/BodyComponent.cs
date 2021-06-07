@@ -1,55 +1,85 @@
 ﻿using Microsoft.Xna.Framework;
+using System;
 using System.Collections.Generic;
+using tainicom.Aether.Physics2D.Dynamics;
 
 namespace Curupira2D.ECS.Components.Physics
 {
-    public class BodyComponent : IComponent
+    public class BodyComponent : Body, IComponent
     {
-        public BodyComponent(Vector2 size, float density = 1f)
+        private float _radius;
+        private float _restitution;
+
+        public BodyComponent(Vector2 size, EntityType entityType, EntityShape entityShape, float density = 1f)
         {
             Size = size;
-            Force = Vector2.Zero;
+            EntityShape = entityShape;
+            BodyType = (BodyType)entityType;
             Density = density;
-            EntityType = EntityType.Static;
-            EntityShape = EntityShape.Rectangle;
-            LinearVelocity = Vector2.Zero;
         }
 
-        public BodyComponent(float width, float height, float density = 1f) : this(new Vector2(width, height), density) { }
+        public BodyComponent(float width, float height, EntityType entityType, EntityShape entityShape, float density = 1f)
+            : this(new Vector2(width, height), entityType, entityShape, density) { }
+
+        public BodyComponent(float radius, EntityType entityType, float density = 1f)
+            : this(Vector2.Zero, entityType, EntityShape.Circle, density)
+        {
+            Radius = radius;
+        }
+
+        public BodyComponent(IEnumerable<Vector2> vertices, EntityType entityType, EntityShape entityShape, float density = 1f)
+            : this(Vector2.Zero, entityType, entityShape, density)
+        {
+            Vertices = vertices;
+        }
 
         public Vector2 Size { get; }
 
-        /// <summary>
-        /// The world force vector, usually in Newtons (N).
-        /// </summary>
-        public Vector2 Force { get; set; }
-        /// <summary>
-        /// The world impulse vector, usually in N-seconds or kg-m/s.
-        /// </summary>
-        public Vector2 LinearImpulse { get; set; }
-        /// <summary>
-        /// The torque about the z-axis (out of the screen), usually in N-m.
-        /// </summary>
-        public float Torque { get; set; }
-        /// <summary>
-        /// The angular impulse in units of kg*m*m/s.
-        /// </summary>
-        public float AngularImpulse { get; set; }
-        public float Radius { get; set; }
-        public float? Mass { get; set; }
-        public float? Inertia { get; set; }
+        public EntityShape EntityShape { get; }
+
+        public float Radius
+        {
+            get
+            {
+                ValidateRadiusValue(_radius);
+                return _radius;
+            }
+            set
+            {
+                ValidateRadiusValue(value);
+                _radius = value;
+            }
+        }
+
         public float Density { get; }
-        /// <summary>
-        /// Value between 0 and 1
-        /// </summary>
-        public float Restitution { get; set; }
+
+        public float Restitution
+        {
+            get => _restitution;
+            set
+            {
+                if (value < 0 || value > 1)
+                    throw new ArgumentOutOfRangeException("The restitution value must be between 0 and 1!");
+
+                _restitution = value;
+            }
+        }
+
         public float Friction { get; set; }
-        public EntityType EntityType { get; set; }
-        public EntityShape EntityShape { get; set; }
-        public bool IgnoreGravity { get; set; }
+
         public IEnumerable<Vector2> Vertices { get; set; }
-        public Vector2 LinearVelocity { get; set; }
-        public bool FixedRotation { get; set; }
+
+        public Vector2 SetLinearVelocityX(float x)
+            => LinearVelocity = new Vector2(x, LinearVelocity.Y);
+
+        public Vector2 SetLinearVelocityY(float y)
+            => LinearVelocity = new Vector2(LinearVelocity.X, y);
+
+        void ValidateRadiusValue(float radius)
+        {
+            if (EntityShape == EntityShape.Circle && radius == 0)
+                throw new ArgumentException($"Radius value can't be 0 when {nameof(EntityShape)} equals {nameof(EntityShape.Circle)}!");
+        }
     }
 
     public enum EntityShape

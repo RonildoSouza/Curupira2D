@@ -15,10 +15,8 @@ namespace Sample
     {
         public Game1() : base() { }
 
-        protected override void Initialize()
+        protected override void LoadContent()
         {
-            base.Initialize();
-
             var scene = new Scene();
 
             var characterTexture = Content.Load<Texture2D>("character");
@@ -27,6 +25,8 @@ namespace Sample
             characterEntity.AddComponent(new SpriteComponent(characterTexture));
 
             SetScene(scene);
+
+            base.LoadContent();
         }
     }
 }

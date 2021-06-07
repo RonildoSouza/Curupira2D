@@ -13,26 +13,28 @@ namespace Curupira2D.ECS
 
         public static EntityManager Instance => _entityManager.Value;
 
-        public Entity CreateEntity(string uniqueId)
+        public Entity Create(string uniqueId, string group = null)
         {
             if (_entities.Any(_ => _.UniqueId == uniqueId))
                 throw new ArgumentException($"An entity with the same Id exists ({uniqueId})!");
 
-            var entity = new Entity(uniqueId);
+            var entity = new Entity(uniqueId, group);
             _entities.Add(entity);
 
             return entity;
         }
 
-        public Entity GetEntity(string uniqueId) => _entities.FirstOrDefault(_ => _.UniqueId == uniqueId);
+        public Entity Get(string uniqueId) => _entities.FirstOrDefault(_ => _.UniqueId == uniqueId);
 
-        public IReadOnlyList<Entity> GetEntities(Func<Entity, bool> match) => _entities.Where(match).ToList();
+        public IReadOnlyList<Entity> GetAll(Func<Entity, bool> match) => _entities.Where(match).ToList();
 
-        public void DestroyEntity(Predicate<Entity> match) => _entities.RemoveAll(match);
+        public void Remove(Predicate<Entity> match) => _entities.RemoveAll(match);
 
-        public void DestroyEntity(string uniqueId) => DestroyEntity(_ => _.UniqueId == uniqueId);
+        public void Remove(string uniqueId) => Remove(_ => _.UniqueId == uniqueId);
 
-        public void DestroyAllEntities() => DestroyEntity(_ => true);
+        public void RemoveAll() => Remove(_ => true);
+
+        public bool Exists(Func<Entity, bool> match) => _entities.Any(match);
 
         public void Dispose()
         {

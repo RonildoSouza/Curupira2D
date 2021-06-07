@@ -6,21 +6,21 @@ using Microsoft.Xna.Framework;
 
 namespace Curupira2D.Testbed.Systems.Physic
 {
-    class SquareControllerSystem : ECS.System, IInitializable
+    class SquareControllerSystem : ECS.System, ILoadable
     {
-        public void Initialize()
+        public void LoadContent()
         {
             var squareTexture = Scene.GameCore.GraphicsDevice.CreateTextureRectangle(50, Color.Black * 0.6f);
 
             Scene.CreateEntity("square")
                 .SetPosition(Scene.ScreenWidth * 0.6f, 100)
                 .SetRotation(45)
-                .AddComponent(new SpriteComponent(squareTexture))
-                .AddComponent(new BodyComponent(squareTexture.Bounds.Size.ToVector2())
-                {
-                    EntityType = EntityType.Dynamic,
-                    Restitution = 1f,
-                });
+                .AddComponent(
+                    new SpriteComponent(squareTexture),
+                    new BodyComponent(squareTexture.Bounds.Size.ToVector2(), EntityType.Dynamic, EntityShape.Rectangle)
+                    {
+                        Restitution = 1f,
+                    });
         }
     }
 }

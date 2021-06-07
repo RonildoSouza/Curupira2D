@@ -7,7 +7,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Curupira2D", "Curupira2D\Cu
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Samples", "Samples", "{FE4E0B1F-9B5B-4FA7-B12D-8CABBF5F98F6}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Curupira2D.Testbed", "..\samples\Curupira2D.Samples\Curupira2D.Testbed.csproj", "{30F9F3F4-D049-447F-AFEF-D0CE5F38EC3F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Curupira2D.Samples", "..\samples\Curupira2D.Samples\Curupira2D.Samples.csproj", "{30F9F3F4-D049-447F-AFEF-D0CE5F38EC3F}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Curupira2D.GameComponents", "Curupira2D.GameComponents\Curupira2D.GameComponents.csproj", "{07F3723C-DA23-4223-B97D-B0D4CFAC8411}"
 EndProject

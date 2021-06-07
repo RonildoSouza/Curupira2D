@@ -9,39 +9,39 @@ namespace Curupira2D.ECS.Systems.Drawables
     {
         public void Draw()
         {
-            DrawFixedPositionEntities();
-            DrawNonFixedPositionEntities();
+            DrawWithoutUsingCameraEntities();
+            DrawUsingCameraEntities();
         }
 
-        protected void DrawFixedPositionEntities()
+        protected void DrawWithoutUsingCameraEntities()
         {
             Scene.SpriteBatch.Begin(SpriteSortMode.BackToFront);
 
-            var fixedPositionEntities = Scene.GetEntities(_ =>
+            var withoutUsingCameraEntities = Scene.GetEntities(_ =>
             {
                 var drawableComponent = _.GetComponent<TDrawableComponent>();
-                return MatchActiveEntitiesAndComponents(_) && drawableComponent.FixedPosition;
+                return MatchActiveEntitiesAndComponents(_) && drawableComponent.DrawWithoutUsingCamera;
             });
 
-            DrawEntities(ref fixedPositionEntities);
+            DrawEntities(ref withoutUsingCameraEntities);
 
             Scene.SpriteBatch.End();
         }
 
-        protected void DrawNonFixedPositionEntities()
+        protected void DrawUsingCameraEntities()
         {
             Scene.SpriteBatch.Begin(
                 sortMode: SpriteSortMode.BackToFront,
-                blendState: BlendState.AlphaBlend,
-                transformMatrix: Scene.Camera2D.TransformationMatrix);
+                rasterizerState: RasterizerState.CullClockwise,
+                effect: Scene.Camera2D.SpriteBatchEffect);
 
-            var nonFixedPositionEntities = Scene.GetEntities(_ =>
+            var usingCameraEntities = Scene.GetEntities(_ =>
             {
                 var drawableComponent = _.GetComponent<TDrawableComponent>();
-                return MatchActiveEntitiesAndComponents(_) && !drawableComponent.FixedPosition;
+                return MatchActiveEntitiesAndComponents(_) && !drawableComponent.DrawWithoutUsingCamera;
             });
 
-            DrawEntities(ref nonFixedPositionEntities);
+            DrawEntities(ref usingCameraEntities);
 
             Scene.SpriteBatch.End();
         }

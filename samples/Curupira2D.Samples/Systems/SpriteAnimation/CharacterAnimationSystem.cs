@@ -8,11 +8,11 @@ using Microsoft.Xna.Framework.Input;
 namespace Curupira2D.Testbed.Systems.SpriteAnimation
 {
     [RequiredComponent(typeof(CharacterAnimationSystem), typeof(SpriteAnimationComponent))]
-    class CharacterAnimationSystem : ECS.System, IInitializable, IUpdatable
+    class CharacterAnimationSystem : ECS.System, ILoadable, IUpdatable
     {
         Entity _characterEntity;
 
-        public void Initialize()
+        public void LoadContent()
         {
             // Create entity character in scene
             var characterTexture = Scene.GameCore.Content.Load<Texture2D>("SpriteAnimation/character");
@@ -24,18 +24,18 @@ namespace Curupira2D.Testbed.Systems.SpriteAnimation
 
         public void Update()
         {
-            var ks = Keyboard.GetState();
+            var keyState = Keyboard.GetState();
 
-            if (ks.IsKeyDown(Keys.Left))
+            if (keyState.IsKeyDown(Keys.Left))
                 HorizontalAnimation(ref _characterEntity, 180);
 
-            if (ks.IsKeyDown(Keys.Up))
+            if (keyState.IsKeyDown(Keys.Up))
                 VerticalAnimation(ref _characterEntity, 90);
 
-            if (ks.IsKeyDown(Keys.Right))
+            if (keyState.IsKeyDown(Keys.Right))
                 HorizontalAnimation(ref _characterEntity, 270);
 
-            if (ks.IsKeyDown(Keys.Down))
+            if (keyState.IsKeyDown(Keys.Down))
                 VerticalAnimation(ref _characterEntity, 0);
         }
 

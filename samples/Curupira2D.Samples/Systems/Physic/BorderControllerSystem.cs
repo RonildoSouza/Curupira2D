@@ -6,9 +6,9 @@ using Microsoft.Xna.Framework;
 
 namespace Curupira2D.Testbed.Systems.Physic
 {
-    class BorderControllerSystem : ECS.System, IInitializable
+    class BorderControllerSystem : ECS.System, ILoadable
     {
-        public void Initialize()
+        public void LoadContent()
         {
             var horizontalBorderTexture = Scene.GameCore.GraphicsDevice.CreateTextureRectangle(Scene.ScreenWidth, 25, Color.LightCoral);
             var verticalBorderTexture = Scene.GameCore.GraphicsDevice.CreateTextureRectangle(25, Scene.ScreenHeight, Color.LightCoral);
@@ -18,23 +18,19 @@ namespace Curupira2D.Testbed.Systems.Physic
 
             Scene.CreateEntity("left-border")
                 .SetPosition(verticalBorderSpriteComponent.Origin.X, verticalBorderSpriteComponent.Origin.Y)
-                .AddComponent(verticalBorderSpriteComponent)
-                .AddComponent<BodyComponent>(verticalBorderTexture.Bounds.Size.ToVector2(), 1);
+                .AddComponent(verticalBorderSpriteComponent, new BodyComponent(verticalBorderTexture.Bounds.Size.ToVector2(), EntityType.Static, EntityShape.Rectangle));
 
             Scene.CreateEntity("up-border")
                 .SetPosition(horizontalBorderSpriteComponent.Origin.X, horizontalBorderSpriteComponent.Origin.Y)
-                .AddComponent(horizontalBorderSpriteComponent)
-                .AddComponent<BodyComponent>(horizontalBorderTexture.Bounds.Size.ToVector2(), 1);
+                .AddComponent(horizontalBorderSpriteComponent, new BodyComponent(horizontalBorderTexture.Bounds.Size.ToVector2(), EntityType.Static, EntityShape.Rectangle));
 
             Scene.CreateEntity("right-border")
                 .SetPosition(Scene.ScreenWidth - verticalBorderSpriteComponent.Origin.X, verticalBorderSpriteComponent.Origin.Y)
-                .AddComponent(verticalBorderSpriteComponent)
-                .AddComponent<BodyComponent>(verticalBorderTexture.Bounds.Size.ToVector2(), 1);
+                .AddComponent(verticalBorderSpriteComponent, new BodyComponent(verticalBorderTexture.Bounds.Size.ToVector2(), EntityType.Static, EntityShape.Rectangle));
 
             Scene.CreateEntity("down-border")
                 .SetPosition(horizontalBorderSpriteComponent.Origin.X, Scene.ScreenHeight - horizontalBorderSpriteComponent.Origin.Y)
-                .AddComponent(horizontalBorderSpriteComponent)
-                .AddComponent<BodyComponent>(horizontalBorderTexture.Bounds.Size.ToVector2(), 1);
+                .AddComponent(horizontalBorderSpriteComponent, new BodyComponent(horizontalBorderTexture.Bounds.Size.ToVector2(), EntityType.Static, EntityShape.Rectangle));
         }
     }
 }

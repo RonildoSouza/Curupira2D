@@ -17,7 +17,7 @@ namespace Curupira2D.Testbed.Common.Scenes
                     fontArial,
                     $"{text}",
                     color: color == default ? Color.DarkBlue : color,
-                    fixedPosition: true));
+                    layerDepth: 1));
         }
 
         protected void ShowControlTips(float x, float y, string text, Color color = default) =>

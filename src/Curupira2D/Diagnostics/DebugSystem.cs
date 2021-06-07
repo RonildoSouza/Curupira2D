@@ -8,12 +8,12 @@ using System.Text;
 
 namespace Curupira2D.Diagnostics
 {
-    public class DebugSystem : ECS.System, IInitializable, IRenderable
+    public class DebugSystem : ECS.System, ILoadable, IRenderable
     {
         SpriteFont _fontArial18;
         readonly StringBuilder _stringBuilder = new StringBuilder();
 
-        public void Initialize()
+        public void LoadContent()
         {
             //_fontArial18 = Scene.Content.Load<SpriteFont>("FontArial18");
         }

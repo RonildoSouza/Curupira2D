@@ -5,7 +5,7 @@ namespace Curupira2D.Testbed.Scenes
 {
     class SceneGraphScene : SceneBase
     {
-        public override void Initialize()
+        public override void LoadContent()
         {
             SetTitle(nameof(SceneGraphScene));
 
@@ -14,7 +14,7 @@ namespace Curupira2D.Testbed.Scenes
 
             ShowControlTips(120, 50, "MOVIMENT: Keyboard Arrows\nEQUIPMENTS: Key 1, 2");
 
-            base.Initialize();
+            base.LoadContent();
         }
     }
 }

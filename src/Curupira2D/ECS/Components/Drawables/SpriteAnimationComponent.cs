@@ -15,11 +15,11 @@ namespace Curupira2D.ECS.Components.Drawables
             Rectangle? sourceRectangle = null,
             bool isLooping = false,
             bool isPlaying = false,
-            SpriteEffects spriteEffect = SpriteEffects.None,
+            SpriteEffects spriteEffect = SpriteEffects.FlipVertically,
             Color color = default,
             float layerDepth = 0,
             Vector2 scale = default,
-            bool fixedPosition = false) : base(texture, spriteEffect, color, sourceRectangle, layerDepth, scale, fixedPosition)
+            bool drawWithoutUsingCamera = true) : base(texture, spriteEffect, color, sourceRectangle, layerDepth, scale, drawWithoutUsingCamera)
         {
             FrameRowsCount = frameRowsCount;
             FrameColumnsCount = frameColumnsCount;
@@ -41,11 +41,11 @@ namespace Curupira2D.ECS.Components.Drawables
             Rectangle? sourceRectangle = null,
             bool isLooping = false,
             bool isPlaying = false,
-            SpriteEffects spriteEffect = SpriteEffects.None,
+            SpriteEffects spriteEffect = SpriteEffects.FlipVertically,
             Color color = default,
             float layerDepth = 0,
             Vector2 scale = default,
-            bool fixedPosition = false) : this(
+            bool drawWithoutUsingCamera = true) : this(
                 texture,
                 frameRowsCount,
                 frameColumnsCount,
@@ -58,7 +58,7 @@ namespace Curupira2D.ECS.Components.Drawables
                 color,
                 layerDepth,
                 scale,
-                fixedPosition)
+                drawWithoutUsingCamera)
         { }
 
         public override Vector2 Origin => new Vector2(FrameWidth * 0.5f, FrameHeight * 0.5f);

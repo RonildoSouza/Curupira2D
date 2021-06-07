@@ -7,7 +7,7 @@ namespace Curupira2D.Testbed.Scenes
 {
     class SpriteAnimationScene : SceneBase
     {
-        public override void Initialize()
+        public override void LoadContent()
         {
             SetTitle(nameof(SpriteAnimationScene));
 
@@ -23,7 +23,7 @@ namespace Curupira2D.Testbed.Scenes
 
             ShowControlTips(120, 40, "MOVIMENT: Keyboard Arrows");
 
-            base.Initialize();
+            base.LoadContent();
         }
     }
 }

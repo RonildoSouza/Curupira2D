@@ -5,33 +5,25 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
-using tainicom.Aether.Physics2D.Dynamics;
 
 namespace Curupira2D.ECS
 {
     public class Scene : IDisposable
     {
-        Vector2 _gravity;
         readonly EntityManager _entityManager = EntityManager.Instance;
         readonly SystemManager _systemManager = SystemManager.Instance;
-
-        public Scene(Vector2 gravity = default)
-        {
-            if (gravity == default)
-                SetGravity(new Vector2(0f, 9.80665f));
-        }
 
         public GameCore GameCore { get; private set; }
         public SpriteBatch SpriteBatch { get; private set; }
         public GameTime GameTime { get; private set; }
         public ICamera2D Camera2D { get; private set; }
-        public World World { get; private set; }
         public string Title { get; private set; }
         public Color CleanColor { get; private set; } = Color.LightGray;
-        public float DeltaTime => (float)GameTime.ElapsedGameTime.TotalSeconds;
+        public float DeltaTime { get; private set; }
         public int ScreenWidth => GameCore.GraphicsDevice.Viewport.Width;
         public int ScreenHeight => GameCore.GraphicsDevice.Viewport.Height;
         public Vector2 ScreenSize => new Vector2(ScreenWidth, ScreenHeight);
+        public Vector2 Gravity { get; set; }
 
         public void SetGameCore(GameCore gameCore)
         {
@@ -39,26 +31,40 @@ namespace Curupira2D.ECS
             SpriteBatch = new SpriteBatch(GameCore.GraphicsDevice);
         }
 
-        #region Methods of managing systems
-        public Scene AddSystem<TSystem>(TSystem system) where TSystem : System
+        public virtual void LoadContent()
         {
-            _systemManager.AddSystem(this, system);
-            return this;
+            Camera2D = new Camera2DComponent(GameCore)
+            {
+                Origin = new Vector2(ScreenWidth * 0.5f, ScreenHeight * 0.5f),
+                Position = new Vector2(ScreenWidth * 0.5f, ScreenHeight * 0.5f)
+            };
+
+            GameCore.Components.Add(Camera2D);
+
+            AddSystem<TextSystem>();
+            AddSystem<SpriteSystem>();
+            AddSystem<SpriteAnimationSystem>();
+            AddSystem<TiledMapSystem>();
+
+            // Always keep this system at the end
+            AddSystem(new PhysicsSystem(Gravity));
+
+            _systemManager.LoadableSystemsIteration();
         }
 
-        public Scene AddSystem<TSystem>(params object[] args) where TSystem : System
+        public virtual void Update(GameTime gameTime)
         {
-            _systemManager.AddSystem<TSystem>(this, args);
-            return this;
+            GameTime = gameTime;
+            DeltaTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
+
+            _systemManager.UpdatableSystemsIteration();
         }
 
-        public void RemoveSystem<TSystem>() where TSystem : System
-            => _systemManager.RemoveSystem<TSystem>();
+        public virtual void Draw()
+        {
+            _systemManager.RenderableSystemsIteration();
+        }
 
-        public void RemoveAllSystems() => _systemManager.RemoveAllSystems();
-        #endregion
-
-        #region Methods of managing scenes
         public Scene SetTitle(string title)
         {
             Title = title;
@@ -71,74 +77,53 @@ namespace Curupira2D.ECS
             return this;
         }
 
-        public Scene SetGravity(Vector2 gravity)
-        {
-            if (World == null)
-                _gravity = gravity;
-            else
-                World.Gravity = gravity;
+        public float InvertPositionX(float x) => ScreenWidth - x;
 
+        public float InvertPositionY(float y) => ScreenHeight - y;
+
+        #region Methods of managing systems
+        public Scene AddSystem<TSystem>(TSystem system) where TSystem : System
+        {
+            _systemManager.Add(this, system);
             return this;
         }
+
+        public Scene AddSystem<TSystem>(params object[] args) where TSystem : System
+        {
+            _systemManager.Add<TSystem>(this, args);
+            return this;
+        }
+
+        public void RemoveSystem<TSystem>() where TSystem : System => _systemManager.Remove<TSystem>();
+
+        public void RemoveAllSystems() => _systemManager.RemoveAll();
         #endregion
 
         #region Methods of managing entities
-        public Entity CreateEntity(string uniqueId) => _entityManager.CreateEntity(uniqueId);
+        public Entity CreateEntity(string uniqueId, string group = null) => _entityManager.Create(uniqueId, group);
 
-        public Entity GetEntity(string uniqueId) => _entityManager.GetEntity(uniqueId);
+        public Entity GetEntity(string uniqueId) => _entityManager.Get(uniqueId);
 
-        public IReadOnlyList<Entity> GetEntities(Func<Entity, bool> match) => _entityManager.GetEntities(match);
+        public IReadOnlyList<Entity> GetEntities(Func<Entity, bool> match) => _entityManager.GetAll(match);
 
-        public void DestroyEntity(Predicate<Entity> match) => _entityManager.DestroyEntity(match);
+        public IReadOnlyList<Entity> GetEntities(string group) => GetEntities(e => e.Group == group);
 
-        public void DestroyEntity(string uniqueId) => _entityManager.DestroyEntity(uniqueId);
+        public void RemoveEntity(Predicate<Entity> match) => _entityManager.Remove(match);
 
-        public void DestroyEntity(Entity entity) => DestroyEntity(entity?.UniqueId);
+        public void RemoveEntity(string uniqueId) => _entityManager.Remove(uniqueId);
 
-        public void DestroyAllEntities() => _entityManager.DestroyAllEntities();
-        #endregion
+        public void RemoveEntity(Entity entity) => RemoveEntity(entity?.UniqueId);
 
-        public virtual void Initialize()
-        {
-            Camera2D = new Camera2DComponent(GameCore)
-            {
-                Origin = new Vector2(ScreenWidth * 0.5f, ScreenHeight * 0.5f),
-                Position = new Vector2(ScreenWidth * 0.5f, ScreenHeight * 0.5f)
-            };
+        public void RemoveAllEntities() => _entityManager.RemoveAll();
 
-            GameCore.Components.Add(Camera2D);
-
-            World = new World(_gravity);
-
-            AddSystem<TextSystem>();
-            AddSystem<SpriteSystem>();
-            AddSystem<SpriteAnimationSystem>();
-            AddSystem<TiledMapSystem>();
-
-            // Always keep this system at the end
-            AddSystem<PhysicsSystem>();
-
-            _systemManager.InitializableSystemsIteration();
-        }
-
-        public virtual void Update(GameTime gameTime)
-        {
-            GameTime = gameTime;
-            World.Step(DeltaTime);
-            _systemManager.UpdatableSystemsIteration();
-        }
-
-        public virtual void Draw()
-        {
-            _systemManager.RenderableSystemsIteration();
-        }
+        public bool ExistsEntities(Func<Entity, bool> match) => _entityManager.Exists(match);
+        #endregion       
 
         public virtual void Dispose()
         {
             GameCore.Dispose();
             SpriteBatch.Dispose();
             Camera2D = null;
-            World = null;
 
             GC.Collect();
         }

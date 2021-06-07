@@ -60,6 +60,11 @@ namespace Curupira2D.GameComponents.Camera2D
         Matrix View { get; }
 
         /// <summary>
+        /// Use a BasicEffect to pass our view/projection in _spriteBatch
+        /// </summary>
+        BasicEffect SpriteBatchEffect { get; }
+
+        /// <summary>
         /// Translate the given screen space xy-coordinate position to the equivalent world space xy-coordinate position
         /// </summary>
         /// <param name="position">The xy-coordinate position in screen space to translate</param>

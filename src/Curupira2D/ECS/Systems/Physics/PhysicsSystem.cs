@@ -1,6 +1,5 @@
 ﻿using Curupira2D.ECS.Components.Physics;
 using Curupira2D.ECS.Systems.Attributes;
-using Curupira2D.Extensions;
 using Microsoft.Xna.Framework;
 using System.Linq;
 using tainicom.Aether.Physics2D.Common;
@@ -10,15 +9,29 @@ using tainicom.Aether.Physics2D.Dynamics;
 namespace Curupira2D.ECS.Systems.Physics
 {
     [RequiredComponent(typeof(PhysicsSystem), typeof(BodyComponent))]
-    public class PhysicsSystem : System, IInitializable, IUpdatable, IRenderable
+    public class PhysicsSystem : System, ILoadable, IUpdatable, IRenderable
     {
+        readonly World _world;
         DebugView _debugView;
+
+        public PhysicsSystem(Vector2 gravity)
+        {
+            _world = new World();
+
+            if (gravity != default)
+                _world.Gravity = gravity;
+
+            // enable multithreading
+            _world.ContactManager.VelocityConstraintsMultithreadThreshold = 256;
+            _world.ContactManager.PositionConstraintsMultithreadThreshold = 256;
+            _world.ContactManager.CollideMultithreadThreshold = 256;
+        }
 
         public Color DebugDefaultShapeColor { get; set; } = Color.Orange;
         public Color DebugSleepingShapeColor { get; set; } = Color.DodgerBlue;
         public Color DebugTextColor { get; set; } = Color.Black;
 
-        public void Initialize()
+        public void LoadContent()
         {
             var entities = Scene.GetEntities(_ => MatchActiveEntitiesAndComponents(_));
 
@@ -26,59 +39,36 @@ namespace Curupira2D.ECS.Systems.Physics
             {
                 var entity = entities[i];
                 var bodyComponent = entity.GetComponent<BodyComponent>();
-                BodyType bodyType = (BodyType)bodyComponent.EntityType;
-                Body body = null;
 
                 switch (bodyComponent.EntityShape)
                 {
                     case EntityShape.Circle:
-                        body = Scene.World.CreateCircle(
-                            bodyComponent.Radius,
-                            bodyComponent.Density,
-                            entity.Transform.Position,
-                            bodyType);
+                        bodyComponent.CreateCircle(bodyComponent.Radius, bodyComponent.Density, Vector2.Zero);
                         break;
                     case EntityShape.Ellipse:
-                        body = Scene.World.CreateEllipse(
-                            bodyComponent.Size.X * 0.5f,
-                            bodyComponent.Size.Y * 0.5f,
-                            8,
-                            bodyComponent.Density,
-                            entity.Transform.Position,
-                            entity.Transform.Rotation,
-                            bodyType);
+                        bodyComponent.CreateEllipse(bodyComponent.Size.X * 0.5f, bodyComponent.Size.Y * 0.5f, 8, bodyComponent.Density);
                         break;
                     case EntityShape.Rectangle:
-                        body = Scene.World.CreateRectangle(
-                            bodyComponent.Size.X,
-                            bodyComponent.Size.Y,
-                            bodyComponent.Density,
-                            entity.Transform.Position,
-                            entity.Transform.Rotation,
-                            bodyType);
+                        bodyComponent.CreateRectangle(bodyComponent.Size.X, bodyComponent.Size.Y, bodyComponent.Density, Vector2.Zero);
                         break;
                     case EntityShape.Polygon:
                         var vertices = new Vertices(bodyComponent.Vertices);
-                        body = Scene.World.CreatePolygon(
-                            vertices,
-                            bodyComponent.Density,
-                            entity.Transform.Position,
-                            entity.Transform.Rotation,
-                            bodyType);
+                        bodyComponent.CreatePolygon(vertices, bodyComponent.Density);
                         break;
                 }
 
-                if (body == null)
-                    return;
+                _world.Add(bodyComponent);
 
-                body.Tag = entity.UniqueId;
-                body.SetRestitution(bodyComponent.Restitution);
-                body.SetFriction(bodyComponent.Friction);
+                bodyComponent.Tag = entity.UniqueId;
+                bodyComponent.Position = entity.Transform.Position;
+                bodyComponent.Rotation = entity.Transform.Rotation;
+                bodyComponent.SetRestitution(bodyComponent.Restitution);
+                bodyComponent.SetFriction(bodyComponent.Friction);
             };
 
             if (Scene.GameCore.DebugActive && entities.Any())
             {
-                _debugView = new DebugView(Scene.World);
+                _debugView = new DebugView(_world);
                 _debugView.AppendFlags(DebugViewFlags.Shape);
                 _debugView.AppendFlags(DebugViewFlags.Joint);
                 _debugView.AppendFlags(DebugViewFlags.PerformanceGraph);
@@ -94,64 +84,37 @@ namespace Curupira2D.ECS.Systems.Physics
 
         public void Update()
         {
+            if (!Scene.ExistsEntities(_ => MatchActiveEntitiesAndComponents(_)))
+                return;
+
             var entities = Scene.GetEntities(_ => MatchActiveEntitiesAndComponents(_));
 
-            if (entities.Count != Scene.World.BodyList.Count)
+            if (entities.Count != _world.BodyList.Count)
             {
-                Scene.World.BodyList.Clear();
-                Initialize();
+                _world.BodyList.Clear();
+                LoadContent();
             }
 
             for (int i = 0; i < entities.Count(); i++)
             {
                 var entity = entities.ElementAt(i);
-                var bodyComponent = entity.GetComponent<BodyComponent>();
-                var body = Scene.World.BodyList.GetEntityBody(entity);
-
-                if (body == null)
-                    continue;
+                var body = entity.GetComponent<BodyComponent>();
 
                 body.Enabled = entity.Active;
-                body.IgnoreGravity = bodyComponent.IgnoreGravity;
-                body.FixedRotation = bodyComponent.FixedRotation;
 
-                if (bodyComponent.Inertia != null)
-                    body.Inertia = bodyComponent.Inertia.Value;
-
-                if (bodyComponent.Mass != null)
-                    body.Mass = bodyComponent.Mass.Value;
-
-                body.ApplyForce(bodyComponent.Force);
-                body.ApplyTorque(bodyComponent.Torque);
-                body.ApplyLinearImpulse(bodyComponent.LinearImpulse);
-                body.ApplyAngularImpulse(bodyComponent.AngularImpulse);
-
-                if (bodyComponent.LinearVelocity != Vector2.Zero)
-                {
-                    if (bodyComponent.LinearVelocity.X != body.LinearVelocity.X)
-                        body.LinearVelocity = new Vector2(bodyComponent.LinearVelocity.X, body.LinearVelocity.Y);
-
-                    if (bodyComponent.LinearVelocity.Y != body.LinearVelocity.Y)
-                        body.LinearVelocity = new Vector2(body.LinearVelocity.X, bodyComponent.LinearVelocity.Y);
-                }
-
-                // Update MonoGame.Helper.ECS.Entity position and rotation
+                // Update Entity position and rotation
                 entity.SetTransform(body.Position, MathHelper.ToDegrees(body.Rotation));
-
-                // Update MonoGame.Helper.ECS.Entity component
-                bodyComponent.Inertia = body.Inertia;
-                entity.UpdateComponent(bodyComponent);
             }
 
+            _world.Step(Scene.DeltaTime);
+
             if (Scene.GameCore.DebugActive && entities.Any())
-                _debugView.UpdatePerformanceGraph(Scene.World.UpdateTime);
+                _debugView.UpdatePerformanceGraph(_world.UpdateTime);
         }
 
         public void Draw()
         {
-            var entities = Scene.GetEntities(_ => MatchActiveEntitiesAndComponents(_));
-
-            if (Scene.GameCore.DebugActive && entities.Any())
+            if (Scene.GameCore.DebugActive && Scene.ExistsEntities(_ => MatchActiveEntitiesAndComponents(_)))
                 _debugView.RenderDebugData(Scene.Camera2D.Projection, Scene.Camera2D.View);
         }
     }

@@ -8,12 +8,12 @@ namespace Curupira2D.ECS.Components.Drawables
         public TextComponent(
             SpriteFont spriteFont,
             string text,
-            SpriteEffects spriteEffect = SpriteEffects.None,
+            SpriteEffects spriteEffect = SpriteEffects.FlipVertically,
             Color color = default,
             Rectangle? sourceRectangle = null,
             float layerDepth = 0,
             Vector2 scale = default,
-            bool fixedPosition = false) : base(spriteEffect, color, sourceRectangle, layerDepth, scale, fixedPosition)
+            bool drawWithoutUsingCamera = true) : base(spriteEffect, color, sourceRectangle, layerDepth, scale, drawWithoutUsingCamera)
         {
             SpriteFont = spriteFont;
             Text = text;

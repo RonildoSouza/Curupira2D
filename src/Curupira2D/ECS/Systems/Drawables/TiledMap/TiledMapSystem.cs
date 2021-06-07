@@ -12,9 +12,9 @@ using TiledLib.Objects;
 namespace Curupira2D.ECS.Systems.Drawables
 {
     [RequiredComponent(typeof(TiledMapSystem), typeof(TiledMapComponent))]
-    public class TiledMapSystem : DrawableSystem<TiledMapComponent>, IInitializable
+    public class TiledMapSystem : DrawableSystem<TiledMapComponent>, ILoadable
     {
-        public void Initialize()
+        public void LoadContent()
         {
             var entities = Scene.GetEntities(_ => MatchActiveEntitiesAndComponents(_));
 
@@ -33,10 +33,10 @@ namespace Curupira2D.ECS.Systems.Drawables
                         if (baseObject is PointObject pointObject)
                         {
                             var entity = Scene
-                                .GetEntities(_ => _.UniqueId == pointObject.Name || _.UniqueId == pointObject.Properties.GetValue("mgh.entityUniqueId"))
+                                .GetEntities(_ => _.UniqueId == pointObject.Name || _.UniqueId == pointObject.Properties.GetValue(TiledMapSystemConstants.Properties.EntityUniqueId))
                                 .FirstOrDefault();
 
-                            if (entity != null)
+                            if (entity != null && entity.Transform.Position == default)
                                 entity.SetPosition((float)pointObject.X, (float)pointObject.Y);
                         }
                     }
@@ -54,7 +54,7 @@ namespace Curupira2D.ECS.Systems.Drawables
                     .OfType<TileLayer>()
                     .OrderBy(_ =>
                     {
-                        var propertyValueOrder = _.Properties.GetValue("mgh.order");
+                        var propertyValueOrder = _.Properties.GetValue(TiledMapSystemConstants.Properties.Order);
                         return string.IsNullOrEmpty(propertyValueOrder) ? _.Id : int.Parse(propertyValueOrder);
                     })
                     .Where(_ => _.Visible);
@@ -62,6 +62,7 @@ namespace Curupira2D.ECS.Systems.Drawables
                 foreach (var layer in layers)
                 {
                     for (int y = 0, j = 0; y < layer.Height; y++)
+                    {
                         for (int x = 0; x < layer.Width; x++, j++)
                         {
                             var gid = layer.Data[j];
@@ -73,21 +74,60 @@ namespace Curupira2D.ECS.Systems.Drawables
 
                             GetTileOrientation(tile, out var tileSpriteEffect, out var tileRotation);
 
+                            var tilePosX = x * tile.Width + (int)(tile.Width * 0.5f);
+                            var tilePosY = (int)Scene.InvertPositionY(y * tile.Height + (int)(tile.Height * 0.5f));
+
                             Scene.SpriteBatch.Draw(
                                 tiledMapComponent.Texture,
-                                new Rectangle(
-                                    x * tile.Width + (int)(tile.Width * 0.5f),
-                                    y * tile.Height + (int)(tile.Height * 0.5f),
-                                    tile.Width,
-                                    tile.Height),
+                                new Rectangle(tilePosX, tilePosY, tile.Width, tile.Height),
                                 new Rectangle(tile.Left, tile.Top, tile.Width, tile.Height),
                                 Color.White,
                                 MathHelper.ToRadians(tileRotation),
                                 tiledMapComponent.Origin,
-                                tileSpriteEffect,
+                                tileSpriteEffect | tiledMapComponent.SpriteEffect,
                                 tiledMapComponent.LayerDepth);
                         }
+                    }
                 }
+            }
+        }
+
+        void CreateCollisionEntities(BaseObject baseObject)
+        {
+            var entityUniqueId = baseObject.Properties.GetValue(TiledMapSystemConstants.Properties.EntityUniqueId);
+            var entityGroup = baseObject.Properties.GetValue(TiledMapSystemConstants.Properties.EntityGroup);
+
+            // Creates ellipse type collision entity
+            if (baseObject is EllipseObject ellipseObject)
+            {
+                var posX = (float)ellipseObject.X + (float)ellipseObject.Width * 0.5f;
+                var posY = Scene.InvertPositionY((float)ellipseObject.Y + (float)ellipseObject.Height * 0.5f);
+
+                Scene.CreateEntity(entityUniqueId ?? $"{nameof(EllipseObject)}_{ellipseObject.Id}", entityGroup)
+                    .SetPosition(posX, posY)
+                    .AddComponent(new BodyComponent((float)ellipseObject.Width, (float)ellipseObject.Height, EntityType.Static, EntityShape.Ellipse));
+            }
+
+            // Creates rectangle type collision entity
+            if (baseObject is RectangleObject rectangleObject)
+            {
+                var posX = (float)rectangleObject.X + (float)rectangleObject.Width * 0.5f;
+                var posY = Scene.InvertPositionY((float)rectangleObject.Y + (float)rectangleObject.Height * 0.5f);
+
+                Scene.CreateEntity(entityUniqueId ?? $"{nameof(RectangleObject)}_{rectangleObject.Id}", entityGroup)
+                    .SetPosition(posX, posY)
+                    .AddComponent(new BodyComponent((float)rectangleObject.Width, (float)rectangleObject.Height, EntityType.Static, EntityShape.Rectangle));
+            }
+
+            // Creates polygon type collision entity
+            if (baseObject is PolygonObject polygonObject)
+            {
+                Scene.CreateEntity(entityUniqueId ?? $"{nameof(PolygonObject)}_{polygonObject.Id}", entityGroup)
+                    .SetPosition((float)polygonObject.X, Scene.InvertPositionY((float)polygonObject.Y))
+                    .AddComponent(new BodyComponent((float)polygonObject.Width, (float)polygonObject.Height, EntityType.Static, EntityShape.Polygon)
+                    {
+                        Vertices = polygonObject.Polygon.Select(_ => new Vector2((float)_.X, (float)_.Y))
+                    });
             }
         }
 
@@ -117,46 +157,6 @@ namespace Curupira2D.ECS.Systems.Drawables
                 case TileOrientation.Rotate270CCW:
                     tileRotation = 270f;
                     break;
-            }
-        }
-
-        void CreateCollisionEntities(BaseObject baseObject)
-        {
-            // Creates ellipse type collision entity
-            if (baseObject is EllipseObject ellipseObject)
-            {
-                var posX = (float)ellipseObject.X + (float)ellipseObject.Width * 0.5f;
-                var posY = (float)ellipseObject.Y + (float)ellipseObject.Height * 0.5f;
-
-                Scene.CreateEntity($"{nameof(EllipseObject)}_{ellipseObject.Id}")
-                    .SetPosition(posX, posY)
-                    .AddComponent(new BodyComponent((float)ellipseObject.Width, (float)ellipseObject.Height)
-                    {
-                        EntityShape = EntityShape.Ellipse
-                    });
-            }
-
-            // Creates rectangle type collision entity
-            if (baseObject is RectangleObject rectangleObject)
-            {
-                var posX = (float)rectangleObject.X + (float)rectangleObject.Width * 0.5f;
-                var posY = (float)rectangleObject.Y + (float)rectangleObject.Height * 0.5f;
-
-                Scene.CreateEntity($"{nameof(RectangleObject)}_{rectangleObject.Id}")
-                    .SetPosition(posX, posY)
-                    .AddComponent(new BodyComponent((float)rectangleObject.Width, (float)rectangleObject.Height));
-            }
-
-            // Creates polygon type collision entity
-            if (baseObject is PolygonObject polygonObject)
-            {
-                Scene.CreateEntity($"{nameof(PolygonObject)}_{polygonObject.Id}")
-                    .SetPosition((float)polygonObject.X, (float)polygonObject.Y)
-                    .AddComponent(new BodyComponent((float)polygonObject.Width, (float)polygonObject.Height)
-                    {
-                        EntityShape = EntityShape.Polygon,
-                        Vertices = polygonObject.Polygon.Select(_ => new Vector2((float)_.X, (float)_.Y))
-                    });
             }
         }
     }

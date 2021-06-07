@@ -20,39 +20,18 @@ namespace Curupira2D.GameComponents.Camera2D
         private Vector2 _origin = Vector2.Zero;
         private bool _hasChanged;
 
-        public Camera2DComponent(Game game) : base(game) { }
+        public Camera2DComponent(Game game, BasicEffect _spriteBatchEffect = null) : base(game)
+        {
+            Viewport = game.GraphicsDevice.Viewport;
+
+            SpriteBatchEffect = _spriteBatchEffect ?? new BasicEffect(game.GraphicsDevice);
+            SpriteBatchEffect.TextureEnabled = true;
+            SpriteBatchEffect.VertexColorEnabled = true;
+        }
 
         public Viewport Viewport { get; set; }
-        public Matrix TransformationMatrix
-        {
-            get
-            {
-                //  If a change is detected, update matrices before
-                //  returning value
-                if (_hasChanged)
-                {
-                    UpdateMatrices();
-                    UpdateProjection();
-                    UpdateView();
-                }
-                return _transformationMatrix;
-            }
-        }
-        public Matrix InverseMatrix
-        {
-            get
-            {
-                //  If a change is detected, update matrices before
-                //  returning value
-                if (_hasChanged)
-                {
-                    UpdateMatrices();
-                    UpdateProjection();
-                    UpdateView();
-                }
-                return _inverseMatrix;
-            }
-        }
+        public Matrix TransformationMatrix => _transformationMatrix;
+        public Matrix InverseMatrix => _inverseMatrix;
         public Vector2 Position
         {
             get { return _position; }
@@ -90,6 +69,12 @@ namespace Curupira2D.GameComponents.Camera2D
             {
                 //  If the value hasn't actually changed, just return back
                 if (_zoom == value) { return; }
+
+                if (value.X <= 0)
+                    value.X = 1f;
+
+                if (value.Y <= 0)
+                    value.Y = 1f;
 
                 //  Set the zoom value
                 _zoom = value;
@@ -145,11 +130,23 @@ namespace Curupira2D.GameComponents.Camera2D
         }
         public Matrix Projection { get; private set; }
         public Matrix View { get; private set; }
+        public BasicEffect SpriteBatchEffect { get; private set; }
 
-        public override void Initialize()
+        public override void Update(GameTime gameTime)
         {
-            Viewport = Game.GraphicsDevice.Viewport;
-            base.Initialize();
+            if (_hasChanged)
+            {
+                UpdateMatrices();
+                UpdateProjection();
+                UpdateView();
+
+                SpriteBatchEffect.View = View;
+                SpriteBatchEffect.Projection = Projection;
+
+                _hasChanged = false;
+            }
+
+            base.Update(gameTime);
         }
 
         public Vector2 ScreenToWorld(Vector2 position)
@@ -177,8 +174,7 @@ namespace Curupira2D.GameComponents.Camera2D
         }
 
         /// <summary>
-        ///     Updates the values for our transformation matrix and 
-        ///     the inverse matrix.  
+        /// Updates the values for our transformation matrix and the inverse matrix.  
         /// </summary>
         void UpdateMatrices()
         {
@@ -209,21 +205,18 @@ namespace Curupira2D.GameComponents.Camera2D
 
             //  Get our inverse matrix of the transformation matrix
             _inverseMatrix = Matrix.Invert(_transformationMatrix);
-
-            //  Since the matrices have now been updated, set that there is no longer a change
-            _hasChanged = false;
         }
 
         void UpdateProjection()
         {
-            Projection = Matrix.CreateOrthographic(Viewport.Width * Zoom.X, Viewport.Height * Zoom.Y, 0f, 30f);
+            Projection = Matrix.CreateOrthographic(Viewport.Width * _zoom.X, Viewport.Height * _zoom.Y, 0f, -1f);
         }
 
         void UpdateView()
         {
-            var cameraPosition = new Vector3(Position, 0f);
-            var cameraUpVector = Vector3.TransformNormal(Vector3.Down, Matrix.CreateRotationZ(Rotation));
-            View = Matrix.CreateLookAt(cameraPosition, cameraPosition + Vector3.Backward, cameraUpVector);
+            var cameraPosition = new Vector3(_position, 0f);
+            var cameraUpVector = Vector3.TransformNormal(Vector3.Up, Matrix.CreateRotationZ(_rotation));
+            View = Matrix.CreateLookAt(cameraPosition, cameraPosition + Vector3.Forward, cameraUpVector);
         }
     }
 }

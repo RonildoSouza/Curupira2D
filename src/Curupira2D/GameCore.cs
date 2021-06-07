@@ -35,6 +35,7 @@ namespace Curupira2D
 
         protected override void Initialize()
         {
+            _graphics.GraphicsProfile = GraphicsProfile.Reach;
             _graphics.PreferredBackBufferWidth = _width;
             _graphics.PreferredBackBufferHeight = _height;
             _graphics.ApplyChanges();
@@ -48,6 +49,7 @@ namespace Curupira2D
                 Exit();
 
             _sceneManager.CurrentScene?.Update(gameTime);
+
             base.Update(gameTime);
         }
 
@@ -69,20 +71,16 @@ namespace Curupira2D
             base.Draw(gameTime);
         }
 
-        public void SetScene(Scene scene) => _sceneManager.SetScene(this, scene);
+        public Scene SetScene(Scene scene) => _sceneManager.Set(this, scene);
 
-        public void SetScene<TScene>(params object[] args) where TScene : Scene
-             => _sceneManager.SetScene<TScene>(this, args);
+        public TScene SetScene<TScene>(params object[] args) where TScene : Scene => _sceneManager.Set<TScene>(this, args);
 
-        public void AddScene(Scene scene) => _sceneManager.AddScene(scene);
+        public void AddScene(Scene scene) => _sceneManager.Add(scene);
 
-        public void AddScene<TScene>(params object[] args) where TScene : Scene
-            => _sceneManager.AddScene<TScene>(args);
+        public void AddScene<TScene>(params object[] args) where TScene : Scene => _sceneManager.Add<TScene>(args);
 
-        public void ChangeScene<TScene>() where TScene : Scene
-            => _sceneManager.ChangeScene<TScene>(this);
+        public void ChangeScene<TScene>() where TScene : Scene => _sceneManager.Change<TScene>(this);
 
-        public bool CurrentSceneIs<TScene>() where TScene : Scene
-            => _sceneManager.CurrentScene.GetType() == typeof(TScene);
+        public bool CurrentSceneIs<TScene>() where TScene : Scene => _sceneManager.CurrentScene.GetType() == typeof(TScene);
     }
 }

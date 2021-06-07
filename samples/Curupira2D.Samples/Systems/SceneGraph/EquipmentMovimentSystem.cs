@@ -8,11 +8,11 @@ using Microsoft.Xna.Framework.Input;
 namespace Curupira2D.Testbed.Systems.SceneGraph
 {
     [RequiredComponent(typeof(EquipmentMovimentSystem), typeof(EquipmentComponent))]
-    class EquipmentMovimentSystem : ECS.System, IInitializable, IUpdatable
+    class EquipmentMovimentSystem : ECS.System, ILoadable, IUpdatable
     {
-        KeyboardState _oldKS;
+        KeyboardState _oldKeyState;
 
-        public void Initialize()
+        public void LoadContent()
         {
             var hatTexture = Scene.GameCore.Content.Load<Texture2D>("SceneGraph/hat");
             var staffTexture = Scene.GameCore.Content.Load<Texture2D>("SceneGraph/staff");
@@ -32,7 +32,7 @@ namespace Curupira2D.Testbed.Systems.SceneGraph
 
         public void Update()
         {
-            var ks = Keyboard.GetState();
+            var keyState = Keyboard.GetState();
             var entities = Scene.GetEntities(_ => MatchComponents(_));
 
             for (int i = 0; i < entities.Count; i++)
@@ -44,14 +44,14 @@ namespace Curupira2D.Testbed.Systems.SceneGraph
 
                 entity.SetPosition(newPosition);
 
-                if (entity.UniqueId == "hat" && ks.IsKeyDown(Keys.D1) && _oldKS.IsKeyUp(Keys.D1))
+                if (entity.UniqueId == "hat" && keyState.IsKeyDown(Keys.D1) && _oldKeyState.IsKeyUp(Keys.D1))
                     entity.SetActive(!entity.Active);
 
-                if (entity.UniqueId == "staff" && ks.IsKeyDown(Keys.D2) && _oldKS.IsKeyUp(Keys.D2))
+                if (entity.UniqueId == "staff" && keyState.IsKeyDown(Keys.D2) && _oldKeyState.IsKeyUp(Keys.D2))
                     entity.SetActive(!entity.Active);
             }
 
-            _oldKS = ks;
+            _oldKeyState = keyState;
         }
     }
 }
