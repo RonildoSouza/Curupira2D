@@ -14,7 +14,7 @@ namespace Curupira2D.Extensions
         public static Map LoadTiledMap(this ContentManager content, string tiledMapRelativePath)
         {
             if (content == null || string.IsNullOrEmpty(tiledMapRelativePath))
-                throw new ArgumentException($"Argument {nameof(content)} or {nameof(tiledMapRelativePath)} can't be null or empty!");
+                throw new ArgumentNullException($"Argument {nameof(content)} or {nameof(tiledMapRelativePath)} can't be null or empty!");
 
             var tiledMapExtension = Path.GetExtension(tiledMapRelativePath);
             if (tiledMapExtension != ".tmx" && tiledMapExtension != ".json")

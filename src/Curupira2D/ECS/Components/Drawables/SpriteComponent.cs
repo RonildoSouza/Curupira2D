@@ -7,18 +7,18 @@ namespace Curupira2D.ECS.Components.Drawables
     {
         public SpriteComponent(
             Texture2D texture,
-            SpriteEffects spriteEffect = SpriteEffects.None,
+            SpriteEffects spriteEffect = SpriteEffects.FlipVertically,
             Color color = default,
             Rectangle? sourceRectangle = null,
             float layerDepth = 0,
             Vector2 scale = default,
-            bool fixedPosition = false) : base(spriteEffect, color, sourceRectangle, layerDepth, scale, fixedPosition)
+            bool drawWithoutUsingCamera = true) : base(spriteEffect, color, sourceRectangle, layerDepth, scale, drawWithoutUsingCamera)
         {
             Texture = texture;
         }
 
         public override Vector2 Origin => SourceRectangle.HasValue ? SourceRectangle.Value.Size.ToVector2() * 0.5f : 0.5f * TextureSize;
         public Texture2D Texture { get; set; }
-        public Vector2 TextureSize => Texture.Bounds.Size.ToVector2() * Scale;
+        public Vector2 TextureSize => Texture.Bounds.Size.ToVector2();
     }
 }

@@ -7,7 +7,7 @@ namespace Curupira2D.ECS
 {
     internal sealed class SystemManager : IDisposable
     {
-        readonly List<IInitializable> _initializableSystems = new List<IInitializable>();
+        readonly List<ILoadable> _loadableSystems = new List<ILoadable>();
         readonly List<IUpdatable> _updatableSystems = new List<IUpdatable>();
         readonly List<IRenderable> _renderableSystems = new List<IRenderable>();
         static readonly Lazy<SystemManager> _systemManager = new Lazy<SystemManager>(() => new SystemManager());
@@ -16,10 +16,34 @@ namespace Curupira2D.ECS
 
         public static SystemManager Instance => _systemManager.Value;
 
-        public void AddSystem<TSystem>(Scene scene, TSystem system) where TSystem : System
+        public void LoadableSystemsIteration()
         {
-            if (system is IInitializable && !_initializableSystems.Any(_ => _.GetType().Name == typeof(TSystem).Name))
-                _initializableSystems.Add(system as IInitializable);
+            for (int i = 0; i < _loadableSystems.Count; i++)
+                _loadableSystems[i].LoadContent();
+        }
+
+        public void UpdatableSystemsIteration()
+        {
+            for (int i = 0; i < _updatableSystems.Count; i++)
+            {
+                if (SystemIsValid(_updatableSystems[i]))
+                    _updatableSystems[i].Update();
+            }
+        }
+
+        public void RenderableSystemsIteration()
+        {
+            for (int i = 0; i < _renderableSystems.Count; i++)
+            {
+                if (SystemIsValid(_renderableSystems[i]))
+                    _renderableSystems[i].Draw();
+            }
+        }
+
+        public void Add<TSystem>(Scene scene, TSystem system) where TSystem : System
+        {
+            if (system is ILoadable && !_loadableSystems.Any(_ => _.GetType().Name == typeof(TSystem).Name))
+                _loadableSystems.Add(system as ILoadable);
 
             if (system is IUpdatable && !_updatableSystems.Any(_ => _.GetType().Name == typeof(TSystem).Name))
                 _updatableSystems.Add(system as IUpdatable);
@@ -30,65 +54,34 @@ namespace Curupira2D.ECS
             system.SetScene(scene);
         }
 
-        public void AddSystem<TSystem>(Scene scene, params object[] args) where TSystem : System
+        public void Add<TSystem>(Scene scene, params object[] args) where TSystem : System
         {
             var system = (TSystem)Activator.CreateInstance(typeof(TSystem), args);
-            AddSystem(scene, system);
+            Add(scene, system);
         }
 
-        public void RemoveSystem<TSystem>() where TSystem : System
+        public void Remove<TSystem>() where TSystem : System
         {
-            _initializableSystems.RemoveAll(_ => _.GetType().Name == typeof(TSystem).Name);
+            _loadableSystems.RemoveAll(_ => _.GetType().Name == typeof(TSystem).Name);
             _updatableSystems.RemoveAll(_ => _.GetType().Name == typeof(TSystem).Name);
             _renderableSystems.RemoveAll(_ => _.GetType().Name == typeof(TSystem).Name);
         }
 
-        public void RemoveAllSystems()
+        public void RemoveAll()
         {
-            _initializableSystems.RemoveAll(_ => true);
+            _loadableSystems.RemoveAll(_ => true);
             _updatableSystems.RemoveAll(_ => true);
             _renderableSystems.RemoveAll(_ => true);
         }
 
-        public void InitializableSystemsIteration()
-        {
-            for (int i = 0; i < _initializableSystems.Count; i++)
-                _initializableSystems[i].Initialize();
-        }
-
-        public void UpdatableSystemsIteration()
-        {
-            for (int i = 0; i < _updatableSystems.Count; i++)
-            {
-                if (!SystemIsValid(_updatableSystems[i]))
-                    continue;
-
-                _updatableSystems[i].Update();
-            }
-        }
-
-        public void RenderableSystemsIteration()
-        {
-            for (int i = 0; i < _renderableSystems.Count; i++)
-            {
-                if (!SystemIsValid(_renderableSystems[i]))
-                    continue;
-
-                _renderableSystems[i].Draw();
-            }
-        }
-
         public void Dispose()
         {
-            _initializableSystems.Clear();
-            _updatableSystems.Clear();
-            _renderableSystems.Clear();
+            RemoveAll();
             _systemManager.Value.Dispose();
 
             GC.Collect();
         }
 
-        private bool SystemIsValid(ISystem system)
-            => system.Scene != null && system.Scene.GameTime != null;
+        bool SystemIsValid(ISystem system) => system.Scene != null && system.Scene.GameTime != null;
     }
 }

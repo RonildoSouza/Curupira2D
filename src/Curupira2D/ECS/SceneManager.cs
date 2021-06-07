@@ -15,24 +15,26 @@ namespace Curupira2D.ECS
         public Scene CurrentScene { get; private set; }
         public IReadOnlyList<Scene> Scenes => _scenes;
 
-        public void SetScene(GameCore gameCore, Scene scene)
+        public Scene Set(GameCore gameCore, Scene scene)
         {
             // Clean current scene before change
             CurrentScene?.RemoveAllSystems();
-            CurrentScene?.DestroyAllEntities();
+            CurrentScene?.RemoveAllEntities();
 
             CurrentScene = scene;
             CurrentScene.SetGameCore(gameCore);
-            CurrentScene.Initialize();
+            CurrentScene.LoadContent();
+
+            return CurrentScene;
         }
 
-        public void SetScene<TScene>(GameCore gameCore, params object[] args) where TScene : Scene
+        public TScene Set<TScene>(GameCore gameCore, params object[] args) where TScene : Scene
         {
             var scene = (TScene)Activator.CreateInstance(typeof(TScene), args);
-            SetScene(gameCore, scene);
+            return Set(gameCore, scene) as TScene;
         }
 
-        public void AddScene(Scene scene)
+        public void Add(Scene scene)
         {
             if (_scenes.Any(_ => _.GetType() == scene.GetType()))
                 return;
@@ -40,19 +42,19 @@ namespace Curupira2D.ECS
             _scenes.Add(scene);
         }
 
-        public void AddScene<TScene>(params object[] args) where TScene : Scene
+        public void Add<TScene>(params object[] args) where TScene : Scene
         {
             var scene = (TScene)Activator.CreateInstance(typeof(TScene), args);
-            AddScene(scene);
+            Add(scene);
         }
 
-        public void ChangeScene<TScene>(GameCore gameCore) where TScene : Scene
+        public void Change<TScene>(GameCore gameCore) where TScene : Scene
         {
             if (!_scenes.Any() || !_scenes.Any(_ => _.GetType() == typeof(TScene)))
                 return;
 
             var scene = _scenes.OfType<TScene>().FirstOrDefault();
-            SetScene(gameCore, scene);
+            Set(gameCore, scene);
         }
 
         public void Dispose()

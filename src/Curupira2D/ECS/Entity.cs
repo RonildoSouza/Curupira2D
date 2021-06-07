@@ -11,11 +11,12 @@ namespace Curupira2D.ECS
         readonly Dictionary<Type, IComponent> _components = new Dictionary<Type, IComponent>();
         readonly List<Entity> _children = new List<Entity>();
 
-        public Entity(string uniqueId)
+        internal Entity(string uniqueId, string group = null)
         {
             UniqueId = uniqueId;
             Active = true;
             Transform = new Transform();
+            Group = group;
         }
 
         public string UniqueId { get; }
@@ -23,6 +24,7 @@ namespace Curupira2D.ECS
         public Transform Transform { get; }
         public Entity Parent { get; private set; }
         public IReadOnlyList<Entity> Children => _children;
+        public string Group { get; set; }
 
         public Entity SetPosition(float x, float y)
         {
@@ -88,16 +90,11 @@ namespace Curupira2D.ECS
             return (TComponent)component;
         }
 
-        public bool HasComponent<TComponent>() where TComponent : IComponent
-            => HasComponent(typeof(TComponent));
+        public bool HasComponent<TComponent>() where TComponent : IComponent => HasComponent(typeof(TComponent));
 
-        public bool HasAllComponentTypes(IEnumerable<Type> componentTypes)
-            => componentTypes.All(_ => HasComponent(_));
+        public bool HasAllComponentTypes(IEnumerable<Type> componentTypes) => componentTypes.All(_ => HasComponent(_));
 
-        public bool HasAnyComponentTypes(IEnumerable<Type> componentTypes)
-            => componentTypes.Any(_ => HasComponent(_));
-
-        private bool HasComponent(Type componentType) => _components.ContainsKey(componentType);
+        public bool HasAnyComponentTypes(IEnumerable<Type> componentTypes) => componentTypes.Any(_ => HasComponent(_));
 
         public Entity AddChild(Entity child)
         {
@@ -131,5 +128,7 @@ namespace Curupira2D.ECS
         {
             return -401120461 + EqualityComparer<string>.Default.GetHashCode(UniqueId);
         }
+
+        bool HasComponent(Type componentType) => _components.ContainsKey(componentType);
     }
 }
