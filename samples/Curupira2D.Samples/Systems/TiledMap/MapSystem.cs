@@ -3,9 +3,9 @@ using Curupira2D.Extensions;
 
 namespace Curupira2D.Testbed.Systems.TiledMap
 {
-    class MapSystem : ECS.System, IInitializable
+    class MapSystem : ECS.System, ILoadable
     {
-        public void Initialize()
+        public void LoadContent()
         {
             var tiledMapComponent = Scene.GameCore.Content.CreateTiledMapComponent("TiledMap/PlatformerTiledMap.tmx", "TiledMap/PlatformerTileset");
 

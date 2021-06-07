@@ -10,7 +10,7 @@ namespace Curupira2D.Testbed.Systems.SceneGraph
     {
         protected override string EntityUniqueId => "character";
 
-        public override void Initialize()
+        public override void LoadContent()
         {
             var characterTexture = Scene.GameCore.Content.Load<Texture2D>("SceneGraph/character");
 
@@ -18,7 +18,7 @@ namespace Curupira2D.Testbed.Systems.SceneGraph
                 .SetPosition(Scene.ScreenWidth * 0.5f, Scene.ScreenHeight * 0.5f)
                 .AddComponent(new SpriteComponent(characterTexture));
 
-            base.Initialize();
+            base.LoadContent();
         }
     }
 }

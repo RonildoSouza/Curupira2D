@@ -2,11 +2,18 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.1</TargetFramework>
     <Authors>Ronildo Souza</Authors>
+    <Version>1.0.0</Version>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Remove="Content\Prototype\**" />
+    <EmbeddedResource Remove="Content\Prototype\**" />
+    <None Remove="Content\Prototype\**" />
+  </ItemGroup>
+  <ItemGroup>
     <Compile Remove="Camera.cs" />
+    <Compile Remove="ECS\Components\Drawables\PrototypeComponent.cs" />
+    <Compile Remove="ECS\Systems\Drawables\PrototypeSystem.cs" />
     <Compile Remove="Extensions\EntityExtension.cs" />
-    <Compile Remove="Extensions\EntityExtensions.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Remove="Content\DiagnosticsFont.xnb" />

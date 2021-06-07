@@ -5,8 +5,9 @@ namespace Curupira2D.Testbed.Scenes
 {
     class PhysicScene : SceneBase
     {
-        public override void Initialize()
+        public override void LoadContent()
         {
+
             SetTitle(nameof(PhysicScene));
 
             AddSystem<BallControllerSystem>();
@@ -15,7 +16,7 @@ namespace Curupira2D.Testbed.Scenes
 
             ShowControlTips(140, 60, "MOVIMENT: Keyboard Arrows");
 
-            base.Initialize();
+            base.LoadContent();
         }
     }
 }

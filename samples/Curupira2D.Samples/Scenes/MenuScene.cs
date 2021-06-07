@@ -6,7 +6,7 @@ namespace Curupira2D.Testbed.Scenes
 {
     class MenuScene : SceneBase
     {
-        public override void Initialize()
+        public override void LoadContent()
         {
             SetTitle(nameof(MenuScene));
 
@@ -14,9 +14,10 @@ namespace Curupira2D.Testbed.Scenes
                                "2 - SceneGraphScene\n" +
                                "3 - CameraScene\n" +
                                "4 - PhysicScene\n" +
-                               "5 - TiledMapScene\n");
+                               "5 - TiledMapScene\n" +
+                               "6 - Aether Physics2D - HelloWorld\n");
 
-            base.Initialize();
+            base.LoadContent();
         }
 
         public override void Update(GameTime gameTime)
@@ -24,29 +25,22 @@ namespace Curupira2D.Testbed.Scenes
             var ks = Keyboard.GetState();
 
             if (ks.IsKeyDown(Keys.D1))
-            {
                 GameCore.ChangeScene<SpriteAnimationScene>();
-            }
 
             if (ks.IsKeyDown(Keys.D2))
-            {
                 GameCore.ChangeScene<SceneGraphScene>();
-            }
 
             if (ks.IsKeyDown(Keys.D3))
-            {
                 GameCore.ChangeScene<CameraScene>();
-            }
 
             if (ks.IsKeyDown(Keys.D4))
-            {
                 GameCore.ChangeScene<PhysicScene>();
-            }
 
             if (ks.IsKeyDown(Keys.D5))
-            {
                 GameCore.ChangeScene<TiledMapScene>();
-            }
+
+            if (ks.IsKeyDown(Keys.D6))
+                GameCore.ChangeScene<AetherPhysics2DHelloWorldScene>();
 
             base.Update(gameTime);
         }

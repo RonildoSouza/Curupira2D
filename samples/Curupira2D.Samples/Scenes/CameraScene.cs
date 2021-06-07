@@ -5,7 +5,7 @@ namespace Curupira2D.Testbed.Scenes
 {
     class CameraScene : SceneBase
     {
-        public override void Initialize()
+        public override void LoadContent()
         {
             SetTitle(nameof(CameraScene));
 
@@ -16,7 +16,7 @@ namespace Curupira2D.Testbed.Scenes
                                     + "\nROTATION: Mouse Left Button"
                                     + "\nRESET: Mouse Right Button");
 
-            base.Initialize();
+            base.LoadContent();
         }
     }
 }

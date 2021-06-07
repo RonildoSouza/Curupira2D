@@ -10,48 +10,35 @@ using Microsoft.Xna.Framework.Input;
 namespace Curupira2D.Testbed.Systems.TiledMap
 {
     [RequiredComponent(typeof(CharacterMovementSystem), typeof(BodyComponent))]
-    class CharacterMovementSystem : ECS.System, IInitializable, IUpdatable
+    class CharacterMovementSystem : ECS.System, ILoadable, IUpdatable
     {
         Entity _characterEntity;
-        readonly float _playerVelocity = 200f;
+        readonly float _velocity = 200f;
         bool _isMoving;
         bool _isJumping;
-        KeyboardState _oldKS;
+        KeyboardState _oldKeyState;
 
-        public void Initialize()
+        public void LoadContent()
         {
             var characterTexture = Scene.GameCore.GraphicsDevice.CreateTextureRectangle(40, 80, Color.Black);
+
             _characterEntity = Scene.CreateEntity("character")
-                .AddComponent(new SpriteComponent(characterTexture))
-                .AddComponent(new BodyComponent(characterTexture.Bounds.Size.ToVector2(), 0f)
-                {
-                    EntityType = EntityType.Dynamic,
-                    Mass = 1f,
-                });
+                .AddComponent(
+                    new SpriteComponent(characterTexture),
+                    new BodyComponent(characterTexture.Bounds.Size.ToVector2(), EntityType.Dynamic, EntityShape.Rectangle, 0f)
+                    {
+                        FixedRotation = true
+                    });
         }
 
         public void Update()
         {
-            var ks = Keyboard.GetState();
+            var keyState = Keyboard.GetState();
             var bodyComponent = _characterEntity.GetComponent<BodyComponent>();
 
-            if (ks.IsKeyDown(Keys.Left))
+            if (keyState.IsKeyDown(Keys.Right))
             {
-                bodyComponent.LinearVelocity = new Vector2(-_playerVelocity, _characterEntity.Transform.Position.Y);
-
-                if (Scene.Camera2D.Position.X > Scene.ScreenWidth * 0.5f)
-                {
-                    var position = Scene.Camera2D.Position;
-                    position.X = _characterEntity.Transform.Position.X;
-                    Scene.Camera2D.Position = position;
-                }
-
-                _isMoving = true;
-            }
-
-            if (ks.IsKeyDown(Keys.Right))
-            {
-                bodyComponent.LinearVelocity = new Vector2(_playerVelocity, _characterEntity.Transform.Position.Y);
+                bodyComponent.ApplyForce(new Vector2(_velocity, 0f));
 
                 if (Scene.Camera2D.Position.X < _characterEntity.Transform.Position.X)
                 {
@@ -63,19 +50,35 @@ namespace Curupira2D.Testbed.Systems.TiledMap
                 _isMoving = true;
             }
 
-            if (ks.IsKeyDown(Keys.Up) && _oldKS.IsKeyUp(Keys.Up))
+            if (keyState.IsKeyDown(Keys.Left))
             {
-                //bodyComponent.Force = new Vector2(0f, -1000f);
-                _isJumping = true;
+                bodyComponent.ApplyForce(new Vector2(-_velocity, 0f));
+
+                if (Scene.Camera2D.Position.X > Scene.ScreenWidth * 0.5f)
+                {
+                    var position = Scene.Camera2D.Position;
+                    position.X = _characterEntity.Transform.Position.X;
+                    Scene.Camera2D.Position = position;
+                }
+
+                _isMoving = true;
             }
 
+            if (keyState.IsKeyDown(Keys.Up) && _oldKeyState.IsKeyUp(Keys.Up))
+            {
+                //_isJumping = true;
 
-            if (!_isMoving && !_isJumping)
-                //if (!_isMoving)
-                bodyComponent.LinearVelocity = new Vector2(0f, _characterEntity.Transform.Position.Y);
+                bodyComponent.ApplyLinearImpulse(new Vector2(bodyComponent.LinearVelocity.X, 13f));
+            }
+
+            if (!_isMoving)
+            {
+                Scene.Camera2D.Position = Scene.Camera2D.Position;
+                bodyComponent.SetLinearVelocityX(0f);
+            }
 
             _isMoving = false;
-            _oldKS = ks;
+            _oldKeyState = keyState;
         }
     }
 }

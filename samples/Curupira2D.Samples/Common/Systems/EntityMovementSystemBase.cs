@@ -7,14 +7,14 @@ using Microsoft.Xna.Framework.Input;
 
 namespace Curupira2D.Testbed.Common.Systems
 {
-    abstract class EntityMovementSystemBase : ECS.System, IInitializable, IUpdatable
+    abstract class EntityMovementSystemBase : ECS.System, ILoadable, IUpdatable
     {
         protected Entity _entityToMove;
         protected Vector2 _entitySize;
         protected float Velocity { get; set; } = 100f;
         protected abstract string EntityUniqueId { get; }
 
-        public virtual void Initialize()
+        public virtual void LoadContent()
         {
             if (_entityToMove == null)
                 _entityToMove = Scene.GetEntity(EntityUniqueId);
