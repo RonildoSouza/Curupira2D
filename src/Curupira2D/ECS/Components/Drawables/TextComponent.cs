@@ -13,14 +13,15 @@ namespace Curupira2D.ECS.Components.Drawables
             Rectangle? sourceRectangle = null,
             float layerDepth = 0,
             Vector2 scale = default,
-            bool drawWithoutUsingCamera = true) : base(spriteEffect, color, sourceRectangle, layerDepth, scale, drawWithoutUsingCamera)
+            bool drawInUICamera = true) : base(spriteEffect, color, sourceRectangle, layerDepth, scale, drawInUICamera)
         {
             SpriteFont = spriteFont;
             Text = text;
         }
 
-        public override Vector2 Origin => 0.5f * SpriteFont.MeasureString(Text);
+        public override Vector2 Origin => 0.5f * TextSize;
         public SpriteFont SpriteFont { get; set; }
         public string Text { get; set; }
+        public Vector2 TextSize => SpriteFont.MeasureString(Text);
     }
 }

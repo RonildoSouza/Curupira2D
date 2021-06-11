@@ -17,30 +17,42 @@ namespace Curupira2D.ECS
         public SpriteBatch SpriteBatch { get; private set; }
         public GameTime GameTime { get; private set; }
         public ICamera2D Camera2D { get; private set; }
+        public ICamera2D UICamera2D { get; private set; }
         public string Title { get; private set; }
         public Color CleanColor { get; private set; } = Color.LightGray;
         public float DeltaTime { get; private set; }
         public int ScreenWidth => GameCore.GraphicsDevice.Viewport.Width;
         public int ScreenHeight => GameCore.GraphicsDevice.Viewport.Height;
         public Vector2 ScreenSize => new Vector2(ScreenWidth, ScreenHeight);
+        public Vector2 ScreenCenter => new Vector2(ScreenWidth * 0.5f, ScreenHeight * 0.5f);
         public Vector2 Gravity { get; set; }
 
         public void SetGameCore(GameCore gameCore)
         {
+            if (GameCore != null)
+                return;
+
             GameCore = gameCore;
             SpriteBatch = new SpriteBatch(GameCore.GraphicsDevice);
-        }
 
-        public virtual void LoadContent()
-        {
             Camera2D = new Camera2DComponent(GameCore)
             {
                 Origin = new Vector2(ScreenWidth * 0.5f, ScreenHeight * 0.5f),
                 Position = new Vector2(ScreenWidth * 0.5f, ScreenHeight * 0.5f)
             };
 
-            GameCore.Components.Add(Camera2D);
+            UICamera2D = new Camera2DComponent(GameCore)
+            {
+                Origin = new Vector2(ScreenWidth * 0.5f, ScreenHeight * 0.5f),
+                Position = new Vector2(ScreenWidth * 0.5f, ScreenHeight * 0.5f)
+            };
 
+            GameCore.Components.Add(Camera2D);
+            GameCore.Components.Add(UICamera2D);
+        }
+
+        public virtual void LoadContent()
+        {
             AddSystem<TextSystem>();
             AddSystem<SpriteSystem>();
             AddSystem<SpriteAnimationSystem>();
@@ -124,6 +136,7 @@ namespace Curupira2D.ECS
             GameCore.Dispose();
             SpriteBatch.Dispose();
             Camera2D = null;
+            UICamera2D = null;
 
             GC.Collect();
         }

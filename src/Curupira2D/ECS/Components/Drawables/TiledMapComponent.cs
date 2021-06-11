@@ -10,7 +10,7 @@ namespace Curupira2D.ECS.Components.Drawables
             Map map,
             Texture2D texture,
             Color color = default,
-            bool drawWithoutUsingCamera = false) : base(texture: texture, color: color, drawWithoutUsingCamera: drawWithoutUsingCamera)
+            bool drawInUICamera = false) : base(texture: texture, color: color, drawInUICamera: drawInUICamera)
         {
             Map = map;
         }

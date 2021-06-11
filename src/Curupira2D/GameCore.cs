@@ -82,5 +82,9 @@ namespace Curupira2D
         public void ChangeScene<TScene>() where TScene : Scene => _sceneManager.Change<TScene>(this);
 
         public bool CurrentSceneIs<TScene>() where TScene : Scene => _sceneManager.CurrentScene.GetType() == typeof(TScene);
+
+        public TScene GetCurrentScene<TScene>() where TScene : Scene => _sceneManager.CurrentScene as TScene;
+
+        public Scene GetCurrentScene() => GetCurrentScene<Scene>();
     }
 }

@@ -14,7 +14,7 @@ namespace Curupira2D.Extensions
 
             // This is necessary because Aether.Physics2D works better with negative Y gravity.
             // See samples: https://github.com/tainicom/Aether.Physics2D/tree/master/Samples
-            drawableComponent.DrawWithoutUsingCamera = false;
+            drawableComponent.DrawInUICamera = false;
             entity.AddComponent(drawableComponent).AddComponent(bodyComponent);
             return entity;
         }

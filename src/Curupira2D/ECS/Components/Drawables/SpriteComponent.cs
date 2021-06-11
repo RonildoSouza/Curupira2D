@@ -12,7 +12,7 @@ namespace Curupira2D.ECS.Components.Drawables
             Rectangle? sourceRectangle = null,
             float layerDepth = 0,
             Vector2 scale = default,
-            bool drawWithoutUsingCamera = true) : base(spriteEffect, color, sourceRectangle, layerDepth, scale, drawWithoutUsingCamera)
+            bool drawInUICamera = false) : base(spriteEffect, color, sourceRectangle, layerDepth, scale, drawInUICamera)
         {
             Texture = texture;
         }

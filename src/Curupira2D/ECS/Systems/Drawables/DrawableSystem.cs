@@ -9,18 +9,21 @@ namespace Curupira2D.ECS.Systems.Drawables
     {
         public void Draw()
         {
-            DrawWithoutUsingCameraEntities();
-            DrawUsingCameraEntities();
+            DrawInUICameraEntities();
+            DrawInCameraEntities();
         }
 
-        protected void DrawWithoutUsingCameraEntities()
+        protected void DrawInUICameraEntities()
         {
-            Scene.SpriteBatch.Begin(SpriteSortMode.BackToFront);
+            Scene.SpriteBatch.Begin(
+                sortMode: SpriteSortMode.BackToFront,
+                rasterizerState: RasterizerState.CullClockwise,
+                effect: Scene.UICamera2D.SpriteBatchEffect);
 
             var withoutUsingCameraEntities = Scene.GetEntities(_ =>
             {
                 var drawableComponent = _.GetComponent<TDrawableComponent>();
-                return MatchActiveEntitiesAndComponents(_) && drawableComponent.DrawWithoutUsingCamera;
+                return MatchActiveEntitiesAndComponents(_) && drawableComponent.DrawInUICamera;
             });
 
             DrawEntities(ref withoutUsingCameraEntities);
@@ -28,7 +31,7 @@ namespace Curupira2D.ECS.Systems.Drawables
             Scene.SpriteBatch.End();
         }
 
-        protected void DrawUsingCameraEntities()
+        protected void DrawInCameraEntities()
         {
             Scene.SpriteBatch.Begin(
                 sortMode: SpriteSortMode.BackToFront,
@@ -38,7 +41,7 @@ namespace Curupira2D.ECS.Systems.Drawables
             var usingCameraEntities = Scene.GetEntities(_ =>
             {
                 var drawableComponent = _.GetComponent<TDrawableComponent>();
-                return MatchActiveEntitiesAndComponents(_) && !drawableComponent.DrawWithoutUsingCamera;
+                return MatchActiveEntitiesAndComponents(_) && !drawableComponent.DrawInUICamera;
             });
 
             DrawEntities(ref usingCameraEntities);

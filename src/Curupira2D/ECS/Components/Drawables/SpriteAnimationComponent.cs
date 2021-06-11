@@ -19,7 +19,7 @@ namespace Curupira2D.ECS.Components.Drawables
             Color color = default,
             float layerDepth = 0,
             Vector2 scale = default,
-            bool drawWithoutUsingCamera = true) : base(texture, spriteEffect, color, sourceRectangle, layerDepth, scale, drawWithoutUsingCamera)
+            bool drawInUICamera = false) : base(texture, spriteEffect, color, sourceRectangle, layerDepth, scale, drawInUICamera)
         {
             FrameRowsCount = frameRowsCount;
             FrameColumnsCount = frameColumnsCount;
@@ -45,7 +45,7 @@ namespace Curupira2D.ECS.Components.Drawables
             Color color = default,
             float layerDepth = 0,
             Vector2 scale = default,
-            bool drawWithoutUsingCamera = true) : this(
+            bool drawInUICamera = false) : this(
                 texture,
                 frameRowsCount,
                 frameColumnsCount,
@@ -58,7 +58,7 @@ namespace Curupira2D.ECS.Components.Drawables
                 color,
                 layerDepth,
                 scale,
-                drawWithoutUsingCamera)
+                drawInUICamera)
         { }
 
         public override Vector2 Origin => new Vector2(FrameWidth * 0.5f, FrameHeight * 0.5f);
