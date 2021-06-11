@@ -1,7 +1,7 @@
-﻿using Curupira2D.Testbed.Common.Scenes;
-using Curupira2D.Testbed.Systems.SceneGraph;
+﻿using Curupira2D.Samples.Common.Scenes;
+using Curupira2D.Samples.Systems.SceneGraph;
 
-namespace Curupira2D.Testbed.Scenes
+namespace Curupira2D.Samples.Scenes
 {
     class SceneGraphScene : SceneBase
     {
@@ -12,7 +12,7 @@ namespace Curupira2D.Testbed.Scenes
             AddSystem<CharacterMovementSystem>();
             AddSystem<EquipmentMovimentSystem>();
 
-            ShowControlTips(120, 50, "MOVIMENT: Keyboard Arrows\nEQUIPMENTS: Key 1, 2");
+            ShowControlTips("MOVIMENT: Keyboard Arrows\nEQUIPMENTS: Key 1, 2");
 
             base.LoadContent();
         }

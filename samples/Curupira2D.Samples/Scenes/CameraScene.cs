@@ -1,7 +1,7 @@
-﻿using Curupira2D.Testbed.Common.Scenes;
-using Curupira2D.Testbed.Systems.Camera;
+﻿using Curupira2D.Samples.Common.Scenes;
+using Curupira2D.Samples.Systems.Camera;
 
-namespace Curupira2D.Testbed.Scenes
+namespace Curupira2D.Samples.Scenes
 {
     class CameraScene : SceneBase
     {
@@ -11,10 +11,10 @@ namespace Curupira2D.Testbed.Scenes
 
             AddSystem<CameraSystem>();
 
-            ShowControlTips(140, 80, "MOVIMENT: Mouse Cursor"
-                                    + "\nZOOM: Mouse Wheel"
-                                    + "\nROTATION: Mouse Left Button"
-                                    + "\nRESET: Mouse Right Button");
+            ShowControlTips("MOVIMENT: Mouse Cursor"
+                            + "\nZOOM: Mouse Wheel"
+                            + "\nROTATION: Mouse Left Button"
+                            + "\nRESET: Mouse Right Button");
 
             base.LoadContent();
         }

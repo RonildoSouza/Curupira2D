@@ -1,8 +1,8 @@
-﻿using Curupira2D.Testbed.Common.Scenes;
+﻿using Curupira2D.Samples.Common.Scenes;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 
-namespace Curupira2D.Testbed.Scenes
+namespace Curupira2D.Samples.Scenes
 {
     class MenuScene : SceneBase
     {
@@ -10,12 +10,14 @@ namespace Curupira2D.Testbed.Scenes
         {
             SetTitle(nameof(MenuScene));
 
-            ShowText(200, 100, "1 - SpriteAnimationScene\n" +
-                               "2 - SceneGraphScene\n" +
-                               "3 - CameraScene\n" +
-                               "4 - PhysicScene\n" +
-                               "5 - TiledMapScene\n" +
-                               "6 - Aether Physics2D - HelloWorld\n");
+            ShowText("1 - SpriteAnimationScene\n" +
+                     "2 - SceneGraphScene\n" +
+                     "3 - CameraScene\n" +
+                     "4 - PhysicScene\n" +
+                     "5 - TiledMapScene\n" +
+                     "6 - Aether Physics2D - HelloWorld\n",
+                     ScreenCenter.X,
+                     ScreenHeight * 0.8f);
 
             base.LoadContent();
         }

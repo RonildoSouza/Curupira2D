@@ -1,9 +1,9 @@
 ﻿using Curupira2D.ECS.Components.Drawables;
 using Curupira2D.ECS.Systems.Attributes;
-using Curupira2D.Testbed.Common.Systems;
+using Curupira2D.Samples.Common.Systems;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace Curupira2D.Testbed.Systems.SceneGraph
+namespace Curupira2D.Samples.Systems.SceneGraph
 {
     [RequiredComponent(typeof(CharacterMovementSystem), typeof(SpriteComponent))]
     class CharacterMovementSystem : EntityMovementSystemBase
@@ -15,7 +15,7 @@ namespace Curupira2D.Testbed.Systems.SceneGraph
             var characterTexture = Scene.GameCore.Content.Load<Texture2D>("SceneGraph/character");
 
             Scene.CreateEntity(EntityUniqueId)
-                .SetPosition(Scene.ScreenWidth * 0.5f, Scene.ScreenHeight * 0.5f)
+                .SetPosition(Scene.ScreenCenter)
                 .AddComponent(new SpriteComponent(characterTexture));
 
             base.LoadContent();

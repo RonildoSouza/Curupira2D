@@ -6,12 +6,12 @@ using Curupira2D.ECS;
 using Curupira2D.ECS.Components.Drawables;
 using Curupira2D.ECS.Components.Physics;
 using Curupira2D.Extensions;
-using Curupira2D.Testbed.Common.Scenes;
+using Curupira2D.Samples.Common.Scenes;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 
-namespace Curupira2D.Testbed.Scenes
+namespace Curupira2D.Samples.Scenes
 {
     class AetherPhysics2DHelloWorldScene : SceneBase
     {
@@ -52,9 +52,10 @@ namespace Curupira2D.Testbed.Scenes
                         Friction = 0.5f,
                     });
 
-            ShowControlTips(140, 60, "Press A or D to rotate the ball\n" +
-                                     "Press Space to jump\n" +
-                                     "Use arrow keys to move the camera");
+            ShowControlTips("Press A or D to rotate the ball\n" +
+                             "Press Space to jump\n" +
+                             "Use arrow keys to move the camera",
+                             y: 120f);
 
             base.LoadContent();
 

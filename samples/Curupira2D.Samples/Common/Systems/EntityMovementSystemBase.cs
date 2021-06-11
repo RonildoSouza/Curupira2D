@@ -5,7 +5,7 @@ using Curupira2D.Extensions;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 
-namespace Curupira2D.Testbed.Common.Systems
+namespace Curupira2D.Samples.Common.Systems
 {
     abstract class EntityMovementSystemBase : ECS.System, ILoadable, IUpdatable
     {
@@ -41,13 +41,13 @@ namespace Curupira2D.Testbed.Common.Systems
                 direction.X -= 1;
 
             if (ks.IsKeyDown(Keys.Up))
-                direction.Y -= 1;
+                direction.Y += 1;
 
             if (ks.IsKeyDown(Keys.Right))
                 direction.X += 1;
 
             if (ks.IsKeyDown(Keys.Down))
-                direction.Y += 1;
+                direction.Y -= 1;
 
             tempPosition += (float)(Velocity * Scene.DeltaTime) * direction.GetSafeNormalize();
 

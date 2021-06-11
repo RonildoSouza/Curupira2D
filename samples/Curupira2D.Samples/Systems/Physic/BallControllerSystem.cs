@@ -7,7 +7,7 @@ using Curupira2D.Extensions;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 
-namespace Curupira2D.Testbed.Systems.Physic
+namespace Curupira2D.Samples.Systems.Physic
 {
     [RequiredComponent(typeof(BallControllerSystem), typeof(SpriteComponent))]
     class BallControllerSystem : ECS.System, ILoadable, IUpdatable
@@ -21,7 +21,7 @@ namespace Curupira2D.Testbed.Systems.Physic
             var ballTexture = Scene.GameCore.GraphicsDevice.CreateTextureCircle(ballRadius, Color.Black * 0.6f);
 
             _ballEntity = Scene.CreateEntity("ball")
-                .SetPosition(Scene.ScreenWidth * 0.4f, 300)
+                .SetPosition(Scene.ScreenWidth * 0.4f, 300f)
                 .AddComponent(
                     new SpriteComponent(ballTexture),
                     new BodyComponent(ballTexture.Bounds.Size.ToVector2(), EntityType.Dynamic, EntityShape.Circle)

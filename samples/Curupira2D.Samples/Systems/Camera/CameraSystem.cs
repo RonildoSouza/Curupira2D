@@ -5,7 +5,7 @@ using Curupira2D.Extensions;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 
-namespace Curupira2D.Testbed.Systems.Camera
+namespace Curupira2D.Samples.Systems.Camera
 {
     [RequiredComponent(typeof(CameraSystem), typeof(SpriteComponent))]
     class CameraSystem : ECS.System, ILoadable, IUpdatable
@@ -19,8 +19,8 @@ namespace Curupira2D.Testbed.Systems.Camera
             var blockTexture = Scene.GameCore.GraphicsDevice.CreateTextureRectangle(100, Color.Red * 0.8f);
 
             Scene.CreateEntity("block")
-                .SetPosition(Scene.ScreenWidth * 0.5f, Scene.ScreenHeight * 0.5f)
-                .AddComponent(new SpriteComponent(texture: blockTexture, drawWithoutUsingCamera: false));
+                .SetPosition(Scene.ScreenCenter)
+                .AddComponent(new SpriteComponent(blockTexture));
         }
 
         public void Update()

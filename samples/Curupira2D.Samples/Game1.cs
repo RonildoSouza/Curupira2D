@@ -1,8 +1,8 @@
-﻿using Curupira2D.Testbed.Scenes;
+﻿using Curupira2D.Samples.Scenes;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 
-namespace Curupira2D.Testbed
+namespace Curupira2D.Samples
 {
     public class Game1 : GameCore
     {

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Curupira2D.Testbed
+namespace Curupira2D.Samples
 {
     public static class Program
     {

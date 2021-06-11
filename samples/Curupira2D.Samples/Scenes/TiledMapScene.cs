@@ -1,7 +1,7 @@
-﻿using Curupira2D.Testbed.Common.Scenes;
-using Curupira2D.Testbed.Systems.TiledMap;
+﻿using Curupira2D.Samples.Common.Scenes;
+using Curupira2D.Samples.Systems.TiledMap;
 
-namespace Curupira2D.Testbed.Scenes
+namespace Curupira2D.Samples.Scenes
 {
     class TiledMapScene : SceneBase
     {
@@ -12,7 +12,7 @@ namespace Curupira2D.Testbed.Scenes
             AddSystem<MapSystem>();
             AddSystem<CharacterMovementSystem>();
 
-            ShowControlTips(120, 40, "MOVIMENT: Keyboard Arrows");
+            ShowControlTips("MOVIMENT: Keyboard Arrows");
 
             base.LoadContent();
         }

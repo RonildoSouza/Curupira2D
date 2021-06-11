@@ -1,7 +1,7 @@
 ﻿using Curupira2D.ECS.Components;
 using Microsoft.Xna.Framework;
 
-namespace Curupira2D.Testbed.Components.SceneGraph
+namespace Curupira2D.Samples.Components.SceneGraph
 {
     class EquipmentComponent : IComponent
     {

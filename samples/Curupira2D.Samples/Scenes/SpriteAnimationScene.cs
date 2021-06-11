@@ -1,9 +1,9 @@
 ﻿using Curupira2D.ECS.Components.Drawables;
-using Curupira2D.Testbed.Common.Scenes;
-using Curupira2D.Testbed.Systems.SpriteAnimation;
+using Curupira2D.Samples.Common.Scenes;
+using Curupira2D.Samples.Systems.SpriteAnimation;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace Curupira2D.Testbed.Scenes
+namespace Curupira2D.Samples.Scenes
 {
     class SpriteAnimationScene : SceneBase
     {
@@ -18,10 +18,10 @@ namespace Curupira2D.Testbed.Scenes
             var explosionTexture = GameCore.Content.Load<Texture2D>("SpriteAnimation/explosion");
 
             CreateEntity("explosion")
-                .SetPosition(300, 200)
+                .SetPosition(ScreenCenter)
                 .AddComponent(new SpriteAnimationComponent(explosionTexture, 5, 5, 150, AnimateType.All, default, true, true));
 
-            ShowControlTips(120, 40, "MOVIMENT: Keyboard Arrows");
+            ShowControlTips("MOVIMENT: Keyboard Arrows");
 
             base.LoadContent();
         }

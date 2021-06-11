@@ -1,11 +1,11 @@
 ﻿using Curupira2D.ECS.Components.Drawables;
 using Curupira2D.ECS.Systems;
 using Curupira2D.ECS.Systems.Attributes;
-using Curupira2D.Testbed.Components.SceneGraph;
+using Curupira2D.Samples.Components.SceneGraph;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 
-namespace Curupira2D.Testbed.Systems.SceneGraph
+namespace Curupira2D.Samples.Systems.SceneGraph
 {
     [RequiredComponent(typeof(EquipmentMovimentSystem), typeof(EquipmentComponent))]
     class EquipmentMovimentSystem : ECS.System, ILoadable, IUpdatable
@@ -18,7 +18,7 @@ namespace Curupira2D.Testbed.Systems.SceneGraph
             var staffTexture = Scene.GameCore.Content.Load<Texture2D>("SceneGraph/staff");
 
             var hatEntity = Scene.CreateEntity("hat")
-                .AddComponent<EquipmentComponent>(0f, 90f)
+                .AddComponent<EquipmentComponent>(0f, -90f)
                 .AddComponent(new SpriteComponent(hatTexture));
 
             var staffEntity = Scene.CreateEntity("staff")

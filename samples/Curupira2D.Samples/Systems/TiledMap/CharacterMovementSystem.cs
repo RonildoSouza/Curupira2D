@@ -7,7 +7,7 @@ using Curupira2D.Extensions;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 
-namespace Curupira2D.Testbed.Systems.TiledMap
+namespace Curupira2D.Samples.Systems.TiledMap
 {
     [RequiredComponent(typeof(CharacterMovementSystem), typeof(BodyComponent))]
     class CharacterMovementSystem : ECS.System, ILoadable, IUpdatable
@@ -54,7 +54,7 @@ namespace Curupira2D.Testbed.Systems.TiledMap
             {
                 bodyComponent.ApplyForce(new Vector2(-_velocity, 0f));
 
-                if (Scene.Camera2D.Position.X > Scene.ScreenWidth * 0.5f)
+                if (Scene.Camera2D.Position.X > Scene.ScreenCenter.X)
                 {
                     var position = Scene.Camera2D.Position;
                     position.X = _characterEntity.Transform.Position.X;

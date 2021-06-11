@@ -5,7 +5,7 @@ using Curupira2D.ECS.Systems.Attributes;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 
-namespace Curupira2D.Testbed.Systems.SpriteAnimation
+namespace Curupira2D.Samples.Systems.SpriteAnimation
 {
     [RequiredComponent(typeof(CharacterAnimationSystem), typeof(SpriteAnimationComponent))]
     class CharacterAnimationSystem : ECS.System, ILoadable, IUpdatable
@@ -18,7 +18,7 @@ namespace Curupira2D.Testbed.Systems.SpriteAnimation
             var characterTexture = Scene.GameCore.Content.Load<Texture2D>("SpriteAnimation/character");
 
             _characterEntity = Scene.CreateEntity("character")
-                .SetPosition(100, 100)
+                .SetPosition(Scene.ScreenWidth * 0.3f, Scene.ScreenCenter.Y)
                 .AddComponent(new SpriteAnimationComponent(characterTexture, 4, 4, 100, AnimateType.PerRow));
         }
 
