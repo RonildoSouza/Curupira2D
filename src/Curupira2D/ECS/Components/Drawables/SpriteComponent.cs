@@ -10,7 +10,7 @@ namespace Curupira2D.ECS.Components.Drawables
             SpriteEffects spriteEffect = SpriteEffects.FlipVertically,
             Color color = default,
             Rectangle? sourceRectangle = null,
-            float layerDepth = 0,
+            float layerDepth = 0f,
             Vector2 scale = default,
             bool drawInUICamera = false) : base(spriteEffect, color, sourceRectangle, layerDepth, scale, drawInUICamera)
         {

@@ -29,26 +29,21 @@ namespace Curupira2D.ECS
 
         public void SetGameCore(GameCore gameCore)
         {
-            if (GameCore != null)
-                return;
-
             GameCore = gameCore;
             SpriteBatch = new SpriteBatch(GameCore.GraphicsDevice);
 
-            Camera2D = new Camera2DComponent(GameCore)
-            {
-                Origin = new Vector2(ScreenWidth * 0.5f, ScreenHeight * 0.5f),
-                Position = new Vector2(ScreenWidth * 0.5f, ScreenHeight * 0.5f)
-            };
+            var cameraInitialOrigin = new Vector2(ScreenWidth * 0.5f, ScreenHeight * 0.5f);
+            var cameraInitialPosition = new Vector2(ScreenWidth * 0.5f, ScreenHeight * 0.5f);
 
-            UICamera2D = new Camera2DComponent(GameCore)
-            {
-                Origin = new Vector2(ScreenWidth * 0.5f, ScreenHeight * 0.5f),
-                Position = new Vector2(ScreenWidth * 0.5f, ScreenHeight * 0.5f)
-            };
+            GameCore.Camera2D.Reset();
+            GameCore.Camera2D.Origin = cameraInitialOrigin;
+            GameCore.Camera2D.Position = cameraInitialPosition;
+            Camera2D = GameCore.Camera2D;
 
-            GameCore.Components.Add(Camera2D);
-            GameCore.Components.Add(UICamera2D);
+            GameCore.UICamera2D.Reset();
+            GameCore.UICamera2D.Origin = cameraInitialOrigin;
+            GameCore.UICamera2D.Position = cameraInitialPosition;
+            UICamera2D = GameCore.UICamera2D;
         }
 
         public virtual void LoadContent()

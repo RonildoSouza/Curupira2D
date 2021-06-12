@@ -14,7 +14,7 @@ namespace Curupira2D.Samples.Scenes
             AddSystem<SquareControllerSystem>();
             AddSystem<BorderControllerSystem>();
 
-            ShowControlTips("MOVIMENT: Keyboard Arrows");
+            ShowControlTips("MOVIMENT: Keyboard Arrows", y: 120f);
 
             base.LoadContent();
         }

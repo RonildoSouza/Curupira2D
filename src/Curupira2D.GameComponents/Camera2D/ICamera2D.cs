@@ -86,5 +86,10 @@ namespace Curupira2D.GameComponents.Camera2D
         /// <param name="texture">The texture.</param>
         /// <returns><c>true</c> if [is in view] [the specified position]; otherwise, <c>false</c>.</returns>
         bool IsInView(Vector2 position, Texture2D texture);
+
+        /// <summary>
+        /// Reset setters properties to default values
+        /// </summary>
+        void Reset();
     }
 }

@@ -17,7 +17,7 @@ namespace Curupira2D.ECS.Components.Drawables
             bool isPlaying = false,
             SpriteEffects spriteEffect = SpriteEffects.FlipVertically,
             Color color = default,
-            float layerDepth = 0,
+            float layerDepth = 0f,
             Vector2 scale = default,
             bool drawInUICamera = false) : base(texture, spriteEffect, color, sourceRectangle, layerDepth, scale, drawInUICamera)
         {
@@ -43,7 +43,7 @@ namespace Curupira2D.ECS.Components.Drawables
             bool isPlaying = false,
             SpriteEffects spriteEffect = SpriteEffects.FlipVertically,
             Color color = default,
-            float layerDepth = 0,
+            float layerDepth = 0f,
             Vector2 scale = default,
             bool drawInUICamera = false) : this(
                 texture,

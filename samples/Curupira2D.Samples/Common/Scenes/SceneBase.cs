@@ -8,23 +8,17 @@ namespace Curupira2D.Samples.Common.Scenes
 {
     abstract class SceneBase : Scene
     {
-        protected void ShowText(string text, float? x = null, float? y = null, Color color = default)
+        protected void ShowText(string text, float? x = null, float? y = null, Color? color = null)
         {
             var fontArial = GameCore.Content.Load<SpriteFont>("FontArial");
-            var textComponent = new TextComponent(
-                    fontArial,
-                    $"{text}",
-                    color: color == default ? Color.DarkBlue : color,
-                    layerDepth: 1);
+            var textComponent = new TextComponent(fontArial, $"{text}", color: color ?? Color.DarkBlue);
 
             CreateEntity(Guid.NewGuid().ToString().Substring(0, 6))
-                .SetPosition(
-                    x ?? ScreenWidth * 0.2f,
-                    y ?? ScreenHeight - textComponent.TextSize.Y)
+                .SetPosition(x ?? ScreenWidth * 0.2f, y ?? ScreenHeight - textComponent.TextSize.Y)
                 .AddComponent(textComponent);
         }
 
-        protected void ShowControlTips(string text, float? x = null, float? y = null, Color color = default) =>
+        protected void ShowControlTips(string text, float? x = null, float? y = null, Color? color = null) =>
             ShowText($"*QUIT: Key Q*\n\nCONTROLS\n{text}", x, y, color);
     }
 }

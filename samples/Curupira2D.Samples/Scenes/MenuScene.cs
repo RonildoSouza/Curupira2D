@@ -6,6 +6,8 @@ namespace Curupira2D.Samples.Scenes
 {
     class MenuScene : SceneBase
     {
+        KeyboardState _oldKeyState;
+
         public override void LoadContent()
         {
             SetTitle(nameof(MenuScene));
@@ -24,25 +26,27 @@ namespace Curupira2D.Samples.Scenes
 
         public override void Update(GameTime gameTime)
         {
-            var ks = Keyboard.GetState();
+            var keyState = Keyboard.GetState();
 
-            if (ks.IsKeyDown(Keys.D1))
+            if (keyState.IsKeyDown(Keys.D1) && _oldKeyState.IsKeyUp(Keys.D1))
                 GameCore.ChangeScene<SpriteAnimationScene>();
 
-            if (ks.IsKeyDown(Keys.D2))
+            if (keyState.IsKeyDown(Keys.D2) && _oldKeyState.IsKeyUp(Keys.D2))
                 GameCore.ChangeScene<SceneGraphScene>();
 
-            if (ks.IsKeyDown(Keys.D3))
+            if (keyState.IsKeyDown(Keys.D3) && _oldKeyState.IsKeyUp(Keys.D3))
                 GameCore.ChangeScene<CameraScene>();
 
-            if (ks.IsKeyDown(Keys.D4))
+            if (keyState.IsKeyDown(Keys.D4) && _oldKeyState.IsKeyUp(Keys.D4))
                 GameCore.ChangeScene<PhysicScene>();
 
-            if (ks.IsKeyDown(Keys.D5))
+            if (keyState.IsKeyDown(Keys.D5) && _oldKeyState.IsKeyUp(Keys.D5))
                 GameCore.ChangeScene<TiledMapScene>();
 
-            if (ks.IsKeyDown(Keys.D6))
+            if (keyState.IsKeyDown(Keys.D6) && _oldKeyState.IsKeyUp(Keys.D6))
                 GameCore.ChangeScene<AetherPhysics2DHelloWorldScene>();
+
+            _oldKeyState = keyState;
 
             base.Update(gameTime);
         }

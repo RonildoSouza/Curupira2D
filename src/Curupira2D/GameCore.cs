@@ -1,5 +1,6 @@
 ﻿using Curupira2D.ECS;
 using Curupira2D.GameComponents;
+using Curupira2D.GameComponents.Camera2D;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -30,8 +31,11 @@ namespace Curupira2D
             }
         }
 
-        internal bool DebugActive { get; }
         public int FPS => (_fpsCounterComponent?.FPS).GetValueOrDefault();
+
+        internal bool DebugActive { get; }
+        internal ICamera2D Camera2D { get; private set; }
+        internal ICamera2D UICamera2D { get; private set; }
 
         protected override void Initialize()
         {
@@ -39,6 +43,12 @@ namespace Curupira2D
             _graphics.PreferredBackBufferWidth = _width;
             _graphics.PreferredBackBufferHeight = _height;
             _graphics.ApplyChanges();
+
+            Camera2D = new Camera2DComponent(this);
+            Components.Add(Camera2D);
+
+            UICamera2D = new Camera2DComponent(this);
+            Components.Add(UICamera2D);
 
             base.Initialize();
         }

@@ -9,11 +9,13 @@ namespace Curupira2D.ECS.Systems.Drawables
     {
         public void Draw()
         {
-            DrawInUICameraEntities();
-            DrawInCameraEntities();
+            DrawEntitiesInUICamera();
+            DrawEntitiesInCamera();
         }
 
-        protected void DrawInUICameraEntities()
+        protected abstract void DrawEntities(ref IReadOnlyList<Entity> entities);
+
+        void DrawEntitiesInUICamera()
         {
             Scene.SpriteBatch.Begin(
                 sortMode: SpriteSortMode.BackToFront,
@@ -31,7 +33,7 @@ namespace Curupira2D.ECS.Systems.Drawables
             Scene.SpriteBatch.End();
         }
 
-        protected void DrawInCameraEntities()
+        void DrawEntitiesInCamera()
         {
             Scene.SpriteBatch.Begin(
                 sortMode: SpriteSortMode.BackToFront,
@@ -48,7 +50,5 @@ namespace Curupira2D.ECS.Systems.Drawables
 
             Scene.SpriteBatch.End();
         }
-
-        protected abstract void DrawEntities(ref IReadOnlyList<Entity> entities);
     }
 }
