@@ -1,10 +1,12 @@
 ﻿using Curupira2D.ECS.Systems.Drawables;
 using Curupira2D.ECS.Systems.Physics;
 using Curupira2D.GameComponents.Camera2D;
+using Curupira2D.Input;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Curupira2D.ECS
 {
@@ -26,6 +28,9 @@ namespace Curupira2D.ECS
         public Vector2 ScreenSize => new Vector2(ScreenWidth, ScreenHeight);
         public Vector2 ScreenCenter => new Vector2(ScreenWidth * 0.5f, ScreenHeight * 0.5f);
         public Vector2 Gravity { get; set; }
+        public KeyboardInputManager KeyboardInputManager { get; private set; }
+        public GamePadInputManager GamePadInputManager { get; private set; }
+        public MouseInputManager MouseInputManager { get; private set; }
 
         public void SetGameCore(GameCore gameCore)
         {
@@ -57,6 +62,10 @@ namespace Curupira2D.ECS
             AddSystem(new PhysicsSystem(Gravity));
 
             _systemManager.LoadableSystemsIteration();
+
+            KeyboardInputManager = new KeyboardInputManager();
+            GamePadInputManager = new GamePadInputManager();
+            MouseInputManager = new MouseInputManager();
         }
 
         public virtual void Update(GameTime gameTime)
@@ -64,7 +73,15 @@ namespace Curupira2D.ECS
             GameTime = gameTime;
             DeltaTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
 
+            KeyboardInputManager.Begin();
+            GamePadInputManager.Begin();
+            MouseInputManager.Begin();
+
             _systemManager.UpdatableSystemsIteration();
+
+            KeyboardInputManager.End();
+            GamePadInputManager.End();
+            MouseInputManager.End();
         }
 
         public virtual void Draw()
@@ -87,6 +104,22 @@ namespace Curupira2D.ECS
         public float InvertPositionX(float x) => ScreenWidth - x;
 
         public float InvertPositionY(float y) => ScreenHeight - y;
+
+        public Scene AddGameComponent(IGameComponent gameComponent)
+        {
+            if (!GameCore.Components.Any(c => c.GetType() == gameComponent.GetType()))
+                GameCore.Components.Add(gameComponent);
+
+            return this;
+        }
+
+        public Scene RemoveGameComponent(IGameComponent gameComponent)
+        {
+            if (GameCore.Components.Any(c => c.GetType() == gameComponent.GetType()))
+                GameCore.Components.Remove(gameComponent);
+
+            return this;
+        }
 
         #region Methods of managing systems
         public Scene AddSystem<TSystem>(TSystem system) where TSystem : System

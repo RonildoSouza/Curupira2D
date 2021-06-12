@@ -34,21 +34,20 @@ namespace Curupira2D.Samples.Systems.Physic
 
         public void Update()
         {
-            var keyState = Keyboard.GetState();
             var ballBodyComponent = _ballEntity.GetComponent<BodyComponent>();
 
             var linearImpulse = Vector2.Zero;
 
-            if (keyState.IsKeyDown(Keys.Left))
+            if (Scene.KeyboardInputManager.IsKeyDown(Keys.Left))
                 linearImpulse += new Vector2(-IMPULSE, 0);
 
-            if (keyState.IsKeyDown(Keys.Up))
+            if (Scene.KeyboardInputManager.IsKeyDown(Keys.Up))
                 linearImpulse += new Vector2(0, IMPULSE);
 
-            if (keyState.IsKeyDown(Keys.Right))
+            if (Scene.KeyboardInputManager.IsKeyDown(Keys.Right))
                 linearImpulse += new Vector2(IMPULSE, 0);
 
-            if (keyState.IsKeyDown(Keys.Down))
+            if (Scene.KeyboardInputManager.IsKeyDown(Keys.Down))
                 linearImpulse += new Vector2(0, -IMPULSE);
 
             ballBodyComponent.ApplyLinearImpulse(linearImpulse);

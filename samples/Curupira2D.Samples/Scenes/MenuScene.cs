@@ -26,27 +26,27 @@ namespace Curupira2D.Samples.Scenes
 
         public override void Update(GameTime gameTime)
         {
-            var keyState = Keyboard.GetState();
+            KeyboardInputManager.Begin();
 
-            if (keyState.IsKeyDown(Keys.D1) && _oldKeyState.IsKeyUp(Keys.D1))
+            if (KeyboardInputManager.IsKeyPressed(Keys.D1))
                 GameCore.ChangeScene<SpriteAnimationScene>();
 
-            if (keyState.IsKeyDown(Keys.D2) && _oldKeyState.IsKeyUp(Keys.D2))
+            if (KeyboardInputManager.IsKeyPressed(Keys.D2))
                 GameCore.ChangeScene<SceneGraphScene>();
 
-            if (keyState.IsKeyDown(Keys.D3) && _oldKeyState.IsKeyUp(Keys.D3))
+            if (KeyboardInputManager.IsKeyPressed(Keys.D3))
                 GameCore.ChangeScene<CameraScene>();
 
-            if (keyState.IsKeyDown(Keys.D4) && _oldKeyState.IsKeyUp(Keys.D4))
+            if (KeyboardInputManager.IsKeyPressed(Keys.D4))
                 GameCore.ChangeScene<PhysicScene>();
 
-            if (keyState.IsKeyDown(Keys.D5) && _oldKeyState.IsKeyUp(Keys.D5))
+            if (KeyboardInputManager.IsKeyPressed(Keys.D5))
                 GameCore.ChangeScene<TiledMapScene>();
 
-            if (keyState.IsKeyDown(Keys.D6) && _oldKeyState.IsKeyUp(Keys.D6))
+            if (KeyboardInputManager.IsKeyPressed(Keys.D6))
                 GameCore.ChangeScene<AetherPhysics2DHelloWorldScene>();
 
-            _oldKeyState = keyState;
+            KeyboardInputManager.End();
 
             base.Update(gameTime);
         }

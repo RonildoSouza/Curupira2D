@@ -24,18 +24,16 @@ namespace Curupira2D.Samples.Systems.SpriteAnimation
 
         public void Update()
         {
-            var keyState = Keyboard.GetState();
-
-            if (keyState.IsKeyDown(Keys.Left))
+            if (Scene.KeyboardInputManager.IsKeyDown(Keys.Left))
                 HorizontalAnimation(ref _characterEntity, 180);
 
-            if (keyState.IsKeyDown(Keys.Up))
+            if (Scene.KeyboardInputManager.IsKeyDown(Keys.Up))
                 VerticalAnimation(ref _characterEntity, 90);
 
-            if (keyState.IsKeyDown(Keys.Right))
+            if (Scene.KeyboardInputManager.IsKeyDown(Keys.Right))
                 HorizontalAnimation(ref _characterEntity, 270);
 
-            if (keyState.IsKeyDown(Keys.Down))
+            if (Scene.KeyboardInputManager.IsKeyDown(Keys.Down))
                 VerticalAnimation(ref _characterEntity, 0);
         }
 

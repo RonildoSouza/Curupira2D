@@ -33,20 +33,19 @@ namespace Curupira2D.Samples.Common.Systems
             if (_entityToMove == null)
                 return;
 
-            var ks = Keyboard.GetState();
             var tempPosition = _entityToMove.Transform.Position;
             var direction = Vector2.Zero;
 
-            if (ks.IsKeyDown(Keys.Left))
+            if (Scene.KeyboardInputManager.IsKeyDown(Keys.Left))
                 direction.X -= 1;
 
-            if (ks.IsKeyDown(Keys.Up))
+            if (Scene.KeyboardInputManager.IsKeyDown(Keys.Up))
                 direction.Y += 1;
 
-            if (ks.IsKeyDown(Keys.Right))
+            if (Scene.KeyboardInputManager.IsKeyDown(Keys.Right))
                 direction.X += 1;
 
-            if (ks.IsKeyDown(Keys.Down))
+            if (Scene.KeyboardInputManager.IsKeyDown(Keys.Down))
                 direction.Y -= 1;
 
             tempPosition += (float)(Velocity * Scene.DeltaTime) * direction.GetSafeNormalize();
