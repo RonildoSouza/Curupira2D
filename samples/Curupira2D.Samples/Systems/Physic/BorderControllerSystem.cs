@@ -4,7 +4,7 @@ using Curupira2D.ECS.Systems;
 using Curupira2D.Extensions;
 using Microsoft.Xna.Framework;
 
-namespace Curupira2D.Testbed.Systems.Physic
+namespace Curupira2D.Samples.Systems.Physic
 {
     class BorderControllerSystem : ECS.System, ILoadable
     {

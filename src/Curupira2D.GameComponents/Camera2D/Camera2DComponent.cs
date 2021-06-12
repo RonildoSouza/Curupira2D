@@ -173,6 +173,14 @@ namespace Curupira2D.GameComponents.Camera2D
             return true;
         }
 
+        public void Reset()
+        {
+            _position = Vector2.Zero;
+            _rotation = 0;
+            _zoom = Vector2.One;
+            _origin = Vector2.Zero;
+        }
+
         /// <summary>
         /// Updates the values for our transformation matrix and the inverse matrix.  
         /// </summary>

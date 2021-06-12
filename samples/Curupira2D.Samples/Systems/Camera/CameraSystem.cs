@@ -2,10 +2,10 @@
 using Curupira2D.ECS.Systems;
 using Curupira2D.ECS.Systems.Attributes;
 using Curupira2D.Extensions;
+using Curupira2D.Input;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Input;
 
-namespace Curupira2D.Testbed.Systems.Camera
+namespace Curupira2D.Samples.Systems.Camera
 {
     [RequiredComponent(typeof(CameraSystem), typeof(SpriteComponent))]
     class CameraSystem : ECS.System, ILoadable, IUpdatable
@@ -19,24 +19,23 @@ namespace Curupira2D.Testbed.Systems.Camera
             var blockTexture = Scene.GameCore.GraphicsDevice.CreateTextureRectangle(100, Color.Red * 0.8f);
 
             Scene.CreateEntity("block")
-                .SetPosition(Scene.ScreenWidth * 0.5f, Scene.ScreenHeight * 0.5f)
-                .AddComponent(new SpriteComponent(texture: blockTexture, drawWithoutUsingCamera: false));
+                .SetPosition(Scene.ScreenCenter)
+                .AddComponent(new SpriteComponent(blockTexture));
         }
 
         public void Update()
         {
-            var ms = Mouse.GetState();
 
-            _cameraPosition.X = ms.Position.X;
-            _cameraPosition.Y = Scene.InvertPositionY(ms.Position.Y);
+            _cameraPosition.X = Scene.MouseInputManager.GetPosition().X;
+            _cameraPosition.Y = Scene.InvertPositionY(Scene.MouseInputManager.GetPosition().Y);
 
             Scene.Camera2D.Position = _cameraPosition;
-            Scene.Camera2D.Zoom = ms.ScrollWheelValue > 0 ? new Vector2(ms.ScrollWheelValue * 0.01f) : Vector2.One;
+            Scene.Camera2D.Zoom = Scene.MouseInputManager.GetScrollWheel() > 0 ? new Vector2(Scene.MouseInputManager.GetScrollWheel() * 0.01f) : Vector2.One;
 
-            if (ms.LeftButton == ButtonState.Pressed)
+            if (Scene.MouseInputManager.IsMouseButtonDown(MouseButton.Left))
                 Scene.Camera2D.Rotation += 0.01f;
 
-            if (ms.RightButton == ButtonState.Pressed)
+            if (Scene.MouseInputManager.IsMouseButtonPressed(MouseButton.Right))
                 Scene.Camera2D.Rotation = 0f;
         }
     }

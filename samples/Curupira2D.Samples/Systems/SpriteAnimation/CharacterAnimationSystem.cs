@@ -5,7 +5,7 @@ using Curupira2D.ECS.Systems.Attributes;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 
-namespace Curupira2D.Testbed.Systems.SpriteAnimation
+namespace Curupira2D.Samples.Systems.SpriteAnimation
 {
     [RequiredComponent(typeof(CharacterAnimationSystem), typeof(SpriteAnimationComponent))]
     class CharacterAnimationSystem : ECS.System, ILoadable, IUpdatable
@@ -18,24 +18,22 @@ namespace Curupira2D.Testbed.Systems.SpriteAnimation
             var characterTexture = Scene.GameCore.Content.Load<Texture2D>("SpriteAnimation/character");
 
             _characterEntity = Scene.CreateEntity("character")
-                .SetPosition(100, 100)
+                .SetPosition(Scene.ScreenWidth * 0.3f, Scene.ScreenCenter.Y)
                 .AddComponent(new SpriteAnimationComponent(characterTexture, 4, 4, 100, AnimateType.PerRow));
         }
 
         public void Update()
         {
-            var keyState = Keyboard.GetState();
-
-            if (keyState.IsKeyDown(Keys.Left))
+            if (Scene.KeyboardInputManager.IsKeyDown(Keys.Left))
                 HorizontalAnimation(ref _characterEntity, 180);
 
-            if (keyState.IsKeyDown(Keys.Up))
+            if (Scene.KeyboardInputManager.IsKeyDown(Keys.Up))
                 VerticalAnimation(ref _characterEntity, 90);
 
-            if (keyState.IsKeyDown(Keys.Right))
+            if (Scene.KeyboardInputManager.IsKeyDown(Keys.Right))
                 HorizontalAnimation(ref _characterEntity, 270);
 
-            if (keyState.IsKeyDown(Keys.Down))
+            if (Scene.KeyboardInputManager.IsKeyDown(Keys.Down))
                 VerticalAnimation(ref _characterEntity, 0);
         }
 

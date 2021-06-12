@@ -1,7 +1,7 @@
-﻿using Curupira2D.Testbed.Common.Scenes;
-using Curupira2D.Testbed.Systems.Physic;
+﻿using Curupira2D.Samples.Common.Scenes;
+using Curupira2D.Samples.Systems.Physic;
 
-namespace Curupira2D.Testbed.Scenes
+namespace Curupira2D.Samples.Scenes
 {
     class PhysicScene : SceneBase
     {
@@ -14,7 +14,7 @@ namespace Curupira2D.Testbed.Scenes
             AddSystem<SquareControllerSystem>();
             AddSystem<BorderControllerSystem>();
 
-            ShowControlTips(140, 60, "MOVIMENT: Keyboard Arrows");
+            ShowControlTips("MOVIMENT: Keyboard Arrows", y: 120f);
 
             base.LoadContent();
         }

@@ -1,15 +1,12 @@
-﻿using Curupira2D.Testbed.Scenes;
+﻿using Curupira2D.Samples.Scenes;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 
-namespace Curupira2D.Testbed
+namespace Curupira2D.Samples
 {
     public class Game1 : GameCore
     {
-        public Game1() : base(width: 800, height: 640, debugActive: true)
-        {
-            Window.AllowUserResizing = true;
-        }
+        public Game1() : base(width: 800, height: 640, debugActive: true) { }
 
         protected override void LoadContent()
         {
@@ -28,9 +25,9 @@ namespace Curupira2D.Testbed
 
         protected override void Update(GameTime gameTime)
         {
-            var ks = Keyboard.GetState();
+            var keyState = Keyboard.GetState();
 
-            if (ks.IsKeyDown(Keys.Q) && !CurrentSceneIs<MenuScene>())
+            if (keyState.IsKeyDown(Keys.Q) && !CurrentSceneIs<MenuScene>())
             {
                 ChangeScene<MenuScene>();
             }

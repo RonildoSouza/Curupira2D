@@ -6,12 +6,12 @@ using Curupira2D.ECS;
 using Curupira2D.ECS.Components.Drawables;
 using Curupira2D.ECS.Components.Physics;
 using Curupira2D.Extensions;
-using Curupira2D.Testbed.Common.Scenes;
+using Curupira2D.Samples.Common.Scenes;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 
-namespace Curupira2D.Testbed.Scenes
+namespace Curupira2D.Samples.Scenes
 {
     class AetherPhysics2DHelloWorldScene : SceneBase
     {
@@ -52,9 +52,10 @@ namespace Curupira2D.Testbed.Scenes
                         Friction = 0.5f,
                     });
 
-            ShowControlTips(140, 60, "Press A or D to rotate the ball\n" +
-                                     "Press Space to jump\n" +
-                                     "Use arrow keys to move the camera");
+            ShowControlTips("Press A or D to rotate the ball\n" +
+                             "Press Space to jump\n" +
+                             "Use arrow keys to move the camera",
+                             y: 120f);
 
             base.LoadContent();
 
@@ -62,38 +63,37 @@ namespace Curupira2D.Testbed.Scenes
             Camera2D.Zoom = new Vector2(0.03f);
         }
 
-        private KeyboardState _oldKeyState;
-
         public override void Update(GameTime gameTime)
         {
-            var state = Keyboard.GetState();
+            KeyboardInputManager.Begin();
+
             var bodyComponent = _playerEntity.GetComponent<BodyComponent>();
 
             // Move camera
-            if (state.IsKeyDown(Keys.Left))
+            if (KeyboardInputManager.IsKeyDown(Keys.Left))
                 _cameraPosition.X += 12f * DeltaTime;
 
-            if (state.IsKeyDown(Keys.Right))
+            if (KeyboardInputManager.IsKeyDown(Keys.Right))
                 _cameraPosition.X -= 12f * DeltaTime;
 
-            if (state.IsKeyDown(Keys.Up))
+            if (KeyboardInputManager.IsKeyDown(Keys.Up))
                 _cameraPosition.Y -= 12f * DeltaTime;
 
-            if (state.IsKeyDown(Keys.Down))
+            if (KeyboardInputManager.IsKeyDown(Keys.Down))
                 _cameraPosition.Y += 12f * DeltaTime;
 
             // We make it possible to rotate the player body
-            if (state.IsKeyDown(Keys.A))
+            if (KeyboardInputManager.IsKeyDown(Keys.A))
                 bodyComponent.ApplyTorque(10);
 
-            if (state.IsKeyDown(Keys.D))
+            if (KeyboardInputManager.IsKeyDown(Keys.D))
                 bodyComponent.ApplyTorque(-10);
 
-            if (state.IsKeyDown(Keys.Space) && _oldKeyState.IsKeyUp(Keys.Space))
+            if (KeyboardInputManager.IsKeyPressed(Keys.Space))
                 bodyComponent.ApplyLinearImpulse(new Vector2(0f, 10f));
 
-            _oldKeyState = state;
             Camera2D.Position = _cameraPosition;
+            KeyboardInputManager.End();
 
             base.Update(gameTime);
         }

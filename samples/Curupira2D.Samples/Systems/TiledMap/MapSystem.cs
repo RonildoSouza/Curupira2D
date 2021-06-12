@@ -1,7 +1,7 @@
 ﻿using Curupira2D.ECS.Systems;
 using Curupira2D.Extensions;
 
-namespace Curupira2D.Testbed.Systems.TiledMap
+namespace Curupira2D.Samples.Systems.TiledMap
 {
     class MapSystem : ECS.System, ILoadable
     {

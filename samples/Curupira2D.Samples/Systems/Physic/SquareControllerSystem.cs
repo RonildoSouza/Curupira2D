@@ -4,7 +4,7 @@ using Curupira2D.ECS.Systems;
 using Curupira2D.Extensions;
 using Microsoft.Xna.Framework;
 
-namespace Curupira2D.Testbed.Systems.Physic
+namespace Curupira2D.Samples.Systems.Physic
 {
     class SquareControllerSystem : ECS.System, ILoadable
     {
@@ -13,7 +13,7 @@ namespace Curupira2D.Testbed.Systems.Physic
             var squareTexture = Scene.GameCore.GraphicsDevice.CreateTextureRectangle(50, Color.Black * 0.6f);
 
             Scene.CreateEntity("square")
-                .SetPosition(Scene.ScreenWidth * 0.6f, 100)
+                .SetPosition(Scene.ScreenWidth * 0.6f, 100f)
                 .SetRotation(45)
                 .AddComponent(
                     new SpriteComponent(squareTexture),

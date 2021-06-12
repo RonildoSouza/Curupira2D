@@ -3,22 +3,13 @@
  <tileset firstgid="1" name="PlatformerTileset" tilewidth="128" tileheight="128" tilecount="7" columns="7">
   <image source="PlatformerTileset.png" width="896" height="128"/>
  </tileset>
- <layer id="4" name="Water02" width="40" height="5">
+ <layer id="2" name="Water" width="40" height="5">
   <data encoding="csv">
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1073741831,1073741831,0,0,
-0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1073741831,1073741831,0,0,
-0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1073741831,1073741831,0,0
-</data>
- </layer>
- <layer id="2" name="Water01" width="40" height="5">
-  <data encoding="csv">
-0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,7,7,7,0,0,
-0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,4,5,6,0,0,0,0,0,0,0,0,0,0,7,7,0,0,
-2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,7,7,0,0,
-2,0,0,0,0,7,7,7,7,7,7,0,0,0,0,0,0,0,0,0,7,7,7,7,7,7,7,7,7,0,0,0,0,0,0,0,7,7,0,2
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,4,5,6,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+2,0,0,0,0,7,7,7,7,7,7,0,0,0,0,0,0,0,0,0,7,7,7,7,7,7,7,7,7,0,0,0,0,0,0,7,7,7,7,2
 </data>
  </layer>
  <layer id="1" name="Main" width="40" height="5">
@@ -31,12 +22,12 @@
 </data>
  </layer>
  <objectgroup id="3" name="Collision">
-  <object id="21" x="1.33333" y="510.667" width="764" height="34.6667">
+  <object id="21" x="1.33333" y="513.167" width="764" height="32.1667">
    <properties>
     <property name="c2D.entityGroup" value="Ground"/>
    </properties>
   </object>
-  <object id="22" x="0" y="384" width="381.333" height="34.6667">
+  <object id="22" x="0" y="385" width="381.333" height="33.6667">
    <properties>
     <property name="c2D.entityGroup" value="Ground"/>
    </properties>
@@ -46,47 +37,47 @@
     <property name="c2D.entityGroup" value="Ground"/>
    </properties>
   </object>
-  <object id="25" x="896" y="417.333" width="249.333" height="32">
+  <object id="25" x="896" y="419.833" width="254.333" height="29.5">
    <properties>
     <property name="c2D.entityGroup" value="Ground"/>
    </properties>
   </object>
-  <object id="26" x="1280" y="510" width="1406" height="36">
+  <object id="26" x="1280" y="513" width="1407.5" height="33">
    <properties>
     <property name="c2D.entityGroup" value="Ground"/>
    </properties>
   </object>
-  <object id="27" x="2178" y="380" width="508" height="34">
+  <object id="27" x="2178" y="385" width="509.5" height="29">
    <properties>
     <property name="c2D.entityGroup" value="Ground"/>
    </properties>
   </object>
-  <object id="28" x="2306" y="258" width="378" height="26">
+  <object id="28" x="2306" y="257" width="381" height="27">
    <properties>
     <property name="c2D.entityGroup" value="Ground"/>
    </properties>
   </object>
-  <object id="29" x="2432" y="126" width="258" height="34">
+  <object id="29" x="2432" y="129" width="255.5" height="31">
    <properties>
     <property name="c2D.entityGroup" value="Ground"/>
    </properties>
   </object>
-  <object id="33" x="3586" y="510" width="1022" height="30">
+  <object id="33" x="3586" y="513" width="1022" height="27">
    <properties>
     <property name="c2D.entityGroup" value="Ground"/>
    </properties>
   </object>
-  <object id="34" x="3712" y="384" width="254" height="28">
+  <object id="34" x="3712" y="385" width="254" height="27">
    <properties>
     <property name="c2D.entityGroup" value="Ground"/>
    </properties>
   </object>
-  <object id="35" x="4098" y="162" width="378" height="28">
+  <object id="35" x="4098" y="164" width="381.5" height="26">
    <properties>
     <property name="c2D.entityGroup" value="Ground"/>
    </properties>
   </object>
-  <object id="36" x="4478" y="128" width="128" height="36">
+  <object id="36" x="4478" y="129" width="128" height="35">
    <properties>
     <property name="c2D.entityGroup" value="Ground"/>
    </properties>
@@ -96,17 +87,17 @@
     <property name="c2D.entityGroup" value="Ground"/>
    </properties>
   </object>
-  <object id="38" x="4990" y="163" width="126" height="30">
+  <object id="38" x="4990" y="163" width="129" height="30">
    <properties>
     <property name="c2D.entityGroup" value="Ground"/>
    </properties>
   </object>
-  <object id="39" x="4864" y="513" width="254" height="30">
+  <object id="39" x="4864" y="513" width="256" height="30">
    <properties>
     <property name="c2D.entityGroup" value="Ground"/>
    </properties>
   </object>
-  <object id="40" x="2944" y="288" width="382" height="32">
+  <object id="40" x="2944" y="292" width="382" height="28">
    <properties>
     <property name="c2D.entityGroup" value="Ground"/>
    </properties>
