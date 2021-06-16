@@ -27,10 +27,12 @@ namespace Curupira2D.ECS
         public int ScreenHeight => GameCore.GraphicsDevice.Viewport.Height;
         public Vector2 ScreenSize => new Vector2(ScreenWidth, ScreenHeight);
         public Vector2 ScreenCenter => new Vector2(ScreenWidth * 0.5f, ScreenHeight * 0.5f);
-        public Vector2 Gravity { get; set; }
+
         public KeyboardInputManager KeyboardInputManager { get; private set; }
         public GamePadInputManager GamePadInputManager { get; private set; }
         public MouseInputManager MouseInputManager { get; private set; }
+
+        public Vector2 Gravity { get; set; }
 
         public void SetGameCore(GameCore gameCore)
         {
@@ -53,10 +55,10 @@ namespace Curupira2D.ECS
 
         public virtual void LoadContent()
         {
-            AddSystem<TextSystem>();
             AddSystem<SpriteSystem>();
             AddSystem<SpriteAnimationSystem>();
             AddSystem<TiledMapSystem>();
+            AddSystem<TextSystem>();
 
             // Always keep this system at the end
             AddSystem(new PhysicsSystem(Gravity));
@@ -105,6 +107,7 @@ namespace Curupira2D.ECS
 
         public float InvertPositionY(float y) => ScreenHeight - y;
 
+        #region Methods of managing game core
         public Scene AddGameComponent(IGameComponent gameComponent)
         {
             if (!GameCore.Components.Any(c => c.GetType() == gameComponent.GetType()))
@@ -116,10 +119,14 @@ namespace Curupira2D.ECS
         public Scene RemoveGameComponent(IGameComponent gameComponent)
         {
             if (GameCore.Components.Any(c => c.GetType() == gameComponent.GetType()))
-                GameCore.Components.Remove(gameComponent);
+            {
+                var index = GameCore.Components.ToList().FindIndex(c => c.GetType() == gameComponent.GetType());
+                GameCore.Components.RemoveAt(index);
+            }
 
             return this;
         }
+        #endregion
 
         #region Methods of managing systems
         public Scene AddSystem<TSystem>(TSystem system) where TSystem : System

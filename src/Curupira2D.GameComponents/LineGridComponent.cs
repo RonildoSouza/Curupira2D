@@ -4,7 +4,7 @@ using System;
 
 namespace Curupira2D.GameComponents
 {
-    public class LineGridComponent : DrawableGameComponent
+    public class LineGridComponent : DrawableGameComponent, IEquatable<LineGridComponent>
     {
         SpriteBatch _spriteBatch;
         Texture2D _texture;
@@ -54,5 +54,8 @@ namespace Curupira2D.GameComponents
             _texture = new Texture2D(GraphicsDevice, 1, 1, false, SurfaceFormat.Color);
             _texture.SetData(new[] { Color.White });
         }
+
+        public bool Equals(LineGridComponent other)
+            => other != null && other.Size == Size && other.Color == Color;
     }
 }

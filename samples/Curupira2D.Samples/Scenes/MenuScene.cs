@@ -6,8 +6,6 @@ namespace Curupira2D.Samples.Scenes
 {
     class MenuScene : SceneBase
     {
-        KeyboardState _oldKeyState;
-
         public override void LoadContent()
         {
             SetTitle(nameof(MenuScene));
