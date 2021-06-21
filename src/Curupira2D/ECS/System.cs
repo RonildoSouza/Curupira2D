@@ -12,6 +12,7 @@ namespace Curupira2D.ECS
     public interface ISystem
     {
         Scene Scene { get; }
+        bool MatchActiveEntitiesAndComponents(Entity entity);
     }
 
     public abstract class System : ISystem
@@ -39,7 +40,7 @@ namespace Curupira2D.ECS
             return entity.HasAllComponentTypes(_requiredComponents);
         }
 
-        protected bool MatchActiveEntitiesAndComponents(Entity entity) => entity.Active && MatchComponents(entity);
+        public bool MatchActiveEntitiesAndComponents(Entity entity) => entity.Active && MatchComponents(entity);
 
         protected virtual void SetupRequiredComponents()
         {
@@ -62,11 +63,11 @@ namespace Curupira2D.ECS
 
         void AssertRequiredComponents(List<Type> requiredComponentTypes)
         {
-            var implementOnlyIInitializable = GetType().GetTypeInfo().ImplementedInterfaces.Count() == 2
+            var implementOnlyILoadable = GetType().GetTypeInfo().ImplementedInterfaces.Count() == 2
                 && GetType().GetTypeInfo().ImplementedInterfaces.Contains(typeof(ISystem))
                 && GetType().GetTypeInfo().ImplementedInterfaces.Contains(typeof(ILoadable));
 
-            if (!requiredComponentTypes.Any() && GetType().Name != nameof(DebugSystem) && !implementOnlyIInitializable)
+            if (!requiredComponentTypes.Any() && GetType().Name != nameof(DebugSystem) && !implementOnlyILoadable)
                 throw new Exception($"You should add required component for the system {GetType().Name}");
         }
     }

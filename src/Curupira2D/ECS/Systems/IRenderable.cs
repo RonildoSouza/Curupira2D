@@ -1,7 +1,9 @@
-﻿namespace Curupira2D.ECS.Systems
+﻿using System.Collections.Generic;
+
+namespace Curupira2D.ECS.Systems
 {
     public interface IRenderable : ISystem
     {
-        void Draw();
+        void Draw(ref IReadOnlyList<Entity> entities);
     }
 }

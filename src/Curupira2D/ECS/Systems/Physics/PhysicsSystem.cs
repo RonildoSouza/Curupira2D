@@ -9,7 +9,7 @@ using tainicom.Aether.Physics2D.Dynamics;
 namespace Curupira2D.ECS.Systems.Physics
 {
     [RequiredComponent(typeof(PhysicsSystem), typeof(BodyComponent))]
-    public class PhysicsSystem : System, ILoadable, IUpdatable, IRenderable
+    public sealed class PhysicsSystem : System, ILoadable, IUpdatable
     {
         readonly World _world;
         DebugView _debugView;
@@ -26,10 +26,6 @@ namespace Curupira2D.ECS.Systems.Physics
             _world.ContactManager.PositionConstraintsMultithreadThreshold = 256;
             _world.ContactManager.CollideMultithreadThreshold = 256;
         }
-
-        public Color DebugDefaultShapeColor { get; set; } = Color.Orange;
-        public Color DebugSleepingShapeColor { get; set; } = Color.DodgerBlue;
-        public Color DebugTextColor { get; set; } = Color.Black;
 
         public void LoadContent()
         {
@@ -73,9 +69,9 @@ namespace Curupira2D.ECS.Systems.Physics
                 _debugView.AppendFlags(DebugViewFlags.Joint);
                 _debugView.AppendFlags(DebugViewFlags.PerformanceGraph);
                 _debugView.AppendFlags(DebugViewFlags.DebugPanel);
-                _debugView.DefaultShapeColor = DebugDefaultShapeColor;
-                _debugView.SleepingShapeColor = DebugSleepingShapeColor;
-                _debugView.TextColor = DebugTextColor;
+                _debugView.DefaultShapeColor = Color.Orange;
+                _debugView.SleepingShapeColor = Color.DodgerBlue;
+                _debugView.TextColor = Color.Black;
                 _debugView.StaticShapeColor = Color.Red;
 
                 _debugView.LoadContent(Scene.GameCore.GraphicsDevice, Scene.GameCore.Content);
@@ -112,7 +108,7 @@ namespace Curupira2D.ECS.Systems.Physics
                 _debugView.UpdatePerformanceGraph(_world.UpdateTime);
         }
 
-        public void Draw()
+        internal void DrawDebugData()
         {
             if (Scene.GameCore.DebugActive && Scene.ExistsEntities(_ => MatchActiveEntitiesAndComponents(_)))
                 _debugView.RenderDebugData(Scene.Camera2D.Projection, Scene.Camera2D.View);

@@ -1,4 +1,5 @@
-﻿using Curupira2D.ECS.Systems.Drawables;
+﻿using Curupira2D.ECS.Components.Drawables;
+using Curupira2D.ECS.Systems.Drawables;
 using Curupira2D.ECS.Systems.Physics;
 using Curupira2D.Extensions;
 using Curupira2D.GameComponents.Camera2D;
@@ -15,6 +16,7 @@ namespace Curupira2D.ECS
     {
         readonly EntityManager _entityManager = EntityManager.Instance;
         readonly SystemManager _systemManager = SystemManager.Instance;
+        PhysicsSystem _physicsSystem;
 
         public GameCore GameCore { get; private set; }
         public SpriteBatch SpriteBatch { get; private set; }
@@ -62,7 +64,8 @@ namespace Curupira2D.ECS
             AddSystem<TextSystem>();
 
             // Always keep this system at the end
-            AddSystem(new PhysicsSystem(Gravity));
+            _physicsSystem = new PhysicsSystem(Gravity);
+            AddSystem(_physicsSystem);
 
             _systemManager.LoadableSystemsIteration();
 
@@ -89,7 +92,44 @@ namespace Curupira2D.ECS
 
         public virtual void Draw()
         {
-            _systemManager.RenderableSystemsIteration();
+            // Begin/End sprite batch to UI Camera
+            SpriteBatch.Begin(
+                sortMode: SpriteSortMode.FrontToBack,
+                rasterizerState: RasterizerState.CullClockwise,
+                effect: UICamera2D.SpriteBatchEffect);            
+
+            _systemManager.RenderableSystemsIteration(system =>
+            {
+                return system.Scene.GetEntities(_ =>
+                {
+                    var drawableComponent = _.GetComponent(_ => _.Value is DrawableComponent) as DrawableComponent;
+                    return system.MatchActiveEntitiesAndComponents(_) && (drawableComponent?.DrawInUICamera ?? false);
+                }).Any();
+            });
+
+            SpriteBatch.End();
+
+            // Begin/End sprite batch to Camera
+            SpriteBatch.Begin(
+                sortMode: SpriteSortMode.FrontToBack,
+                rasterizerState: RasterizerState.CullClockwise,
+                effect: Camera2D.SpriteBatchEffect);
+
+            _systemManager.RenderableSystemsIteration(system =>
+            {
+                return system.Scene.GetEntities(_ =>
+                {
+                    var drawableComponent = _.GetComponent(_ => _.Value is DrawableComponent) as DrawableComponent;
+                    return system.MatchActiveEntitiesAndComponents(_) && (!drawableComponent?.DrawInUICamera ?? false);
+                }).Any();
+            });
+
+            SpriteBatch.End();
+
+            // Begin/End sprite batch to physics system debug data
+            SpriteBatch.Begin();
+            _physicsSystem.DrawDebugData();
+            SpriteBatch.End();
         }
 
         public Scene SetTitle(string title)

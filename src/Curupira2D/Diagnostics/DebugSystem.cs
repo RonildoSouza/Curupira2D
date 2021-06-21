@@ -1,4 +1,5 @@
-﻿using Curupira2D.ECS.Systems;
+﻿using Curupira2D.ECS;
+using Curupira2D.ECS.Systems;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -18,10 +19,8 @@ namespace Curupira2D.Diagnostics
             //_fontArial18 = Scene.Content.Load<SpriteFont>("FontArial18");
         }
 
-        public void Draw()
+        public void Draw(ref IReadOnlyList<Entity> entities)
         {
-            var entities = Scene.GetEntities(_ => _.Active);
-
             _stringBuilder.Clear();
 
             //_stringBuilder.Append(DebugEntityProperties(ref entities));

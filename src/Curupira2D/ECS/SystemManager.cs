@@ -1,4 +1,5 @@
-﻿using Curupira2D.ECS.Systems;
+﻿using Curupira2D.ECS.Components.Drawables;
+using Curupira2D.ECS.Systems;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -31,12 +32,17 @@ namespace Curupira2D.ECS
             }
         }
 
-        public void RenderableSystemsIteration()
+        public void RenderableSystemsIteration(Func<IRenderable, bool> predicate)
         {
-            for (int i = 0; i < _renderableSystems.Count; i++)
+            var renderableSystems = _renderableSystems.Where(predicate).ToList();
+
+            for (int i = 0; i < renderableSystems.Count; i++)
             {
-                if (SystemIsValid(_renderableSystems[i]))
-                    _renderableSystems[i].Draw();
+                if (SystemIsValid(renderableSystems[i]))
+                {
+                    var entities = renderableSystems[i].Scene.GetEntities(_ => renderableSystems[i].MatchActiveEntitiesAndComponents(_) && _.HasComponent(_ => _.Value is DrawableComponent));
+                    renderableSystems[i].Draw(ref entities);
+                }
             }
         }
 

@@ -12,7 +12,7 @@ using TiledLib.Objects;
 namespace Curupira2D.ECS.Systems.Drawables
 {
     [RequiredComponent(typeof(TiledMapSystem), typeof(TiledMapComponent))]
-    public class TiledMapSystem : DrawableSystem<TiledMapComponent>, ILoadable
+    public sealed class TiledMapSystem : System, ILoadable, IRenderable
     {
         public void LoadContent()
         {
@@ -44,7 +44,7 @@ namespace Curupira2D.ECS.Systems.Drawables
             }
         }
 
-        protected override void DrawEntities(ref IReadOnlyList<Entity> entities)
+        public void Draw(ref IReadOnlyList<Entity> entities)
         {
             for (int i = 0; i < entities.Count; i++)
             {

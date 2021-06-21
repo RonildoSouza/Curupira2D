@@ -8,9 +8,9 @@ using System.Collections.Generic;
 namespace Curupira2D.ECS.Systems.Drawables
 {
     [RequiredComponent(typeof(SpriteAnimationSystem), typeof(SpriteAnimationComponent))]
-    public class SpriteAnimationSystem : DrawableSystem<SpriteAnimationComponent>
+    public sealed class SpriteAnimationSystem : System, IRenderable
     {
-        protected override void DrawEntities(ref IReadOnlyList<Entity> entities)
+        public void Draw(ref IReadOnlyList<Entity> entities)
         {
             for (int i = 0; i < entities.Count; i++)
             {
