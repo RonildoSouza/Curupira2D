@@ -56,46 +56,6 @@ namespace Curupira2D.ECS
             return this;
         }
 
-        public Entity AddComponent(IComponent component)
-        {
-            if (component != null && !_components.ContainsKey(component.GetType()))
-                _components.Add(component.GetType(), component);
-
-            return this;
-        }
-
-        public Entity AddComponent<TComponent>(params object[] args) where TComponent : IComponent
-        {
-            var component = Activator.CreateInstance(typeof(TComponent), args);
-            return AddComponent(component as IComponent);
-        }
-
-        public void RemoveComponent<TComponent>() where TComponent : IComponent
-        {
-            if (_components.ContainsKey(typeof(TComponent)))
-                _components.Remove(typeof(TComponent));
-        }
-
-        public void UpdateComponent(IComponent component)
-        {
-            if (component == null || !_components.ContainsKey(component.GetType()))
-                return;
-
-            _components[component.GetType()] = component;
-        }
-
-        public TComponent GetComponent<TComponent>() where TComponent : IComponent
-        {
-            _components.TryGetValue(typeof(TComponent), out IComponent component);
-            return (TComponent)component;
-        }
-
-        public bool HasComponent<TComponent>() where TComponent : IComponent => HasComponent(typeof(TComponent));
-
-        public bool HasAllComponentTypes(IEnumerable<Type> componentTypes) => componentTypes.All(_ => HasComponent(_));
-
-        public bool HasAnyComponentTypes(IEnumerable<Type> componentTypes) => componentTypes.Any(_ => HasComponent(_));
-
         public Entity AddChild(Entity child)
         {
             if (_children.Contains(child))
@@ -128,6 +88,55 @@ namespace Curupira2D.ECS
         {
             return -401120461 + EqualityComparer<string>.Default.GetHashCode(UniqueId);
         }
+
+        #region Methods of managing components
+        public Entity AddComponent(IComponent component)
+        {
+            if (component != null && !_components.ContainsKey(component.GetType()))
+                _components.Add(component.GetType(), component);
+
+            return this;
+        }
+
+        public Entity AddComponent<TComponent>(params object[] args) where TComponent : IComponent
+        {
+            var component = Activator.CreateInstance(typeof(TComponent), args);
+            return AddComponent(component as IComponent);
+        }
+
+        public void RemoveComponent<TComponent>() where TComponent : IComponent
+        {
+            if (_components.ContainsKey(typeof(TComponent)))
+                _components.Remove(typeof(TComponent));
+        }
+
+        public void UpdateComponent(IComponent component)
+        {
+            if (component == null || !_components.ContainsKey(component.GetType()))
+                return;
+
+            _components[component.GetType()] = component;
+        }
+
+        public IComponent GetComponent(Func<KeyValuePair<Type, IComponent>, bool> predicate)
+        {
+            return _components.FirstOrDefault(predicate).Value;
+        }
+
+        public TComponent GetComponent<TComponent>() where TComponent : IComponent
+        {
+            _components.TryGetValue(typeof(TComponent), out IComponent component);
+            return (TComponent)component;
+        }
+
+        public bool HasComponent(Func<KeyValuePair<Type, IComponent>, bool> predicate) => _components.Any(predicate);
+
+        public bool HasComponent<TComponent>() where TComponent : IComponent => HasComponent(typeof(TComponent));
+
+        public bool HasAllComponentTypes(IEnumerable<Type> componentTypes) => componentTypes.All(_ => HasComponent(_));
+
+        public bool HasAnyComponentTypes(IEnumerable<Type> componentTypes) => componentTypes.Any(_ => HasComponent(_));
+        #endregion
 
         bool HasComponent(Type componentType) => _components.ContainsKey(componentType);
     }

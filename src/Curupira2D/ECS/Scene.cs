@@ -1,5 +1,6 @@
 ﻿using Curupira2D.ECS.Systems.Drawables;
 using Curupira2D.ECS.Systems.Physics;
+using Curupira2D.Extensions;
 using Curupira2D.GameComponents.Camera2D;
 using Curupira2D.Input;
 using Microsoft.Xna.Framework;
@@ -107,6 +108,14 @@ namespace Curupira2D.ECS
 
         public float InvertPositionY(float y) => ScreenHeight - y;
 
+        public Vector2 PositionToScene(Vector2 position)
+        {
+            position.Y = InvertPositionY(position.Y);
+            return position;
+        }
+
+        public Vector2 PositionToScene(Point position) => PositionToScene(position.ToVector2());
+
         #region Methods of managing game core
         public Scene AddGameComponent(IGameComponent gameComponent)
         {
@@ -164,6 +173,8 @@ namespace Curupira2D.ECS
         public void RemoveAllEntities() => _entityManager.RemoveAll();
 
         public bool ExistsEntities(Func<Entity, bool> match) => _entityManager.Exists(match);
+
+        public Vector2 GetEntityPosition(string uniqueId) => GetEntity(uniqueId).GetPositionInScene(this);
         #endregion       
 
         public virtual void Dispose()
