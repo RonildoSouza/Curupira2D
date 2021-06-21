@@ -14,12 +14,14 @@ namespace Curupira2D
         readonly SceneManager _sceneManager = SceneManager.Instance;
         readonly int _width;
         readonly int _height;
+        readonly bool _disabledExit;
 
-        public GameCore(int width = 800, int height = 480, bool debugActive = false)
+        public GameCore(int width = 800, int height = 480, bool debugActive = false, bool disabledExit = false)
         {
             _width = width;
             _height = height;
             DebugActive = debugActive;
+            _disabledExit = disabledExit;
 
             _graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
@@ -55,7 +57,7 @@ namespace Curupira2D
 
         protected override void Update(GameTime gameTime)
         {
-            if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
+            if (!_disabledExit && (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape)))
                 Exit();
 
             _sceneManager.CurrentScene?.Update(gameTime);
