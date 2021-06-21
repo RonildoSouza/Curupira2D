@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace Curupira2D.ECS
 {
@@ -30,7 +31,22 @@ namespace Curupira2D.ECS
 
         public void Remove(Predicate<Entity> match) => _entities.RemoveAll(match);
 
-        public void Remove(string uniqueId) => Remove(_ => _.UniqueId == uniqueId);
+        public void Remove(string uniqueId)
+        {
+            Remove(_ =>
+            {
+                Task.Factory.StartNew(() =>
+                {
+                    if (_.UniqueId == uniqueId && _.Children.Any())
+                    {
+                        foreach (var child in _.Children)
+                            Remove(child.UniqueId);
+                    }
+                }).ConfigureAwait(true);
+
+                return _.UniqueId == uniqueId;
+            });
+        }
 
         public void RemoveAll() => Remove(_ => true);
 
