@@ -107,7 +107,7 @@ namespace Curupira2D
             var assembly = _sceneManager.CurrentScene != null ? _sceneManager.CurrentScene.GetType().Assembly : Assembly.GetExecutingAssembly();
             var fileVersionInfo = FileVersionInfo.GetVersionInfo(assembly.Location);
 
-            if (_sceneManager.CurrentScene != null)
+            if (_sceneManager.CurrentScene == null)
                 return $"{GetType().Assembly.GetName().Name} Version - {fileVersionInfo.ProductVersion}";
 
             return fileVersionInfo.ProductVersion;
