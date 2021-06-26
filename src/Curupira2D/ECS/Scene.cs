@@ -14,8 +14,8 @@ namespace Curupira2D.ECS
 {
     public class Scene : IDisposable
     {
-        readonly EntityManager _entityManager = EntityManager.Instance;
-        readonly SystemManager _systemManager = SystemManager.Instance;
+        readonly EntityManager _entityManager = new EntityManager();
+        readonly SystemManager _systemManager = new SystemManager();
         PhysicsSystem _physicsSystem;
 
         public GameCore GameCore { get; private set; }
@@ -96,7 +96,7 @@ namespace Curupira2D.ECS
             SpriteBatch.Begin(
                 sortMode: SpriteSortMode.FrontToBack,
                 rasterizerState: RasterizerState.CullClockwise,
-                effect: UICamera2D.SpriteBatchEffect);            
+                effect: UICamera2D.SpriteBatchEffect);
 
             _systemManager.RenderableSystemsIteration(system =>
             {
@@ -219,6 +219,9 @@ namespace Curupira2D.ECS
 
         public virtual void Dispose()
         {
+            RemoveAllSystems();
+            RemoveAllEntities();
+
             GameCore.Dispose();
             SpriteBatch.Dispose();
             Camera2D = null;

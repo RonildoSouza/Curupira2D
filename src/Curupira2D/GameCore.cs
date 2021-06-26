@@ -4,6 +4,8 @@ using Curupira2D.GameComponents.Camera2D;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using System.Diagnostics;
+using System.Reflection;
 
 namespace Curupira2D
 {
@@ -11,7 +13,7 @@ namespace Curupira2D
     {
         readonly GraphicsDeviceManager _graphics;
         readonly FPSCounterComponent _fpsCounterComponent;
-        readonly SceneManager _sceneManager = SceneManager.Instance;
+        readonly SceneManager _sceneManager = new SceneManager();
         readonly int _width;
         readonly int _height;
         readonly bool _disabledExit;
@@ -75,7 +77,8 @@ namespace Curupira2D
             {
                 Window.Title = $"{_sceneManager.CurrentScene?.Title ?? GetType().Assembly.GetName().Name} " +
                            $"| {GraphicsDevice.Viewport.Width}x{GraphicsDevice.Viewport.Height} " +
-                           $"| FPS: {_fpsCounterComponent.FPS}";
+                           $"| FPS: {_fpsCounterComponent.FPS}" +
+                           $"| v{GetVersion()}";
             }
             else
                 Window.Title = $"{_sceneManager.CurrentScene?.Title ?? GetType().Assembly.GetName().Name}";
@@ -98,5 +101,16 @@ namespace Curupira2D
         public TScene GetCurrentScene<TScene>() where TScene : Scene => _sceneManager.CurrentScene as TScene;
 
         public Scene GetCurrentScene() => GetCurrentScene<Scene>();
+
+        public string GetVersion()
+        {
+            var assembly = _sceneManager.CurrentScene != null ? _sceneManager.CurrentScene.GetType().Assembly : Assembly.GetExecutingAssembly();
+            var fileVersionInfo = FileVersionInfo.GetVersionInfo(assembly.Location);
+
+            if (_sceneManager.CurrentScene != null)
+                return $"{GetType().Assembly.GetName().Name} Version - {fileVersionInfo.ProductVersion}";
+
+            return fileVersionInfo.ProductVersion;
+        }
     }
 }

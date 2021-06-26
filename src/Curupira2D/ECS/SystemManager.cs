@@ -11,11 +11,6 @@ namespace Curupira2D.ECS
         readonly List<ILoadable> _loadableSystems = new List<ILoadable>();
         readonly List<IUpdatable> _updatableSystems = new List<IUpdatable>();
         readonly List<IRenderable> _renderableSystems = new List<IRenderable>();
-        static readonly Lazy<SystemManager> _systemManager = new Lazy<SystemManager>(() => new SystemManager());
-
-        SystemManager() { }
-
-        public static SystemManager Instance => _systemManager.Value;
 
         public void LoadableSystemsIteration()
         {
@@ -83,7 +78,6 @@ namespace Curupira2D.ECS
         public void Dispose()
         {
             RemoveAll();
-            _systemManager.Value.Dispose();
 
             GC.Collect();
         }

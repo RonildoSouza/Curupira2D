@@ -8,11 +8,6 @@ namespace Curupira2D.ECS
     internal sealed class EntityManager : IDisposable
     {
         readonly List<Entity> _entities = new List<Entity>();
-        static readonly Lazy<EntityManager> _entityManager = new Lazy<EntityManager>(() => new EntityManager());
-
-        EntityManager() { }
-
-        public static EntityManager Instance => _entityManager.Value;
 
         public Entity Create(string uniqueId, string group = null)
         {
@@ -54,8 +49,7 @@ namespace Curupira2D.ECS
 
         public void Dispose()
         {
-            _entities.Clear();
-            _entityManager.Value.Dispose();
+            RemoveAll();
 
             GC.Collect();
         }
