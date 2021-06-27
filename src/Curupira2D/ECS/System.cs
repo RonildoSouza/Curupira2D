@@ -46,14 +46,16 @@ namespace Curupira2D.ECS
         {
             var requiredComponentAttrs = GetType().GetTypeInfo().GetCustomAttributes<RequiredComponentAttribute>();
 
-            foreach (var requiredComponentAttr in requiredComponentAttrs)
-                AddRequiredComponent(requiredComponentAttr.ComponentTypes);
+            for (int i = 0; i < requiredComponentAttrs.Count(); i++)
+                AddRequiredComponent(requiredComponentAttrs.ElementAt(i).ComponentTypes);
         }
 
         void AddRequiredComponent(Type[] types)
         {
-            foreach (var type in types)
+            for (int i = 0; i < types.Length; i++)
             {
+                var type = types[i];
+
                 if (_requiredComponents.Contains(type) || !type.GetTypeInfo().ImplementedInterfaces.Contains(typeof(IComponent)))
                     continue;
 

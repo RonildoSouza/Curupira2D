@@ -80,12 +80,9 @@ namespace Curupira2D.ECS.Systems.Physics
 
         public void Update()
         {
-            if (!Scene.ExistsEntities(_ => MatchActiveEntitiesAndComponents(_)))
-                return;
-
             var entities = Scene.GetEntities(_ => MatchActiveEntitiesAndComponents(_));
 
-            if (entities.Count != _world.BodyList.Count)
+            if (entities.Any() && entities.Count != _world.BodyList.Count)
             {
                 _world.BodyList.Clear();
                 LoadContent();
