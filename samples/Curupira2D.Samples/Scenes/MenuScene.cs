@@ -6,8 +6,6 @@ namespace Curupira2D.Samples.Scenes
 {
     class MenuScene : SceneBase
     {
-        KeyboardState _oldKeyState;
-
         public override void LoadContent()
         {
             SetTitle(nameof(MenuScene));
@@ -27,6 +25,9 @@ namespace Curupira2D.Samples.Scenes
         public override void Update(GameTime gameTime)
         {
             KeyboardInputManager.Begin();
+
+            if (KeyboardInputManager.IsKeyPressed(Keys.T))
+                GameCore.ChangeScene<SceneTest>();
 
             if (KeyboardInputManager.IsKeyPressed(Keys.D1))
                 GameCore.ChangeScene<SpriteAnimationScene>();

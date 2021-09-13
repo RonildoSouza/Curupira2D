@@ -21,6 +21,9 @@ namespace Curupira2D.ECS.Components.Physics
         public BodyComponent(float width, float height, EntityType entityType, EntityShape entityShape, float density = 1f)
             : this(new Vector2(width, height), entityType, entityShape, density) { }
 
+        /// <summary>
+        /// Create circle shape body
+        /// </summary>
         public BodyComponent(float radius, EntityType entityType, float density = 1f)
             : this(Vector2.Zero, entityType, EntityShape.Circle, density)
         {
@@ -74,6 +77,12 @@ namespace Curupira2D.ECS.Components.Physics
 
         public Vector2 SetLinearVelocityY(float y)
             => LinearVelocity = new Vector2(LinearVelocity.X, y);
+
+        public void ApplyLinearImpulseX(float x)
+            => ApplyLinearImpulse(new Vector2(x, 0f));
+
+        public void ApplyLinearImpulseY(float y)
+            => ApplyLinearImpulse(new Vector2(0f, y));
 
         void ValidateRadiusValue(float radius)
         {

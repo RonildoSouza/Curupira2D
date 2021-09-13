@@ -7,11 +7,7 @@ namespace Curupira2D.ECS
     internal sealed class SceneManager : IDisposable
     {
         readonly List<Scene> _scenes = new List<Scene>();
-        static readonly Lazy<SceneManager> _sceneManager = new Lazy<SceneManager>(() => new SceneManager());
 
-        SceneManager() { }
-
-        public static SceneManager Instance => _sceneManager.Value;
         public Scene CurrentScene { get; private set; }
         public IReadOnlyList<Scene> Scenes => _scenes;
 
@@ -60,7 +56,6 @@ namespace Curupira2D.ECS
         public void Dispose()
         {
             _scenes.Clear();
-            _sceneManager.Value.Dispose();
             CurrentScene.Dispose();
 
             GC.Collect();

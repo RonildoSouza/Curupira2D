@@ -12,6 +12,7 @@ namespace Curupira2D.ECS
     public interface ISystem
     {
         Scene Scene { get; }
+        bool MatchActiveEntitiesAndComponents(Entity entity);
     }
 
     public abstract class System : ISystem
@@ -39,20 +40,22 @@ namespace Curupira2D.ECS
             return entity.HasAllComponentTypes(_requiredComponents);
         }
 
-        protected bool MatchActiveEntitiesAndComponents(Entity entity) => entity.Active && MatchComponents(entity);
+        public bool MatchActiveEntitiesAndComponents(Entity entity) => entity.Active && MatchComponents(entity);
 
         protected virtual void SetupRequiredComponents()
         {
             var requiredComponentAttrs = GetType().GetTypeInfo().GetCustomAttributes<RequiredComponentAttribute>();
 
-            foreach (var requiredComponentAttr in requiredComponentAttrs)
-                AddRequiredComponent(requiredComponentAttr.ComponentTypes);
+            for (int i = 0; i < requiredComponentAttrs.Count(); i++)
+                AddRequiredComponent(requiredComponentAttrs.ElementAt(i).ComponentTypes);
         }
 
         void AddRequiredComponent(Type[] types)
         {
-            foreach (var type in types)
+            for (int i = 0; i < types.Length; i++)
             {
+                var type = types[i];
+
                 if (_requiredComponents.Contains(type) || !type.GetTypeInfo().ImplementedInterfaces.Contains(typeof(IComponent)))
                     continue;
 
@@ -62,11 +65,11 @@ namespace Curupira2D.ECS
 
         void AssertRequiredComponents(List<Type> requiredComponentTypes)
         {
-            var implementOnlyIInitializable = GetType().GetTypeInfo().ImplementedInterfaces.Count() == 2
+            var implementOnlyILoadable = GetType().GetTypeInfo().ImplementedInterfaces.Count() == 2
                 && GetType().GetTypeInfo().ImplementedInterfaces.Contains(typeof(ISystem))
                 && GetType().GetTypeInfo().ImplementedInterfaces.Contains(typeof(ILoadable));
 
-            if (!requiredComponentTypes.Any() && GetType().Name != nameof(DebugSystem) && !implementOnlyIInitializable)
+            if (!requiredComponentTypes.Any() && GetType().Name != nameof(DebugSystem) && !implementOnlyILoadable)
                 throw new Exception($"You should add required component for the system {GetType().Name}");
         }
     }

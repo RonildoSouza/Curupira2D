@@ -9,27 +9,20 @@ using tainicom.Aether.Physics2D.Dynamics;
 namespace Curupira2D.ECS.Systems.Physics
 {
     [RequiredComponent(typeof(PhysicsSystem), typeof(BodyComponent))]
-    public class PhysicsSystem : System, ILoadable, IUpdatable, IRenderable
+    public sealed class PhysicsSystem : System, ILoadable, IUpdatable
     {
         readonly World _world;
         DebugView _debugView;
 
-        public PhysicsSystem(Vector2 gravity)
+        public PhysicsSystem()
         {
             _world = new World();
-
-            if (gravity != default)
-                _world.Gravity = gravity;
 
             // enable multithreading
             _world.ContactManager.VelocityConstraintsMultithreadThreshold = 256;
             _world.ContactManager.PositionConstraintsMultithreadThreshold = 256;
             _world.ContactManager.CollideMultithreadThreshold = 256;
         }
-
-        public Color DebugDefaultShapeColor { get; set; } = Color.Orange;
-        public Color DebugSleepingShapeColor { get; set; } = Color.DodgerBlue;
-        public Color DebugTextColor { get; set; } = Color.Black;
 
         public void LoadContent()
         {
@@ -73,9 +66,9 @@ namespace Curupira2D.ECS.Systems.Physics
                 _debugView.AppendFlags(DebugViewFlags.Joint);
                 _debugView.AppendFlags(DebugViewFlags.PerformanceGraph);
                 _debugView.AppendFlags(DebugViewFlags.DebugPanel);
-                _debugView.DefaultShapeColor = DebugDefaultShapeColor;
-                _debugView.SleepingShapeColor = DebugSleepingShapeColor;
-                _debugView.TextColor = DebugTextColor;
+                _debugView.DefaultShapeColor = Color.Orange;
+                _debugView.SleepingShapeColor = Color.DodgerBlue;
+                _debugView.TextColor = Color.Black;
                 _debugView.StaticShapeColor = Color.Red;
 
                 _debugView.LoadContent(Scene.GameCore.GraphicsDevice, Scene.GameCore.Content);
@@ -84,12 +77,12 @@ namespace Curupira2D.ECS.Systems.Physics
 
         public void Update()
         {
-            if (!Scene.ExistsEntities(_ => MatchActiveEntitiesAndComponents(_)))
-                return;
-
             var entities = Scene.GetEntities(_ => MatchActiveEntitiesAndComponents(_));
 
-            if (entities.Count != _world.BodyList.Count)
+            if (Scene.Gravity != default && Scene.Gravity != _world.Gravity)
+                _world.Gravity = Scene.Gravity;
+
+            if (entities.Any() && entities.Count != _world.BodyList.Count)
             {
                 _world.BodyList.Clear();
                 LoadContent();
@@ -98,12 +91,12 @@ namespace Curupira2D.ECS.Systems.Physics
             for (int i = 0; i < entities.Count(); i++)
             {
                 var entity = entities.ElementAt(i);
-                var body = entity.GetComponent<BodyComponent>();
+                var bodyComponent = entity.GetComponent<BodyComponent>();
 
-                body.Enabled = entity.Active;
+                bodyComponent.Enabled = entity.Active;
 
                 // Update Entity position and rotation
-                entity.SetTransform(body.Position, MathHelper.ToDegrees(body.Rotation));
+                entity.SetTransform(bodyComponent.Position, MathHelper.ToDegrees(bodyComponent.Rotation));
             }
 
             _world.Step(Scene.DeltaTime);
@@ -112,7 +105,7 @@ namespace Curupira2D.ECS.Systems.Physics
                 _debugView.UpdatePerformanceGraph(_world.UpdateTime);
         }
 
-        public void Draw()
+        internal void DrawDebugData()
         {
             if (Scene.GameCore.DebugActive && Scene.ExistsEntities(_ => MatchActiveEntitiesAndComponents(_)))
                 _debugView.RenderDebugData(Scene.Camera2D.Projection, Scene.Camera2D.View);

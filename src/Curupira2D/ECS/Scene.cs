@@ -1,5 +1,7 @@
-﻿using Curupira2D.ECS.Systems.Drawables;
+﻿using Curupira2D.ECS.Components.Drawables;
+using Curupira2D.ECS.Systems.Drawables;
 using Curupira2D.ECS.Systems.Physics;
+using Curupira2D.Extensions;
 using Curupira2D.GameComponents.Camera2D;
 using Curupira2D.Input;
 using Microsoft.Xna.Framework;
@@ -12,8 +14,10 @@ namespace Curupira2D.ECS
 {
     public class Scene : IDisposable
     {
-        readonly EntityManager _entityManager = EntityManager.Instance;
-        readonly SystemManager _systemManager = SystemManager.Instance;
+        readonly EntityManager _entityManager = new EntityManager();
+        readonly SystemManager _systemManager = new SystemManager();
+        PhysicsSystem _physicsSystem;
+        float _deltaTime;
 
         public GameCore GameCore { get; private set; }
         public SpriteBatch SpriteBatch { get; private set; }
@@ -22,15 +26,17 @@ namespace Curupira2D.ECS
         public ICamera2D UICamera2D { get; private set; }
         public string Title { get; private set; }
         public Color CleanColor { get; private set; } = Color.LightGray;
-        public float DeltaTime { get; private set; }
+        public float DeltaTime { get => _deltaTime == 0 ? 1f / 60f : _deltaTime; private set => _deltaTime = value; }
         public int ScreenWidth => GameCore.GraphicsDevice.Viewport.Width;
         public int ScreenHeight => GameCore.GraphicsDevice.Viewport.Height;
         public Vector2 ScreenSize => new Vector2(ScreenWidth, ScreenHeight);
         public Vector2 ScreenCenter => new Vector2(ScreenWidth * 0.5f, ScreenHeight * 0.5f);
-        public Vector2 Gravity { get; set; }
+
         public KeyboardInputManager KeyboardInputManager { get; private set; }
         public GamePadInputManager GamePadInputManager { get; private set; }
         public MouseInputManager MouseInputManager { get; private set; }
+
+        public Vector2 Gravity { get; set; }
 
         public void SetGameCore(GameCore gameCore)
         {
@@ -49,17 +55,20 @@ namespace Curupira2D.ECS
             GameCore.UICamera2D.Origin = cameraInitialOrigin;
             GameCore.UICamera2D.Position = cameraInitialPosition;
             UICamera2D = GameCore.UICamera2D;
+
+            Gravity = new Vector2(0f, -9.80665f);
         }
 
         public virtual void LoadContent()
         {
-            AddSystem<TextSystem>();
             AddSystem<SpriteSystem>();
             AddSystem<SpriteAnimationSystem>();
             AddSystem<TiledMapSystem>();
+            AddSystem<TextSystem>();
 
             // Always keep this system at the end
-            AddSystem(new PhysicsSystem(Gravity));
+            _physicsSystem = new PhysicsSystem();
+            AddSystem(_physicsSystem);
 
             _systemManager.LoadableSystemsIteration();
 
@@ -67,6 +76,8 @@ namespace Curupira2D.ECS
             GamePadInputManager = new GamePadInputManager();
             MouseInputManager = new MouseInputManager();
         }
+
+        public bool PauseUpdatableSystems { get; set; }
 
         public virtual void Update(GameTime gameTime)
         {
@@ -77,7 +88,8 @@ namespace Curupira2D.ECS
             GamePadInputManager.Begin();
             MouseInputManager.Begin();
 
-            _systemManager.UpdatableSystemsIteration();
+            if (!PauseUpdatableSystems)
+                _systemManager.UpdatableSystemsIteration();
 
             KeyboardInputManager.End();
             GamePadInputManager.End();
@@ -86,7 +98,44 @@ namespace Curupira2D.ECS
 
         public virtual void Draw()
         {
-            _systemManager.RenderableSystemsIteration();
+            // Begin/End sprite batch to UI Camera
+            SpriteBatch.Begin(
+                sortMode: SpriteSortMode.FrontToBack,
+                rasterizerState: RasterizerState.CullClockwise,
+                effect: UICamera2D.SpriteBatchEffect);
+
+            _systemManager.RenderableSystemsIteration(system =>
+            {
+                return system.Scene.GetEntities(_ =>
+                {
+                    var drawableComponent = _.GetComponent(_ => _.Value is DrawableComponent) as DrawableComponent;
+                    return system.MatchActiveEntitiesAndComponents(_) && (drawableComponent?.DrawInUICamera ?? false);
+                }).Any();
+            });
+
+            SpriteBatch.End();
+
+            // Begin/End sprite batch to Camera
+            SpriteBatch.Begin(
+                sortMode: SpriteSortMode.FrontToBack,
+                rasterizerState: RasterizerState.CullClockwise,
+                effect: Camera2D.SpriteBatchEffect);
+
+            _systemManager.RenderableSystemsIteration(system =>
+            {
+                return system.Scene.GetEntities(_ =>
+                {
+                    var drawableComponent = _.GetComponent(_ => _.Value is DrawableComponent) as DrawableComponent;
+                    return system.MatchActiveEntitiesAndComponents(_) && (!drawableComponent?.DrawInUICamera ?? false);
+                }).Any();
+            });
+
+            SpriteBatch.End();
+
+            // Begin/End sprite batch to physics system debug data
+            SpriteBatch.Begin();
+            _physicsSystem.DrawDebugData();
+            SpriteBatch.End();
         }
 
         public Scene SetTitle(string title)
@@ -105,6 +154,15 @@ namespace Curupira2D.ECS
 
         public float InvertPositionY(float y) => ScreenHeight - y;
 
+        public Vector2 PositionToScene(Vector2 position)
+        {
+            position.Y = InvertPositionY(position.Y);
+            return position;
+        }
+
+        public Vector2 PositionToScene(Point position) => PositionToScene(position.ToVector2());
+
+        #region Methods of managing game core
         public Scene AddGameComponent(IGameComponent gameComponent)
         {
             if (!GameCore.Components.Any(c => c.GetType() == gameComponent.GetType()))
@@ -116,10 +174,14 @@ namespace Curupira2D.ECS
         public Scene RemoveGameComponent(IGameComponent gameComponent)
         {
             if (GameCore.Components.Any(c => c.GetType() == gameComponent.GetType()))
-                GameCore.Components.Remove(gameComponent);
+            {
+                var index = GameCore.Components.ToList().FindIndex(c => c.GetType() == gameComponent.GetType());
+                GameCore.Components.RemoveAt(index);
+            }
 
             return this;
         }
+        #endregion
 
         #region Methods of managing systems
         public Scene AddSystem<TSystem>(TSystem system) where TSystem : System
@@ -157,10 +219,14 @@ namespace Curupira2D.ECS
         public void RemoveAllEntities() => _entityManager.RemoveAll();
 
         public bool ExistsEntities(Func<Entity, bool> match) => _entityManager.Exists(match);
+
+        public Vector2 GetEntityPosition(string uniqueId) => GetEntity(uniqueId).GetPositionInScene(this);
         #endregion       
 
         public virtual void Dispose()
         {
+            _systemManager.Dispose();
+            _entityManager.Dispose();
             GameCore.Dispose();
             SpriteBatch.Dispose();
             Camera2D = null;

@@ -11,6 +11,7 @@ namespace Curupira2D.Samples
         protected override void LoadContent()
         {
             AddScene<MenuScene>();
+            AddScene<SceneTest>();
             AddScene<SpriteAnimationScene>();
             AddScene<SceneGraphScene>();
             AddScene<CameraScene>();

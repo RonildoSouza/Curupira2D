@@ -6,9 +6,9 @@ using System.Collections.Generic;
 namespace Curupira2D.ECS.Systems.Drawables
 {
     [RequiredComponent(typeof(SpriteSystem), typeof(SpriteComponent))]
-    public class SpriteSystem : DrawableSystem<SpriteComponent>
+    public sealed class SpriteSystem : System, IRenderable
     {
-        protected override void DrawEntities(ref IReadOnlyList<Entity> entities)
+        public void Draw(ref IReadOnlyList<Entity> entities)
         {
             for (int i = 0; i < entities.Count; i++)
             {

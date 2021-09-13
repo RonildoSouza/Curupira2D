@@ -1,17 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace Curupira2D.ECS
 {
     internal sealed class EntityManager : IDisposable
     {
         readonly List<Entity> _entities = new List<Entity>();
-        static readonly Lazy<EntityManager> _entityManager = new Lazy<EntityManager>(() => new EntityManager());
-
-        EntityManager() { }
-
-        public static EntityManager Instance => _entityManager.Value;
 
         public Entity Create(string uniqueId, string group = null)
         {
@@ -30,7 +26,22 @@ namespace Curupira2D.ECS
 
         public void Remove(Predicate<Entity> match) => _entities.RemoveAll(match);
 
-        public void Remove(string uniqueId) => Remove(_ => _.UniqueId == uniqueId);
+        public void Remove(string uniqueId)
+        {
+            Remove(_ =>
+            {
+                Task.Factory.StartNew(() =>
+                {
+                    if (_.UniqueId == uniqueId && _.Children.Any())
+                    {
+                        foreach (var child in _.Children)
+                            Remove(child.UniqueId);
+                    }
+                }).ConfigureAwait(true);
+
+                return _.UniqueId == uniqueId;
+            });
+        }
 
         public void RemoveAll() => Remove(_ => true);
 
@@ -38,8 +49,7 @@ namespace Curupira2D.ECS
 
         public void Dispose()
         {
-            _entities.Clear();
-            _entityManager.Value.Dispose();
+            RemoveAll();
 
             GC.Collect();
         }

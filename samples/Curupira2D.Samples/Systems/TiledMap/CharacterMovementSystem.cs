@@ -5,6 +5,7 @@ using Curupira2D.ECS.Systems;
 using Curupira2D.ECS.Systems.Attributes;
 using Curupira2D.Extensions;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 
 namespace Curupira2D.Samples.Systems.TiledMap
@@ -13,69 +14,55 @@ namespace Curupira2D.Samples.Systems.TiledMap
     class CharacterMovementSystem : ECS.System, ILoadable, IUpdatable
     {
         Entity _characterEntity;
-        readonly float _velocity = 200f;
-        bool _isMoving;
-        bool _isJumping;
+        BodyComponent _characterBodyComponent;
+        float _impulse;
 
         public void LoadContent()
         {
-            var characterTexture = Scene.GameCore.GraphicsDevice.CreateTextureRectangle(40, 80, Color.Black);
+            Scene.Gravity = new Vector2(0f, Scene.Gravity.Y * 6f);
+
+            var characterTexture = Scene.GameCore.Content.Load<Texture2D>("TiledMap/Ball");
+            var characterRadius = characterTexture.Bounds.Size.X * 0.1f;
+            _characterBodyComponent = new BodyComponent(characterRadius, EntityType.Dynamic)
+            {
+                Restitution = 0.3f,
+                Friction = 0.5f,
+            };
 
             _characterEntity = Scene.CreateEntity("character")
-                .AddComponent(
-                    new SpriteComponent(characterTexture),
-                    new BodyComponent(characterTexture.Bounds.Size.ToVector2(), EntityType.Dynamic, EntityShape.Rectangle, 0f)
-                    {
-                        FixedRotation = true
-                    });
+                .AddComponent(new SpriteComponent(characterTexture, scale: new Vector2(0.2f), layerDepth: 1f), _characterBodyComponent);
         }
 
         public void Update()
         {
-            var bodyComponent = _characterEntity.GetComponent<BodyComponent>();
+            var cameraPosition = Vector2.Lerp(_characterEntity.Transform.Position, Scene.Camera2D.Position, 0.125f);
 
+            if (_impulse == 0f)
+                _impulse = _characterBodyComponent.Mass * 10 / Scene.DeltaTime;
+
+            // Moving updates
             if (Scene.KeyboardInputManager.IsKeyDown(Keys.Right))
             {
-                bodyComponent.ApplyForce(new Vector2(_velocity, 0f));
+                _characterBodyComponent.ApplyTorque(-_impulse * 5);
 
                 if (Scene.Camera2D.Position.X < _characterEntity.Transform.Position.X)
-                {
-                    var position = Scene.Camera2D.Position;
-                    position.X = _characterEntity.Transform.Position.X;
-                    Scene.Camera2D.Position = position;
-                }
-
-                _isMoving = true;
+                    Scene.Camera2D.Position = new Vector2(cameraPosition.X, Scene.Camera2D.Position.Y);
             }
 
             if (Scene.KeyboardInputManager.IsKeyDown(Keys.Left))
             {
-                bodyComponent.ApplyForce(new Vector2(-_velocity, 0f));
+                _characterBodyComponent.ApplyTorque(_impulse * 5);
 
                 if (Scene.Camera2D.Position.X > Scene.ScreenCenter.X)
-                {
-                    var position = Scene.Camera2D.Position;
-                    position.X = _characterEntity.Transform.Position.X;
-                    Scene.Camera2D.Position = position;
-                }
-
-                _isMoving = true;
+                    Scene.Camera2D.Position = new Vector2(cameraPosition.X, Scene.Camera2D.Position.Y);
             }
 
-            if (Scene.KeyboardInputManager.IsKeyPressed(Keys.Up))
-            {
-                //_isJumping = true;
+            // Jumping updates
+            if (Scene.KeyboardInputManager.IsKeyPressed(Keys.Up) || Scene.KeyboardInputManager.IsKeyPressed(Keys.Space))
+                _characterBodyComponent.ApplyLinearImpulseY(_impulse);
 
-                bodyComponent.ApplyLinearImpulse(new Vector2(bodyComponent.LinearVelocity.X, 20f));
-            }
-
-            if (!_isMoving)
-            {
-                Scene.Camera2D.Position = Scene.Camera2D.Position;
-                bodyComponent.SetLinearVelocityX(0f);
-            }
-
-            _isMoving = false;
+            if (_characterEntity.Transform.Position.Y < Scene.ScreenCenter.Y)
+                Scene.Camera2D.Position = new Vector2(cameraPosition.X, cameraPosition.Y + Scene.ScreenCenter.Y * 0.45f);
         }
     }
 }
