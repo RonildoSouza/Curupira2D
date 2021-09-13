@@ -14,12 +14,9 @@ namespace Curupira2D.ECS.Systems.Physics
         readonly World _world;
         DebugView _debugView;
 
-        public PhysicsSystem(Vector2 gravity)
+        public PhysicsSystem()
         {
             _world = new World();
-
-            if (gravity != default)
-                _world.Gravity = gravity;
 
             // enable multithreading
             _world.ContactManager.VelocityConstraintsMultithreadThreshold = 256;
@@ -82,6 +79,9 @@ namespace Curupira2D.ECS.Systems.Physics
         {
             var entities = Scene.GetEntities(_ => MatchActiveEntitiesAndComponents(_));
 
+            if (Scene.Gravity != default && Scene.Gravity != _world.Gravity)
+                _world.Gravity = Scene.Gravity;
+
             if (entities.Any() && entities.Count != _world.BodyList.Count)
             {
                 _world.BodyList.Clear();
@@ -91,12 +91,12 @@ namespace Curupira2D.ECS.Systems.Physics
             for (int i = 0; i < entities.Count(); i++)
             {
                 var entity = entities.ElementAt(i);
-                var body = entity.GetComponent<BodyComponent>();
+                var bodyComponent = entity.GetComponent<BodyComponent>();
 
-                body.Enabled = entity.Active;
+                bodyComponent.Enabled = entity.Active;
 
                 // Update Entity position and rotation
-                entity.SetTransform(body.Position, MathHelper.ToDegrees(body.Rotation));
+                entity.SetTransform(bodyComponent.Position, MathHelper.ToDegrees(bodyComponent.Rotation));
             }
 
             _world.Step(Scene.DeltaTime);

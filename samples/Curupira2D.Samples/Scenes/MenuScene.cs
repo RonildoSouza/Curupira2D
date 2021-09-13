@@ -26,6 +26,9 @@ namespace Curupira2D.Samples.Scenes
         {
             KeyboardInputManager.Begin();
 
+            if (KeyboardInputManager.IsKeyPressed(Keys.T))
+                GameCore.ChangeScene<SceneTest>();
+
             if (KeyboardInputManager.IsKeyPressed(Keys.D1))
                 GameCore.ChangeScene<SpriteAnimationScene>();
 

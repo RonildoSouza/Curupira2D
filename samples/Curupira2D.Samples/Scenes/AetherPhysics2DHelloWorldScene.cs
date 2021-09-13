@@ -19,6 +19,7 @@ namespace Curupira2D.Samples.Scenes
         readonly float _playerBodyRadius = 1.5f / 2f; // player diameter is 1.5 meters
         readonly Vector2 _groundBodySize = new Vector2(8f, 1f); // ground is 8x1 meters
         Vector2 _cameraPosition = new Vector2(0, 1.70f); // camera is 1.7 meters above the ground
+        BodyComponent _playerBodyComponent;
 
         public override void LoadContent()
         {
@@ -28,15 +29,17 @@ namespace Curupira2D.Samples.Scenes
             var playerPosition = new Vector2(0, _playerBodyRadius);
             var playerTexture = GameCore.Content.Load<Texture2D>("AetherPhysics2D/CircleSprite");
 
+            _playerBodyComponent = new BodyComponent(_playerBodyRadius, EntityType.Dynamic)
+            {
+                Restitution = 0.3f,
+                Friction = 0.5f,
+            };
+
             _playerEntity = CreateEntity("circle")
                 .SetPosition(playerPosition)
                 .AddComponent(
                     new SpriteComponent(texture: playerTexture, scale: new Vector2(_playerBodyRadius * 2f) / playerTexture.Bounds.Size.ToVector2()),
-                    new BodyComponent(_playerBodyRadius, EntityType.Dynamic)
-                    {
-                        Restitution = 0.3f,
-                        Friction = 0.5f,
-                    });
+                    _playerBodyComponent);
 
             /* Ground */
             var groundPosition = new Vector2(0, _groundBodySize.Y * -0.5f);
@@ -67,8 +70,6 @@ namespace Curupira2D.Samples.Scenes
         {
             KeyboardInputManager.Begin();
 
-            var bodyComponent = _playerEntity.GetComponent<BodyComponent>();
-
             // Move camera
             if (KeyboardInputManager.IsKeyDown(Keys.Left))
                 _cameraPosition.X += 12f * DeltaTime;
@@ -84,15 +85,16 @@ namespace Curupira2D.Samples.Scenes
 
             // We make it possible to rotate the player body
             if (KeyboardInputManager.IsKeyDown(Keys.A))
-                bodyComponent.ApplyTorque(10);
+                _playerBodyComponent.ApplyTorque(10);
 
             if (KeyboardInputManager.IsKeyDown(Keys.D))
-                bodyComponent.ApplyTorque(-10);
+                _playerBodyComponent.ApplyTorque(-10);
 
             if (KeyboardInputManager.IsKeyPressed(Keys.Space))
-                bodyComponent.ApplyLinearImpulse(new Vector2(0f, 10f));
+                _playerBodyComponent.ApplyLinearImpulse(new Vector2(0f, 10f));
 
             Camera2D.Position = _cameraPosition;
+
             KeyboardInputManager.End();
 
             base.Update(gameTime);

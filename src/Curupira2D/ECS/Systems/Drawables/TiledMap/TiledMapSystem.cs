@@ -25,20 +25,17 @@ namespace Curupira2D.ECS.Systems.Drawables
 
                 foreach (var objectLayer in tiledMapComponent.Map.Layers.OfType<ObjectLayer>().Where(_ => _.Visible))
                 {
-                    foreach (var baseObject in objectLayer.Objects)
+                    CreateCollisionEntities(objectLayer);
+
+                    // Gets entity with the same name as the point object and sets the position
+                    foreach (var pointObject in objectLayer.Objects.OfType<PointObject>())
                     {
-                        CreateCollisionEntities(baseObject);
+                        var entity = Scene
+                            .GetEntities(_ => _.UniqueId == pointObject.Name || _.UniqueId == pointObject.Properties.GetValue(TiledMapSystemConstants.Properties.EntityUniqueId))
+                            .FirstOrDefault();
 
-                        // Gets entity with the same name as the point object and sets the position
-                        if (baseObject is PointObject pointObject)
-                        {
-                            var entity = Scene
-                                .GetEntities(_ => _.UniqueId == pointObject.Name || _.UniqueId == pointObject.Properties.GetValue(TiledMapSystemConstants.Properties.EntityUniqueId))
-                                .FirstOrDefault();
-
-                            if (entity != null && entity.Transform.Position == default)
-                                entity.SetPosition((float)pointObject.X, (float)pointObject.Y);
-                        }
+                        if (entity != null && entity.Transform.Position == default)
+                            entity.SetPosition((float)pointObject.X, Scene.InvertPositionY((float)pointObject.Y));
                     }
                 }
             }
@@ -69,7 +66,8 @@ namespace Curupira2D.ECS.Systems.Drawables
                             if (gid == 0)
                                 continue;
 
-                            var tileset = tiledMapComponent.Map.Tilesets.Single(_ => Utils.GetId(gid) >= _.FirstGid && _.FirstGid + _.TileCount > Utils.GetId(gid));
+                            var id = Utils.GetId(gid);
+                            var tileset = tiledMapComponent.Map.Tilesets.Single(_ => id >= _.FirstGid && _.FirstGid + _.TileCount > id);
                             var tile = tileset[gid];
 
                             GetTileOrientation(tile, out var tileSpriteEffect, out var tileRotation);
@@ -85,49 +83,64 @@ namespace Curupira2D.ECS.Systems.Drawables
                                 MathHelper.ToRadians(tileRotation),
                                 tiledMapComponent.Origin,
                                 tileSpriteEffect | tiledMapComponent.SpriteEffect,
-                                tiledMapComponent.LayerDepth);
+                                tiledMapComponent.LayerDepth == 0f
+                                    ? layers.Count() - layer.Id
+                                    : tiledMapComponent.LayerDepth);
                         }
                     }
                 }
             }
         }
 
-        void CreateCollisionEntities(BaseObject baseObject)
+        void CreateCollisionEntities(ObjectLayer objectLayer)
         {
-            var entityUniqueId = baseObject.Properties.GetValue(TiledMapSystemConstants.Properties.EntityUniqueId);
-            var entityGroup = baseObject.Properties.GetValue(TiledMapSystemConstants.Properties.EntityGroup);
-
-            // Creates ellipse type collision entity
-            if (baseObject is EllipseObject ellipseObject)
+            foreach (var baseObject in objectLayer.Objects.Where(_ => _.GetType() != typeof(PointObject)))
             {
-                var posX = (float)ellipseObject.X + (float)ellipseObject.Width * 0.5f;
-                var posY = Scene.InvertPositionY((float)ellipseObject.Y + (float)ellipseObject.Height * 0.5f);
+                var entityUniqueId = baseObject.Properties.GetValue(TiledMapSystemConstants.Properties.EntityUniqueId);
+                var entityGroup = baseObject.Properties.GetValue(TiledMapSystemConstants.Properties.EntityGroup);
 
-                Scene.CreateEntity(entityUniqueId ?? $"{nameof(EllipseObject)}_{ellipseObject.Id}", entityGroup)
-                    .SetPosition(posX, posY)
-                    .AddComponent(new BodyComponent((float)ellipseObject.Width, (float)ellipseObject.Height, EntityType.Static, EntityShape.Ellipse));
-            }
+                // Creates ellipse type collision entity
+                if (baseObject is EllipseObject ellipseObject)
+                {
+                    var posX = (float)ellipseObject.X + (float)ellipseObject.Width * 0.5f;
+                    var posY = Scene.InvertPositionY((float)ellipseObject.Y + (float)ellipseObject.Height * 0.5f);
+                    var ellipseBodyComponent = new BodyComponent((float)ellipseObject.Width, (float)ellipseObject.Height, EntityType.Static, EntityShape.Ellipse);
 
-            // Creates rectangle type collision entity
-            if (baseObject is RectangleObject rectangleObject)
-            {
-                var posX = (float)rectangleObject.X + (float)rectangleObject.Width * 0.5f;
-                var posY = Scene.InvertPositionY((float)rectangleObject.Y + (float)rectangleObject.Height * 0.5f);
+                    SetPhysicsProperties(ellipseObject, objectLayer, ref ellipseBodyComponent);
 
-                Scene.CreateEntity(entityUniqueId ?? $"{nameof(RectangleObject)}_{rectangleObject.Id}", entityGroup)
-                    .SetPosition(posX, posY)
-                    .AddComponent(new BodyComponent((float)rectangleObject.Width, (float)rectangleObject.Height, EntityType.Static, EntityShape.Rectangle));
-            }
+                    Scene.CreateEntity(entityUniqueId ?? $"{nameof(EllipseObject)}_{ellipseObject.Id}", entityGroup)
+                        .SetPosition(posX, posY)
+                        .AddComponent(ellipseBodyComponent);
+                }
 
-            // Creates polygon type collision entity
-            if (baseObject is PolygonObject polygonObject)
-            {
-                Scene.CreateEntity(entityUniqueId ?? $"{nameof(PolygonObject)}_{polygonObject.Id}", entityGroup)
-                    .SetPosition((float)polygonObject.X, Scene.InvertPositionY((float)polygonObject.Y))
-                    .AddComponent(new BodyComponent((float)polygonObject.Width, (float)polygonObject.Height, EntityType.Static, EntityShape.Polygon)
+                // Creates rectangle type collision entity
+                if (baseObject is RectangleObject rectangleObject)
+                {
+                    var posX = (float)rectangleObject.X + (float)rectangleObject.Width * 0.5f;
+                    var posY = Scene.InvertPositionY((float)rectangleObject.Y + (float)rectangleObject.Height * 0.5f);
+                    var rectangleBodyComponent = new BodyComponent((float)rectangleObject.Width, (float)rectangleObject.Height, EntityType.Static, EntityShape.Rectangle);
+
+                    SetPhysicsProperties(rectangleObject, objectLayer, ref rectangleBodyComponent);
+
+                    Scene.CreateEntity(entityUniqueId ?? $"{nameof(RectangleObject)}_{rectangleObject.Id}", entityGroup)
+                        .SetPosition(posX, posY)
+                        .AddComponent(rectangleBodyComponent);
+                }
+
+                // Creates polygon type collision entity
+                if (baseObject is PolygonObject polygonObject)
+                {
+                    var polygonBodyComponent = new BodyComponent((float)polygonObject.Width, (float)polygonObject.Height, EntityType.Static, EntityShape.Polygon)
                     {
                         Vertices = polygonObject.Polygon.Select(_ => new Vector2((float)_.X, (float)_.Y))
-                    });
+                    };
+
+                    SetPhysicsProperties(polygonObject, objectLayer, ref polygonBodyComponent);
+
+                    Scene.CreateEntity(entityUniqueId ?? $"{nameof(PolygonObject)}_{polygonObject.Id}", entityGroup)
+                        .SetPosition((float)polygonObject.X, Scene.InvertPositionY((float)polygonObject.Y))
+                        .AddComponent(polygonBodyComponent);
+                }
             }
         }
 
@@ -158,6 +171,18 @@ namespace Curupira2D.ECS.Systems.Drawables
                     tileRotation = 270f;
                     break;
             }
+        }
+
+        void SetPhysicsProperties(BaseObject baseObject, ObjectLayer objectLayer, ref BodyComponent bodyComponent)
+        {
+            var restitution = baseObject.Properties.GetValue(TiledMapSystemConstants.Properties.Physics.Restitution)
+                ?? objectLayer.Properties.GetValue(TiledMapSystemConstants.Properties.Physics.Restitution);
+
+            var friction = baseObject.Properties.GetValue(TiledMapSystemConstants.Properties.Physics.Friction)
+                ?? objectLayer.Properties.GetValue(TiledMapSystemConstants.Properties.Physics.Friction);
+
+            bodyComponent.Restitution = float.TryParse(restitution, out float restitutionValue) ? restitutionValue : bodyComponent.Restitution;
+            bodyComponent.Friction = float.TryParse(friction, out float frictionValue) ? frictionValue : bodyComponent.Restitution;
         }
     }
 }

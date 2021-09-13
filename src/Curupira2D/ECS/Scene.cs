@@ -17,6 +17,7 @@ namespace Curupira2D.ECS
         readonly EntityManager _entityManager = new EntityManager();
         readonly SystemManager _systemManager = new SystemManager();
         PhysicsSystem _physicsSystem;
+        float _deltaTime;
 
         public GameCore GameCore { get; private set; }
         public SpriteBatch SpriteBatch { get; private set; }
@@ -25,7 +26,7 @@ namespace Curupira2D.ECS
         public ICamera2D UICamera2D { get; private set; }
         public string Title { get; private set; }
         public Color CleanColor { get; private set; } = Color.LightGray;
-        public float DeltaTime { get; private set; }
+        public float DeltaTime { get => _deltaTime == 0 ? 1f / 60f : _deltaTime; private set => _deltaTime = value; }
         public int ScreenWidth => GameCore.GraphicsDevice.Viewport.Width;
         public int ScreenHeight => GameCore.GraphicsDevice.Viewport.Height;
         public Vector2 ScreenSize => new Vector2(ScreenWidth, ScreenHeight);
@@ -54,6 +55,8 @@ namespace Curupira2D.ECS
             GameCore.UICamera2D.Origin = cameraInitialOrigin;
             GameCore.UICamera2D.Position = cameraInitialPosition;
             UICamera2D = GameCore.UICamera2D;
+
+            Gravity = new Vector2(0f, -9.80665f);
         }
 
         public virtual void LoadContent()
@@ -64,7 +67,7 @@ namespace Curupira2D.ECS
             AddSystem<TextSystem>();
 
             // Always keep this system at the end
-            _physicsSystem = new PhysicsSystem(Gravity);
+            _physicsSystem = new PhysicsSystem();
             AddSystem(_physicsSystem);
 
             _systemManager.LoadableSystemsIteration();
@@ -73,6 +76,8 @@ namespace Curupira2D.ECS
             GamePadInputManager = new GamePadInputManager();
             MouseInputManager = new MouseInputManager();
         }
+
+        public bool PauseUpdatableSystems { get; set; }
 
         public virtual void Update(GameTime gameTime)
         {
@@ -83,7 +88,8 @@ namespace Curupira2D.ECS
             GamePadInputManager.Begin();
             MouseInputManager.Begin();
 
-            _systemManager.UpdatableSystemsIteration();
+            if (!PauseUpdatableSystems)
+                _systemManager.UpdatableSystemsIteration();
 
             KeyboardInputManager.End();
             GamePadInputManager.End();
@@ -219,9 +225,8 @@ namespace Curupira2D.ECS
 
         public virtual void Dispose()
         {
-            RemoveAllSystems();
-            RemoveAllEntities();
-
+            _systemManager.Dispose();
+            _entityManager.Dispose();
             GameCore.Dispose();
             SpriteBatch.Dispose();
             Camera2D = null;
