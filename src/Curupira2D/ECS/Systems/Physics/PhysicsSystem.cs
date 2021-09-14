@@ -11,10 +11,10 @@ namespace Curupira2D.ECS.Systems.Physics
     [RequiredComponent(typeof(PhysicsSystem), typeof(BodyComponent))]
     public sealed class PhysicsSystem : System, ILoadable, IUpdatable
     {
-        readonly World _world;
+        World _world;
         DebugView _debugView;
 
-        public PhysicsSystem()
+        public void LoadContent()
         {
             _world = new World();
 
@@ -22,10 +22,7 @@ namespace Curupira2D.ECS.Systems.Physics
             _world.ContactManager.VelocityConstraintsMultithreadThreshold = 256;
             _world.ContactManager.PositionConstraintsMultithreadThreshold = 256;
             _world.ContactManager.CollideMultithreadThreshold = 256;
-        }
 
-        public void LoadContent()
-        {
             var entities = Scene.GetEntities(_ => MatchActiveEntitiesAndComponents(_));
 
             for (int i = 0; i < entities.Count; i++)
@@ -55,8 +52,8 @@ namespace Curupira2D.ECS.Systems.Physics
                 bodyComponent.Tag = entity.UniqueId;
                 bodyComponent.Position = entity.Transform.Position;
                 bodyComponent.Rotation = entity.Transform.Rotation;
-                bodyComponent.SetRestitution(bodyComponent.Restitution);
-                bodyComponent.SetFriction(bodyComponent.Friction);
+                bodyComponent.Restitution = bodyComponent.Restitution;
+                bodyComponent.Friction = bodyComponent.Friction;
             };
 
             if (Scene.GameCore.DebugActive && entities.Any())
@@ -83,10 +80,7 @@ namespace Curupira2D.ECS.Systems.Physics
                 _world.Gravity = Scene.Gravity;
 
             if (entities.Any() && entities.Count != _world.BodyList.Count)
-            {
-                _world.BodyList.Clear();
                 LoadContent();
-            }
 
             for (int i = 0; i < entities.Count(); i++)
             {
