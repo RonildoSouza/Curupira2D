@@ -29,14 +29,12 @@ namespace Curupira2D.Samples.Scenes
                 FixedRotation = true,
             };
 
-            CreateEntity("player")
-                .SetPosition(ScreenWidth * 0.5f, ScreenHeight * 0.2f)
+            CreateEntity("player", ScreenWidth * 0.5f, ScreenHeight * 0.2f)
                 .AddComponent(playerSpriteComponent)
                 .AddComponent(_playerBodyComponent);
 
             var groundSpriteComponent = new SpriteComponent(GameCore.GraphicsDevice.CreateTextureRectangle(ScreenWidth, 20, Color.Black));
-            CreateEntity("ground")
-                .SetPosition(ScreenWidth * 0.5f, groundSpriteComponent.TextureSize.Y * 0.5f)
+            CreateEntity("ground", ScreenWidth * 0.5f, groundSpriteComponent.TextureSize.Y * 0.5f)
                 .AddComponent(groundSpriteComponent)
                 .AddComponent(new BodyComponent(groundSpriteComponent.TextureSize, EntityType.Static, EntityShape.Rectangle));
 

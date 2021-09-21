@@ -1,4 +1,5 @@
 ﻿using Curupira2D.ECS.Components;
+using Curupira2D.ECS.Components.Drawables;
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
@@ -6,52 +7,74 @@ using System.Linq;
 
 namespace Curupira2D.ECS
 {
-    public sealed class Entity
+    public sealed class Entity : IEquatable<Entity>
     {
         readonly Dictionary<Type, IComponent> _components = new Dictionary<Type, IComponent>();
         readonly List<Entity> _children = new List<Entity>();
+        Vector2 _tempPosition;
+        float _tempRotation;
 
-        internal Entity(string uniqueId, string group = null)
+        internal event EventHandler<EventArgs> OnChange;
+
+        internal Entity(string uniqueId, Vector2 position, string group, bool isCollidable)
         {
             UniqueId = uniqueId;
+            Position = position;
+            Rotation = 0f;
             Active = true;
-            Transform = new Transform();
             Group = group;
+            IsCollidable = isCollidable;
         }
 
+        internal Entity(string uniqueId, float x, float y, string group, bool isCollidable)
+            : this(uniqueId, new Vector2(x, y), group, isCollidable) { }
+
         public string UniqueId { get; }
+        public Vector2 Position { get; private set; }
+        public float Rotation { get; private set; }
         public bool Active { get; private set; }
-        public Transform Transform { get; }
         public Entity Parent { get; private set; }
         public IReadOnlyList<Entity> Children => _children;
         public string Group { get; set; }
+        public bool IsCollidable { get; private set; }
 
-        public Entity SetPosition(float x, float y)
+        public void SetPosition(float x, float y)
         {
-            Transform.SetPosition(x, y);
-            return this;
+            var newPosition = new Vector2(x, y);
+
+            if (Position != newPosition)
+                _tempPosition = Position;
+
+            if (_tempPosition == newPosition)
+                return;
+
+            Position = newPosition;
+            OnChange?.Invoke(this, null);
         }
 
-        public Entity SetPosition(Vector2 position) => SetPosition(position.X, position.Y);
+        public void SetPosition(Vector2 position) => SetPosition(position.X, position.Y);
 
-        public Entity SetPositionX(float x) => SetPosition(x, Transform.Position.Y);
+        public void SetPositionX(float x) => SetPosition(x, Position.Y);
 
-        public Entity SetPositionY(float y) => SetPosition(Transform.Position.X, y);
+        public void SetPositionY(float y) => SetPosition(Position.X, y);
 
         public Entity SetRotation(float rotationInDegrees)
         {
-            Transform.SetRotation(rotationInDegrees);
-            return this;
-        }
+            if (Rotation != rotationInDegrees)
+                _tempRotation = Rotation;
 
-        public Entity SetTransform(Vector2 position, float rotationInDegrees)
-        {
-            Transform.SetTransform(position, rotationInDegrees);
+            if (_tempRotation == rotationInDegrees)
+                return this;
+
+            Rotation = rotationInDegrees;
+            OnChange?.Invoke(this, null);
+
             return this;
         }
 
         public Entity SetActive(bool active)
         {
+            OnChange?.Invoke(this, null);
             Active = active;
             return this;
         }
@@ -76,24 +99,13 @@ namespace Curupira2D.ECS
             return this;
         }
 
-        public override bool Equals(object obj)
-        {
-            if (obj == null || !(obj is Entity entity))
-                return false;
-
-            return entity.UniqueId == UniqueId;
-        }
-
-        public override int GetHashCode()
-        {
-            return -401120461 + EqualityComparer<string>.Default.GetHashCode(UniqueId);
-        }
+        public bool Equals(Entity other) => other != null && other.UniqueId == UniqueId;
 
         #region Methods of managing components
         public Entity AddComponent(IComponent component)
         {
-            if (component != null && !_components.ContainsKey(component.GetType()))
-                _components.Add(component.GetType(), component);
+            if (_components.TryAdd(component.GetType(), component))
+                OnChange?.Invoke(this, null);
 
             return this;
         }
@@ -106,8 +118,8 @@ namespace Curupira2D.ECS
 
         public void RemoveComponent<TComponent>() where TComponent : IComponent
         {
-            if (_components.ContainsKey(typeof(TComponent)))
-                _components.Remove(typeof(TComponent));
+            if (_components.Remove(typeof(TComponent)))
+                OnChange?.Invoke(this, null);
         }
 
         public void UpdateComponent(IComponent component)
@@ -116,6 +128,7 @@ namespace Curupira2D.ECS
                 return;
 
             _components[component.GetType()] = component;
+            OnChange?.Invoke(this, null);
         }
 
         public IComponent GetComponent(Func<KeyValuePair<Type, IComponent>, bool> predicate)
@@ -137,6 +150,35 @@ namespace Curupira2D.ECS
 
         public bool HasAnyComponentTypes(IEnumerable<Type> componentTypes) => componentTypes.Any(_ => HasComponent(_));
         #endregion
+
+        internal Rectangle GetHitBox()
+        {
+            if (_components.Any(_ => _.Key == typeof(SpriteComponent) || _.Key == typeof(SpriteAnimationComponent)))
+            {
+                var spriteComponent = GetComponent<SpriteComponent>() ?? GetComponent<SpriteAnimationComponent>();
+                var size = spriteComponent.SourceRectangle?.Size ?? spriteComponent.TextureSize.ToPoint();
+                var x = Position.X - spriteComponent.Origin.X;
+                var y = Position.Y - spriteComponent.Origin.Y;
+
+                var position = new Vector2(x, y);
+
+                return new Rectangle(position.ToPoint(), size * spriteComponent.Scale.ToPoint());
+            }
+
+            if (_components.Any(_ => _.Key == typeof(TextComponent)))
+            {
+                var textComponent = GetComponent<TextComponent>();
+                var size = textComponent.SourceRectangle?.Size ?? textComponent.TextSize.ToPoint();
+                var x = Position.X - textComponent.Origin.X;
+                var y = Position.Y - textComponent.Origin.Y;
+
+                var position = new Vector2(x, y);
+
+                return new Rectangle(position.ToPoint(), size * textComponent.Scale.ToPoint());
+            }
+
+            return Rectangle.Empty;
+        }
 
         bool HasComponent(Type componentType) => _components.ContainsKey(componentType);
     }

@@ -15,7 +15,8 @@ namespace Curupira2D.Samples.Scenes
                      "3 - CameraScene\n" +
                      "4 - PhysicScene\n" +
                      "5 - TiledMapScene\n" +
-                     "6 - Aether Physics2D - HelloWorld\n",
+                     "6 - Aether Physics2D - HelloWorld\n" +
+                     "7 - QuadtreeCheckCollisionScene\n",
                      ScreenCenter.X,
                      ScreenHeight * 0.8f);
 
@@ -46,6 +47,9 @@ namespace Curupira2D.Samples.Scenes
 
             if (KeyboardInputManager.IsKeyPressed(Keys.D6))
                 GameCore.ChangeScene<AetherPhysics2DHelloWorldScene>();
+            
+            if (KeyboardInputManager.IsKeyPressed(Keys.D7))
+                GameCore.ChangeScene<QuadtreeCheckCollisionScene>();
 
             KeyboardInputManager.End();
 

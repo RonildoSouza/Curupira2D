@@ -29,13 +29,13 @@ namespace Curupira2D.Samples.Systems.TiledMap
                 Friction = 0.5f,
             };
 
-            _characterEntity = Scene.CreateEntity("character")
+            _characterEntity = Scene.CreateEntity("character", default)
                 .AddComponent(new SpriteComponent(characterTexture, scale: new Vector2(0.2f), layerDepth: 1f), _characterBodyComponent);
         }
 
         public void Update()
         {
-            var cameraPosition = Vector2.Lerp(_characterEntity.Transform.Position, Scene.Camera2D.Position, 0.125f);
+            var cameraPosition = Vector2.Lerp(_characterEntity.Position, Scene.Camera2D.Position, 0.125f);
 
             if (_impulse == 0f)
                 _impulse = _characterBodyComponent.Mass * 10 / Scene.DeltaTime;
@@ -45,7 +45,7 @@ namespace Curupira2D.Samples.Systems.TiledMap
             {
                 _characterBodyComponent.ApplyTorque(-_impulse * 5);
 
-                if (Scene.Camera2D.Position.X < _characterEntity.Transform.Position.X)
+                if (Scene.Camera2D.Position.X < _characterEntity.Position.X)
                     Scene.Camera2D.Position = new Vector2(cameraPosition.X, Scene.Camera2D.Position.Y);
             }
 
@@ -61,7 +61,7 @@ namespace Curupira2D.Samples.Systems.TiledMap
             if (Scene.KeyboardInputManager.IsKeyPressed(Keys.Up) || Scene.KeyboardInputManager.IsKeyPressed(Keys.Space))
                 _characterBodyComponent.ApplyLinearImpulseY(_impulse);
 
-            if (_characterEntity.Transform.Position.Y < Scene.ScreenCenter.Y)
+            if (_characterEntity.Position.Y < Scene.ScreenCenter.Y)
                 Scene.Camera2D.Position = new Vector2(cameraPosition.X, cameraPosition.Y + Scene.ScreenCenter.Y * 0.45f);
         }
     }

@@ -28,12 +28,12 @@ namespace Curupira2D.Samples.Common.Systems
                 _entitySize = new Vector2(spriteAnimationComponent.FrameWidth, spriteAnimationComponent.FrameHeight);
         }
 
-        public void Update()
+        public virtual void Update()
         {
             if (_entityToMove == null)
                 return;
 
-            var tempPosition = _entityToMove.Transform.Position;
+            var tempPosition = _entityToMove.Position;
             var direction = Vector2.Zero;
 
             if (Scene.KeyboardInputManager.IsKeyDown(Keys.Left))

@@ -3,6 +3,7 @@ using Curupira2D.ECS.Components.Drawables;
 using Curupira2D.ECS.Components.Physics;
 using Microsoft.Xna.Framework;
 using System;
+using System.Linq;
 
 namespace Curupira2D.Extensions
 {
@@ -21,21 +22,62 @@ namespace Curupira2D.Extensions
             return entity;
         }
 
+        /// <summary>
+        /// Return position with monogame coords
+        /// </summary>
+        /// <param name="entity"><see cref="Entity"/></param>
+        /// <param name="scene"><see cref="Scene"/></param>
         public static Vector2 GetPositionInScene(this Entity entity, Scene scene)
         {
             if (entity == null)
                 throw new ArgumentNullException($"Argument {nameof(entity)} can't be null!");
 
             if (!entity.HasComponent(_ => _.Value is DrawableComponent))
-                return entity.Transform.Position;
+                return entity.Position;
 
             var drawableComponent = entity.GetComponent(_ => _.Value is DrawableComponent) as DrawableComponent;
 
-            var position = entity.Transform.Position;
+            var position = entity.Position;
             position.X -= drawableComponent.Origin.X;
             position.Y = scene.InvertPositionY(position.Y) - drawableComponent.Origin.Y;
 
             return position;
+        }
+
+        public static bool IsCollidedWithAny(this Entity entity, Scene scene)
+        {
+            if (!entity.Active || !entity.IsCollidable)
+                return false;
+
+            scene.Quadtree.Delete(entity);
+            scene.Quadtree.Insert(entity);
+
+            var returnObjects = scene.Quadtree.Retrieve(entity);
+            return returnObjects.Any(_ => _.GetHitBox().Intersects(entity.GetHitBox()));
+        }
+
+        public static bool IsCollidedWith(this Entity entity, Scene scene, Entity otherEntity)
+        {
+            if (!entity.Active || !entity.IsCollidable)
+                return false;
+
+            scene.Quadtree.Delete(entity);
+            scene.Quadtree.Insert(entity);
+
+            var returnObjects = scene.Quadtree.Retrieve(entity);
+            return returnObjects.Any(_ => _.GetHitBox().Intersects(entity.GetHitBox()) && _.Equals(otherEntity));
+        }
+
+        public static bool IsCollidedWith(this Entity entity, Scene scene, string entityUniqueId)
+        {
+            if (!entity.Active || !entity.IsCollidable)
+                return false;
+
+            scene.Quadtree.Delete(entity);
+            scene.Quadtree.Insert(entity);
+
+            var returnObjects = scene.Quadtree.Retrieve(entity);
+            return returnObjects.Any(_ => _.GetHitBox().Intersects(entity.GetHitBox()) && _.UniqueId == entityUniqueId);
         }
 
         //public static void WithScreenBoundaryNotExit(this Entity entity, GraphicsDevice graphicsDevice)

@@ -20,8 +20,7 @@ namespace Curupira2D.Samples.Systems.Physic
             var ballRadius = 25;
             var ballTexture = Scene.GameCore.GraphicsDevice.CreateTextureCircle(ballRadius, Color.Black * 0.6f);
 
-            _ballEntity = Scene.CreateEntity("ball")
-                .SetPosition(Scene.ScreenWidth * 0.4f, 300f)
+            _ballEntity = Scene.CreateEntity("ball", Scene.ScreenWidth * 0.4f, 300f)
                 .AddComponent(
                     new SpriteComponent(ballTexture),
                     new BodyComponent(ballTexture.Bounds.Size.ToVector2(), EntityType.Dynamic, EntityShape.Circle)

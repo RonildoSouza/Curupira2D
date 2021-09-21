@@ -35,8 +35,7 @@ namespace Curupira2D.Samples.Scenes
                 Friction = 0.5f,
             };
 
-            _playerEntity = CreateEntity("circle")
-                .SetPosition(playerPosition)
+            _playerEntity = CreateEntity("circle", playerPosition)
                 .AddComponent(
                     new SpriteComponent(texture: playerTexture, scale: new Vector2(_playerBodyRadius * 2f) / playerTexture.Bounds.Size.ToVector2()),
                     _playerBodyComponent);
@@ -45,8 +44,7 @@ namespace Curupira2D.Samples.Scenes
             var groundPosition = new Vector2(0, _groundBodySize.Y * -0.5f);
             var groundTexture = GameCore.Content.Load<Texture2D>("AetherPhysics2D/GroundSprite");
 
-            CreateEntity("ground")
-                .SetPosition(groundPosition)
+            CreateEntity("ground", groundPosition)
                 .AddComponent(
                     new SpriteComponent(texture: groundTexture, scale: _groundBodySize / groundTexture.Bounds.Size.ToVector2()),
                     new BodyComponent(_groundBodySize, EntityType.Static, EntityShape.Rectangle)

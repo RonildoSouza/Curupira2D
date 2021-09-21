@@ -14,8 +14,7 @@ namespace Curupira2D.Samples.Systems.SceneGraph
         {
             var characterTexture = Scene.GameCore.Content.Load<Texture2D>("SceneGraph/character");
 
-            Scene.CreateEntity(EntityUniqueId)
-                .SetPosition(Scene.ScreenCenter)
+            Scene.CreateEntity(EntityUniqueId, Scene.ScreenCenter)
                 .AddComponent(new SpriteComponent(characterTexture));
 
             base.LoadContent();

@@ -18,6 +18,7 @@ namespace Curupira2D.Samples
             AddScene<PhysicScene>();
             AddScene<TiledMapScene>();
             AddScene<AetherPhysics2DHelloWorldScene>();
+            AddScene<QuadtreeCheckCollisionScene>();
 
             ChangeScene<MenuScene>();
 
