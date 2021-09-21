@@ -17,8 +17,7 @@ namespace Curupira2D.Samples.Systems.SpriteAnimation
             // Create entity character in scene
             var characterTexture = Scene.GameCore.Content.Load<Texture2D>("SpriteAnimation/character");
 
-            _characterEntity = Scene.CreateEntity("character")
-                .SetPosition(Scene.ScreenWidth * 0.3f, Scene.ScreenCenter.Y)
+            _characterEntity = Scene.CreateEntity("character", Scene.ScreenWidth * 0.3f, Scene.ScreenCenter.Y)
                 .AddComponent(new SpriteAnimationComponent(characterTexture, 4, 4, 100, AnimateType.PerRow));
         }
 

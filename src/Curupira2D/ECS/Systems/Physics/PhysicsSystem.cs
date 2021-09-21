@@ -11,10 +11,10 @@ namespace Curupira2D.ECS.Systems.Physics
     [RequiredComponent(typeof(PhysicsSystem), typeof(BodyComponent))]
     public sealed class PhysicsSystem : System, ILoadable, IUpdatable
     {
-        readonly World _world;
+        World _world;
         DebugView _debugView;
 
-        public PhysicsSystem()
+        public void LoadContent()
         {
             _world = new World();
 
@@ -22,41 +22,43 @@ namespace Curupira2D.ECS.Systems.Physics
             _world.ContactManager.VelocityConstraintsMultithreadThreshold = 256;
             _world.ContactManager.PositionConstraintsMultithreadThreshold = 256;
             _world.ContactManager.CollideMultithreadThreshold = 256;
-        }
 
-        public void LoadContent()
-        {
             var entities = Scene.GetEntities(_ => MatchActiveEntitiesAndComponents(_));
 
             for (int i = 0; i < entities.Count; i++)
             {
                 var entity = entities[i];
                 var bodyComponent = entity.GetComponent<BodyComponent>();
+                Fixture fixture = null;
 
                 switch (bodyComponent.EntityShape)
                 {
                     case EntityShape.Circle:
-                        bodyComponent.CreateCircle(bodyComponent.Radius, bodyComponent.Density, Vector2.Zero);
+                        fixture = bodyComponent.CreateCircle(bodyComponent.Radius, bodyComponent.Density, Vector2.Zero);
                         break;
                     case EntityShape.Ellipse:
-                        bodyComponent.CreateEllipse(bodyComponent.Size.X * 0.5f, bodyComponent.Size.Y * 0.5f, 8, bodyComponent.Density);
+                        fixture = bodyComponent.CreateEllipse(bodyComponent.Size.X * 0.5f, bodyComponent.Size.Y * 0.5f, 8, bodyComponent.Density);
                         break;
                     case EntityShape.Rectangle:
-                        bodyComponent.CreateRectangle(bodyComponent.Size.X, bodyComponent.Size.Y, bodyComponent.Density, Vector2.Zero);
+                        fixture = bodyComponent.CreateRectangle(bodyComponent.Size.X, bodyComponent.Size.Y, bodyComponent.Density, Vector2.Zero);
                         break;
                     case EntityShape.Polygon:
                         var vertices = new Vertices(bodyComponent.Vertices);
-                        bodyComponent.CreatePolygon(vertices, bodyComponent.Density);
+                        fixture = bodyComponent.CreatePolygon(vertices, bodyComponent.Density);
                         break;
                 }
 
                 _world.Add(bodyComponent);
 
                 bodyComponent.Tag = entity.UniqueId;
-                bodyComponent.Position = entity.Transform.Position;
-                bodyComponent.Rotation = entity.Transform.Rotation;
-                bodyComponent.SetRestitution(bodyComponent.Restitution);
-                bodyComponent.SetFriction(bodyComponent.Friction);
+                bodyComponent.Position = entity.Position;
+                bodyComponent.Rotation = entity.Rotation;
+
+                if (fixture != null)
+                {
+                    fixture.Restitution = bodyComponent.Restitution;
+                    fixture.Friction = bodyComponent.Friction;
+                }
             };
 
             if (Scene.GameCore.DebugActive && entities.Any())
@@ -83,10 +85,7 @@ namespace Curupira2D.ECS.Systems.Physics
                 _world.Gravity = Scene.Gravity;
 
             if (entities.Any() && entities.Count != _world.BodyList.Count)
-            {
-                _world.BodyList.Clear();
                 LoadContent();
-            }
 
             for (int i = 0; i < entities.Count(); i++)
             {
@@ -95,8 +94,8 @@ namespace Curupira2D.ECS.Systems.Physics
 
                 bodyComponent.Enabled = entity.Active;
 
-                // Update Entity position and rotation
-                entity.SetTransform(bodyComponent.Position, MathHelper.ToDegrees(bodyComponent.Rotation));
+                entity.SetPosition(bodyComponent.Position);
+                entity.SetRotation(MathHelper.ToDegrees(bodyComponent.Rotation));
             }
 
             _world.Step(Scene.DeltaTime);

@@ -34,7 +34,7 @@ namespace Curupira2D.ECS.Systems.Drawables
                             .GetEntities(_ => _.UniqueId == pointObject.Name || _.UniqueId == pointObject.Properties.GetValue(TiledMapSystemConstants.Properties.EntityUniqueId))
                             .FirstOrDefault();
 
-                        if (entity != null && entity.Transform.Position == default)
+                        if (entity != null && entity.Position == default)
                             entity.SetPosition((float)pointObject.X, Scene.InvertPositionY((float)pointObject.Y));
                     }
                 }
@@ -108,8 +108,7 @@ namespace Curupira2D.ECS.Systems.Drawables
 
                     SetPhysicsProperties(ellipseObject, objectLayer, ref ellipseBodyComponent);
 
-                    Scene.CreateEntity(entityUniqueId ?? $"{nameof(EllipseObject)}_{ellipseObject.Id}", entityGroup)
-                        .SetPosition(posX, posY)
+                    Scene.CreateEntity(entityUniqueId ?? $"{nameof(EllipseObject)}_{ellipseObject.Id}", posX, posY, entityGroup)
                         .AddComponent(ellipseBodyComponent);
                 }
 
@@ -122,14 +121,15 @@ namespace Curupira2D.ECS.Systems.Drawables
 
                     SetPhysicsProperties(rectangleObject, objectLayer, ref rectangleBodyComponent);
 
-                    Scene.CreateEntity(entityUniqueId ?? $"{nameof(RectangleObject)}_{rectangleObject.Id}", entityGroup)
-                        .SetPosition(posX, posY)
+                    Scene.CreateEntity(entityUniqueId ?? $"{nameof(RectangleObject)}_{rectangleObject.Id}", posX, posY, entityGroup)
                         .AddComponent(rectangleBodyComponent);
                 }
 
                 // Creates polygon type collision entity
                 if (baseObject is PolygonObject polygonObject)
                 {
+                    var posX = (float)polygonObject.X;
+                    var posY = Scene.InvertPositionY((float)polygonObject.Y);
                     var polygonBodyComponent = new BodyComponent((float)polygonObject.Width, (float)polygonObject.Height, EntityType.Static, EntityShape.Polygon)
                     {
                         Vertices = polygonObject.Polygon.Select(_ => new Vector2((float)_.X, (float)_.Y))
@@ -137,8 +137,7 @@ namespace Curupira2D.ECS.Systems.Drawables
 
                     SetPhysicsProperties(polygonObject, objectLayer, ref polygonBodyComponent);
 
-                    Scene.CreateEntity(entityUniqueId ?? $"{nameof(PolygonObject)}_{polygonObject.Id}", entityGroup)
-                        .SetPosition((float)polygonObject.X, Scene.InvertPositionY((float)polygonObject.Y))
+                    Scene.CreateEntity(entityUniqueId ?? $"{nameof(PolygonObject)}_{polygonObject.Id}", posX, posY, entityGroup)
                         .AddComponent(polygonBodyComponent);
                 }
             }

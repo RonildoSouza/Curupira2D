@@ -15,12 +15,12 @@ namespace Curupira2D.Samples.Systems.SceneGraph
             var hatTexture = Scene.GameCore.Content.Load<Texture2D>("SceneGraph/hat");
             var staffTexture = Scene.GameCore.Content.Load<Texture2D>("SceneGraph/staff");
 
-            var hatEntity = Scene.CreateEntity("hat")
-                .AddComponent<EquipmentComponent>(0f, -90f)
+            var hatEntity = Scene.CreateEntity("hat", default)
+                .AddComponent(new EquipmentComponent(0f, -90f))
                 .AddComponent(new SpriteComponent(hatTexture));
 
-            var staffEntity = Scene.CreateEntity("staff")
-                .AddComponent<EquipmentComponent>(-80f, 10f)
+            var staffEntity = Scene.CreateEntity("staff", default)
+                .AddComponent(new EquipmentComponent(-80f, 10f))
                 .AddComponent(new SpriteComponent(staffTexture));
 
             var characterEntity = Scene.GetEntity("character");
@@ -37,7 +37,7 @@ namespace Curupira2D.Samples.Systems.SceneGraph
                 var entity = entities[i];
 
                 var equipmentComponent = entity.GetComponent<EquipmentComponent>();
-                var newPosition = entity.Parent.Transform.Position - equipmentComponent.OffsetPosition;
+                var newPosition = entity.Parent.Position - equipmentComponent.OffsetPosition;
 
                 entity.SetPosition(newPosition);
 

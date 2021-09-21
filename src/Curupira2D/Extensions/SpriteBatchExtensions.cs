@@ -12,7 +12,7 @@ namespace Curupira2D.Extensions
         {
             spriteBatch.Draw(
                 spriteComponent.Texture,
-                position,
+                spriteComponent.Position ?? position,
                 spriteComponent.SourceRectangle,
                 spriteComponent.Color,
                 MathHelper.ToRadians(rotationInDegrees),
@@ -26,7 +26,7 @@ namespace Curupira2D.Extensions
             => spriteBatch.Draw(position, 0f, spriteComponent);
 
         public static void Draw<TSpriteComponent>(this SpriteBatch spriteBatch, Entity entity, TSpriteComponent spriteComponent) where TSpriteComponent : SpriteComponent
-            => spriteBatch.Draw(entity.Transform.Position, entity.Transform.Rotation, spriteComponent);
+            => spriteBatch.Draw(entity.Position, entity.Rotation, spriteComponent);
         #endregion
 
         #region DrawString Methods
@@ -35,7 +35,7 @@ namespace Curupira2D.Extensions
             spriteBatch.DrawString(
                 textComponent.SpriteFont,
                 textComponent.Text,
-                position,
+                textComponent.Position ?? position,
                 textComponent.Color,
                 MathHelper.ToRadians(rotationInDegrees),
                 textComponent.Origin,
@@ -48,7 +48,7 @@ namespace Curupira2D.Extensions
             => spriteBatch.DrawString(position, 0f, textComponent);
 
         public static void DrawString(this SpriteBatch spriteBatch, Entity entity, TextComponent textComponent)
-            => spriteBatch.DrawString(entity.Transform.Position, entity.Transform.Rotation, textComponent);
+            => spriteBatch.DrawString(entity.Position, entity.Rotation, textComponent);
         #endregion
     }
 }

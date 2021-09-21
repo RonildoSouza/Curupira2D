@@ -28,5 +28,6 @@ namespace Curupira2D.ECS.Components.Drawables
         public float LayerDepth { get; set; }
         public Vector2 Scale { get; set; }
         public bool DrawInUICamera { get; set; }
+        public Vector2? Position { get; set; }
     }
 }

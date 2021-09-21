@@ -9,7 +9,7 @@ namespace Curupira2D.Samples.Systems.TiledMap
         {
             var tiledMapComponent = Scene.GameCore.Content.CreateTiledMapComponent("TiledMap/PlatformerTiledMap.tmx", "TiledMap/PlatformerTileset");
 
-            Scene.CreateEntity("tiledmap").AddComponent(tiledMapComponent);
+            Scene.CreateEntity("tiledmap", default).AddComponent(tiledMapComponent);
         }
     }
 }

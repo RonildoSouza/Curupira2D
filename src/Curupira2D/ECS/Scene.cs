@@ -9,6 +9,7 @@ using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace Curupira2D.ECS
 {
@@ -25,7 +26,8 @@ namespace Curupira2D.ECS
         public ICamera2D Camera2D { get; private set; }
         public ICamera2D UICamera2D { get; private set; }
         public string Title { get; private set; }
-        public Color CleanColor { get; private set; } = Color.LightGray;
+        public Color FallbackCleanColor { get; private set; }
+        public Color CleanColor { get; private set; }
         public float DeltaTime { get => _deltaTime == 0 ? 1f / 60f : _deltaTime; private set => _deltaTime = value; }
         public int ScreenWidth => GameCore.GraphicsDevice.Viewport.Width;
         public int ScreenHeight => GameCore.GraphicsDevice.Viewport.Height;
@@ -36,10 +38,15 @@ namespace Curupira2D.ECS
         public GamePadInputManager GamePadInputManager { get; private set; }
         public MouseInputManager MouseInputManager { get; private set; }
 
+        public Quadtree Quadtree { get; private set; }
+
         public Vector2 Gravity { get; set; }
 
         public void SetGameCore(GameCore gameCore)
         {
+            var entities = _entityManager.GetAll(_ => true);
+            Parallel.ForEach(entities, _ => _.OnChange -= Entity_OnChange);
+
             GameCore = gameCore;
             SpriteBatch = new SpriteBatch(GameCore.GraphicsDevice);
 
@@ -57,6 +64,9 @@ namespace Curupira2D.ECS
             UICamera2D = GameCore.UICamera2D;
 
             Gravity = new Vector2(0f, -9.80665f);
+            CleanColor = FallbackCleanColor = Color.LightGray;
+
+            Quadtree = new Quadtree(GameCore.GraphicsDevice.Viewport.Bounds);
         }
 
         public virtual void LoadContent()
@@ -146,6 +156,9 @@ namespace Curupira2D.ECS
 
         public Scene SetCleanColor(Color cleanColor)
         {
+            if (CleanColor != cleanColor)
+                FallbackCleanColor = CleanColor;
+
             CleanColor = cleanColor;
             return this;
         }
@@ -161,6 +174,8 @@ namespace Curupira2D.ECS
         }
 
         public Vector2 PositionToScene(Point position) => PositionToScene(position.ToVector2());
+
+        public void SetFallbackCleanColor() => CleanColor = FallbackCleanColor;
 
         #region Methods of managing game core
         public Scene AddGameComponent(IGameComponent gameComponent)
@@ -202,7 +217,16 @@ namespace Curupira2D.ECS
         #endregion
 
         #region Methods of managing entities
-        public Entity CreateEntity(string uniqueId, string group = null) => _entityManager.Create(uniqueId, group);
+        public Entity CreateEntity(string uniqueId, Vector2 position, string group = null, bool isCollidable = true)
+        {
+            var entity = _entityManager.Create(uniqueId, position, group, isCollidable);
+            entity.OnChange += Entity_OnChange;
+
+            return entity;
+        }
+
+        public Entity CreateEntity(string uniqueId, float x, float y, string group = null, bool isCollidable = true)
+            => CreateEntity(uniqueId, new Vector2(x, y), group, isCollidable);
 
         public Entity GetEntity(string uniqueId) => _entityManager.Get(uniqueId);
 
@@ -210,13 +234,27 @@ namespace Curupira2D.ECS
 
         public IReadOnlyList<Entity> GetEntities(string group) => GetEntities(e => e.Group == group);
 
-        public void RemoveEntity(Predicate<Entity> match) => _entityManager.Remove(match);
+        public void RemoveEntity(Predicate<Entity> match)
+        {
+            _entityManager.Remove(match);
 
-        public void RemoveEntity(string uniqueId) => _entityManager.Remove(uniqueId);
+            var entities = GetEntities(new Func<Entity, bool>(match));
+            Parallel.ForEach(entities, entity => Quadtree.Delete(entity));
+        }
+
+        public void RemoveEntity(string uniqueId)
+        {
+            _entityManager.Remove(uniqueId);
+            Quadtree.Delete(GetEntity(uniqueId));
+        }
 
         public void RemoveEntity(Entity entity) => RemoveEntity(entity?.UniqueId);
 
-        public void RemoveAllEntities() => _entityManager.RemoveAll();
+        public void RemoveAllEntities()
+        {
+            _entityManager.RemoveAll();
+            Quadtree.Clear();
+        }
 
         public bool ExistsEntities(Func<Entity, bool> match) => _entityManager.Exists(match);
 
@@ -231,8 +269,20 @@ namespace Curupira2D.ECS
             SpriteBatch.Dispose();
             Camera2D = null;
             UICamera2D = null;
+            Quadtree.Dispose();
 
             GC.Collect();
+        }
+
+        private void Entity_OnChange(object sender, EventArgs e)
+        {
+            if (!(sender is Entity entity)
+                || !(entity?.Active ?? false)
+                || !(entity?.IsCollidable ?? false))
+                return;
+
+            Quadtree.Delete(entity);
+            Quadtree.Insert(entity);
         }
     }
 }

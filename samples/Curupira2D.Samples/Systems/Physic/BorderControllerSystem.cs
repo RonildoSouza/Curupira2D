@@ -16,20 +16,16 @@ namespace Curupira2D.Samples.Systems.Physic
             var horizontalBorderSpriteComponent = new SpriteComponent(horizontalBorderTexture);
             var verticalBorderSpriteComponent = new SpriteComponent(verticalBorderTexture);
 
-            Scene.CreateEntity("left-border")
-                .SetPosition(verticalBorderSpriteComponent.Origin.X, verticalBorderSpriteComponent.Origin.Y)
+            Scene.CreateEntity("left-border", verticalBorderSpriteComponent.Origin.X, verticalBorderSpriteComponent.Origin.Y)
                 .AddComponent(verticalBorderSpriteComponent, new BodyComponent(verticalBorderTexture.Bounds.Size.ToVector2(), EntityType.Static, EntityShape.Rectangle));
 
-            Scene.CreateEntity("up-border")
-                .SetPosition(horizontalBorderSpriteComponent.Origin.X, horizontalBorderSpriteComponent.Origin.Y)
+            Scene.CreateEntity("up-border", horizontalBorderSpriteComponent.Origin.X, horizontalBorderSpriteComponent.Origin.Y)
                 .AddComponent(horizontalBorderSpriteComponent, new BodyComponent(horizontalBorderTexture.Bounds.Size.ToVector2(), EntityType.Static, EntityShape.Rectangle));
 
-            Scene.CreateEntity("right-border")
-                .SetPosition(Scene.ScreenWidth - verticalBorderSpriteComponent.Origin.X, verticalBorderSpriteComponent.Origin.Y)
+            Scene.CreateEntity("right-border", Scene.ScreenWidth - verticalBorderSpriteComponent.Origin.X, verticalBorderSpriteComponent.Origin.Y)
                 .AddComponent(verticalBorderSpriteComponent, new BodyComponent(verticalBorderTexture.Bounds.Size.ToVector2(), EntityType.Static, EntityShape.Rectangle));
 
-            Scene.CreateEntity("down-border")
-                .SetPosition(horizontalBorderSpriteComponent.Origin.X, Scene.ScreenHeight - horizontalBorderSpriteComponent.Origin.Y)
+            Scene.CreateEntity("down-border", horizontalBorderSpriteComponent.Origin.X, Scene.ScreenHeight - horizontalBorderSpriteComponent.Origin.Y)
                 .AddComponent(horizontalBorderSpriteComponent, new BodyComponent(horizontalBorderTexture.Bounds.Size.ToVector2(), EntityType.Static, EntityShape.Rectangle));
         }
     }

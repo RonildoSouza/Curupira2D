@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Xna.Framework;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -9,16 +10,19 @@ namespace Curupira2D.ECS
     {
         readonly List<Entity> _entities = new List<Entity>();
 
-        public Entity Create(string uniqueId, string group = null)
+        public Entity Create(string uniqueId, Vector2 position, string group = null, bool isCollidable = true)
         {
             if (_entities.Any(_ => _.UniqueId == uniqueId))
                 throw new ArgumentException($"An entity with the same Id exists ({uniqueId})!");
 
-            var entity = new Entity(uniqueId, group);
+            var entity = new Entity(uniqueId, position, group, isCollidable);
             _entities.Add(entity);
 
             return entity;
         }
+
+        public Entity Create(string uniqueId, float x, float y, string group = null, bool isCollidable = true)
+            => Create(uniqueId, new Vector2(x, y), group, isCollidable);
 
         public Entity Get(string uniqueId) => _entities.FirstOrDefault(_ => _.UniqueId == uniqueId);
 

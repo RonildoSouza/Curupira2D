@@ -17,7 +17,7 @@ namespace Curupira2D.ECS.Components.Drawables
             Texture = texture;
         }
 
-        public override Vector2 Origin => SourceRectangle.HasValue ? SourceRectangle.Value.Size.ToVector2() * 0.5f : 0.5f * TextureSize;
+        public override Vector2 Origin => SourceRectangle.HasValue ? SourceRectangle.Value.Size.ToVector2() * 0.5f : TextureSize * 0.5f;
         public Texture2D Texture { get; set; }
         public Vector2 TextureSize => Texture.Bounds.Size.ToVector2();
     }

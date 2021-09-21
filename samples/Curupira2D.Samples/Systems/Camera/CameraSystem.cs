@@ -18,8 +18,7 @@ namespace Curupira2D.Samples.Systems.Camera
 
             var blockTexture = Scene.GameCore.GraphicsDevice.CreateTextureRectangle(100, Color.Red * 0.8f);
 
-            Scene.CreateEntity("block")
-                .SetPosition(Scene.ScreenCenter)
+            Scene.CreateEntity("block", Scene.ScreenCenter)
                 .AddComponent(new SpriteComponent(blockTexture));
         }
 
