@@ -142,9 +142,6 @@ namespace Curupira2D.ECS
             return (TComponent)component;
         }
 
-        public IEnumerable<TComponent> GetComponents<TComponent>() where TComponent : IComponent
-            => _components.Where(_ => _.Key == typeof(TComponent)).Select(_ => (TComponent)_.Value);
-
         public bool HasComponent(Func<KeyValuePair<Type, IComponent>, bool> predicate) => _components.Any(predicate);
 
         public bool HasComponent<TComponent>() where TComponent : IComponent => HasComponent(typeof(TComponent));
