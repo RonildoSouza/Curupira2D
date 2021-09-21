@@ -42,7 +42,7 @@ namespace Curupira2D.Samples.Systems.Quadtree
                 SetEnemyPosition(enemyEntity, enemyTexture.Width, enemyTexture.Height);
             }
 
-            _textComponent = (Scene as SceneBase).ShowText($"ENEMIES TO COLLISION:", Scene.ScreenWidth * 0.8f , Scene.ScreenCenter.Y, color: Color.Black);
+            _textComponent = (Scene as SceneBase).ShowText($"ENEMIES TO COLLISION:", Scene.ScreenWidth * 0.8f, Scene.ScreenCenter.Y, color: Color.Black);
 
             base.LoadContent();
         }
@@ -59,12 +59,12 @@ namespace Curupira2D.Samples.Systems.Quadtree
                 $"{string.Join("\n", returnObjects.Select(_ => $"Enemy: {_.UniqueId} | {_.Position}"))}";
 
             _playerTextComponent.Text = $"{Vector2.Round(_playerEntity.Position)}";
-            _playerTextComponent.Position = new Vector2(_playerEntity.Position.X, _playerEntity.Position.Y * 1.1f) ;
+            _playerTextComponent.Position = new Vector2(_playerEntity.Position.X, _playerEntity.Position.Y + 32f);
 
             base.Update();
         }
 
-        private Vector2 SetEnemyPosition(Entity enemyEntity, int enemyWidth, int enemyHeight)
+        private void SetEnemyPosition(Entity enemyEntity, int enemyWidth, int enemyHeight)
         {
             var x = _random.Next(enemyWidth, Scene.ScreenWidth - enemyWidth);
             var y = _random.Next(enemyHeight, Scene.ScreenHeight - enemyHeight);
@@ -73,8 +73,6 @@ namespace Curupira2D.Samples.Systems.Quadtree
 
             if (enemyEntity.IsCollidedWithAny(Scene))
                 SetEnemyPosition(enemyEntity, enemyWidth, enemyHeight);
-
-            return new Vector2(x, y);
         }
     }
 }
