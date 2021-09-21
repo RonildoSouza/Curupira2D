@@ -2,7 +2,6 @@
 using Curupira2D.ECS.Systems.Attributes;
 using Curupira2D.Extensions;
 using System.Collections.Generic;
-using System.Threading.Tasks;
 
 namespace Curupira2D.ECS.Systems.Drawables
 {
@@ -14,9 +13,9 @@ namespace Curupira2D.ECS.Systems.Drawables
             for (int i = 0; i < entities.Count; i++)
             {
                 var entity = entities[i];
-                var textComponents = entity.GetComponents<TextComponent>();
+                var textComponent = entity.GetComponent<TextComponent>();
 
-                Parallel.ForEach(textComponents, _ => Scene.SpriteBatch.DrawString(entity, _));
+                Scene.SpriteBatch.DrawString(entity, textComponent);
             }
         }
     }
