@@ -59,7 +59,7 @@ namespace Curupira2D.Samples.Systems.Quadtree
                 $"{string.Join("\n", returnObjects.Select(_ => $"Enemy: {_.UniqueId} | {_.Position}"))}";
 
             _playerTextComponent.Text = $"{Vector2.Round(_playerEntity.Position)}";
-            _playerTextComponent.Position = new Vector2(_playerEntity.Position.X, _playerEntity.Position.Y * 1.1f);
+            _playerTextComponent.Position = new Vector2(_playerEntity.Position.X, _playerEntity.Position.Y + 32f);
 
             base.Update();
         }
