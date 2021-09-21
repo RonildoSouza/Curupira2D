@@ -45,40 +45,16 @@ namespace Curupira2D.Extensions
         }
 
         public static bool IsCollidedWithAny(this Entity entity, Scene scene)
-        {
-            if (!entity.Active || !entity.IsCollidable)
-                return false;
+            => IsCollidedWith(entity, scene, _ => _.GetHitBox().Intersects(entity.GetHitBox()));
 
-            scene.Quadtree.Delete(entity);
-            scene.Quadtree.Insert(entity);
-
-            var returnObjects = scene.Quadtree.Retrieve(entity);
-            return returnObjects.Any(_ => _.GetHitBox().Intersects(entity.GetHitBox()));
-        }
+        public static bool IsCollidedWithAny(this Entity entity, Scene scene, string entityGroup)
+            => IsCollidedWith(entity, scene, _ => _.Group == entityGroup && _.GetHitBox().Intersects(entity.GetHitBox()));
 
         public static bool IsCollidedWith(this Entity entity, Scene scene, Entity otherEntity)
-        {
-            if (!entity.Active || !entity.IsCollidable)
-                return false;
+            => IsCollidedWith(entity, scene, _ => _.Equals(otherEntity) && _.GetHitBox().Intersects(entity.GetHitBox()));
 
-            scene.Quadtree.Delete(entity);
-            scene.Quadtree.Insert(entity);
-
-            var returnObjects = scene.Quadtree.Retrieve(entity);
-            return returnObjects.Any(_ => _.GetHitBox().Intersects(entity.GetHitBox()) && _.Equals(otherEntity));
-        }
-
-        public static bool IsCollidedWith(this Entity entity, Scene scene, string entityUniqueId)
-        {
-            if (!entity.Active || !entity.IsCollidable)
-                return false;
-
-            scene.Quadtree.Delete(entity);
-            scene.Quadtree.Insert(entity);
-
-            var returnObjects = scene.Quadtree.Retrieve(entity);
-            return returnObjects.Any(_ => _.GetHitBox().Intersects(entity.GetHitBox()) && _.UniqueId == entityUniqueId);
-        }
+        public static bool IsCollidedWith(this Entity entity, Scene scene, string otherEntityUniqueId)
+            => IsCollidedWith(entity, scene, _ => _.UniqueId == otherEntityUniqueId && _.GetHitBox().Intersects(entity.GetHitBox()));
 
         //public static void WithScreenBoundaryNotExit(this Entity entity, GraphicsDevice graphicsDevice)
         //{
@@ -101,5 +77,17 @@ namespace Curupira2D.Extensions
 
         //    return collided;
         //}
+
+        private static bool IsCollidedWith(Entity entity, Scene scene, Func<Entity, bool> predicate)
+        {
+            if (!entity.Active || !entity.IsCollidable)
+                return false;
+
+            scene.Quadtree.Delete(entity);
+            scene.Quadtree.Insert(entity);
+
+            var returnObjects = scene.Quadtree.Retrieve(entity);
+            return returnObjects.Any(predicate);
+        }
     }
 }
