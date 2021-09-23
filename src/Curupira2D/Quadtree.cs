@@ -4,6 +4,7 @@
 */
 
 using Curupira2D.ECS;
+using Curupira2D.Extensions;
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;

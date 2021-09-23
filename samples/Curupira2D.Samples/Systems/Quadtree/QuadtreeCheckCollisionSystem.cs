@@ -50,7 +50,7 @@ namespace Curupira2D.Samples.Systems.Quadtree
         public override void Update()
         {
             if (_playerEntity.IsCollidedWithAny(Scene))
-                Scene.SetCleanColor(Color.Red);
+                Scene.SetCleanColor(Color.MonoGameOrange);
             else
                 Scene.SetFallbackCleanColor();
 

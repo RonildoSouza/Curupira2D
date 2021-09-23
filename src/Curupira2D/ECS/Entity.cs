@@ -38,6 +38,8 @@ namespace Curupira2D.ECS
         public string Group { get; set; }
         public bool IsCollidable { get; private set; }
 
+        internal IReadOnlyDictionary<Type, IComponent> Components => _components;
+
         public void SetPosition(float x, float y)
         {
             var newPosition = new Vector2(x, y);
@@ -150,35 +152,6 @@ namespace Curupira2D.ECS
 
         public bool HasAnyComponentTypes(IEnumerable<Type> componentTypes) => componentTypes.Any(_ => HasComponent(_));
         #endregion
-
-        internal Rectangle GetHitBox()
-        {
-            if (_components.Any(_ => _.Key == typeof(SpriteComponent) || _.Key == typeof(SpriteAnimationComponent)))
-            {
-                var spriteComponent = GetComponent<SpriteComponent>() ?? GetComponent<SpriteAnimationComponent>();
-                var size = spriteComponent.SourceRectangle?.Size ?? spriteComponent.TextureSize.ToPoint();
-                var x = Position.X - spriteComponent.Origin.X;
-                var y = Position.Y - spriteComponent.Origin.Y;
-
-                var position = new Vector2(x, y);
-
-                return new Rectangle(position.ToPoint(), size * spriteComponent.Scale.ToPoint());
-            }
-
-            if (_components.Any(_ => _.Key == typeof(TextComponent)))
-            {
-                var textComponent = GetComponent<TextComponent>();
-                var size = textComponent.SourceRectangle?.Size ?? textComponent.TextSize.ToPoint();
-                var x = Position.X - textComponent.Origin.X;
-                var y = Position.Y - textComponent.Origin.Y;
-
-                var position = new Vector2(x, y);
-
-                return new Rectangle(position.ToPoint(), size * textComponent.Scale.ToPoint());
-            }
-
-            return Rectangle.Empty;
-        }
 
         bool HasComponent(Type componentType) => _components.ContainsKey(componentType);
     }

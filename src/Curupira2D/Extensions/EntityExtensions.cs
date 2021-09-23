@@ -44,50 +44,44 @@ namespace Curupira2D.Extensions
             return position;
         }
 
-        public static bool IsCollidedWithAny(this Entity entity, Scene scene)
-            => IsCollidedWith(entity, scene, _ => _.GetHitBox().Intersects(entity.GetHitBox()));
-
-        public static bool IsCollidedWithAny(this Entity entity, Scene scene, string entityGroup)
-            => IsCollidedWith(entity, scene, _ => _.Group == entityGroup && _.GetHitBox().Intersects(entity.GetHitBox()));
-
-        public static bool IsCollidedWith(this Entity entity, Scene scene, Entity otherEntity)
-            => IsCollidedWith(entity, scene, _ => _.Equals(otherEntity) && _.GetHitBox().Intersects(entity.GetHitBox()));
-
-        public static bool IsCollidedWith(this Entity entity, Scene scene, string otherEntityUniqueId)
-            => IsCollidedWith(entity, scene, _ => _.UniqueId == otherEntityUniqueId && _.GetHitBox().Intersects(entity.GetHitBox()));
-
-        //public static void WithScreenBoundaryNotExit(this Entity entity, GraphicsDevice graphicsDevice)
-        //{
-        //    entity.Position.X = MathHelper.Clamp(entity.Position.X, entity.Origin.X,
-        //        graphicsDevice.Viewport.Width - entity.BoundingBox.Width + entity.Origin.X);
-
-        //    entity.Position.Y = MathHelper.Clamp(entity.Position.Y, entity.Origin.Y,
-        //        graphicsDevice.Viewport.Height - entity.BoundingBox.Height + entity.Origin.Y);
-        //}
-
-        //public static bool WithScreenBoundary(this Entity entity, GraphicsDevice graphicsDevice)
-        //{
-        //    var collided = false;
-
-        //    if (entity.BoundingBox.X <= 0 ||
-        //        entity.BoundingBox.Y >= (graphicsDevice.Viewport.Height - entity.BoundingBox.Height) ||
-        //        entity.BoundingBox.X >= (graphicsDevice.Viewport.Width - entity.BoundingBox.Width) ||
-        //        entity.BoundingBox.Y <= 0)
-        //        collided = true;
-
-        //    return collided;
-        //}
-
-        private static bool IsCollidedWith(Entity entity, Scene scene, Func<Entity, bool> predicate)
+        public static DrawableComponent GetDrawableComponent(this Entity entity)
         {
-            if (!entity.Active || !entity.IsCollidable)
-                return false;
+            if (entity.Components.Any(_ => _.Key == typeof(SpriteComponent) || _.Key == typeof(SpriteAnimationComponent)))
+                return entity.GetComponent<SpriteComponent>() ?? entity.GetComponent<SpriteAnimationComponent>();
 
-            scene.Quadtree.Delete(entity);
-            scene.Quadtree.Insert(entity);
+            if (entity.Components.Any(_ => _.Key == typeof(TextComponent)))
+                return entity.GetComponent<TextComponent>();
 
-            var returnObjects = scene.Quadtree.Retrieve(entity);
-            return returnObjects.Any(predicate);
+            return null;
+        }
+
+        internal static Rectangle GetHitBox(this Entity entity)
+        {
+            if (entity.Components.Any(_ => _.Key == typeof(SpriteComponent) || _.Key == typeof(SpriteAnimationComponent)))
+            {
+                var spriteComponent = entity.GetComponent<SpriteComponent>() ?? entity.GetComponent<SpriteAnimationComponent>();
+                var size = spriteComponent.SourceRectangle?.Size ?? spriteComponent.TextureSize.ToPoint();
+                var x = entity.Position.X - spriteComponent.Origin.X;
+                var y = entity.Position.Y - spriteComponent.Origin.Y;
+
+                var position = new Vector2(x, y);
+
+                return new Rectangle(position.ToPoint(), size * spriteComponent.Scale.ToPoint());
+            }
+
+            if (entity.Components.Any(_ => _.Key == typeof(TextComponent)))
+            {
+                var textComponent = entity.GetComponent<TextComponent>();
+                var size = textComponent.SourceRectangle?.Size ?? textComponent.TextSize.ToPoint();
+                var x = entity.Position.X - textComponent.Origin.X;
+                var y = entity.Position.Y - textComponent.Origin.Y;
+
+                var position = new Vector2(x, y);
+
+                return new Rectangle(position.ToPoint(), size * textComponent.Scale.ToPoint());
+            }
+
+            return Rectangle.Empty;
         }
     }
 }
