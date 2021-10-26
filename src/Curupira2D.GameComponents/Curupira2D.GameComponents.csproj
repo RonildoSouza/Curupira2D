@@ -6,6 +6,7 @@
     <PackageOutputPath>..\..\nupkgs</PackageOutputPath>
     <PackageProjectUrl>https://github.com/RonildoSouza/Curupira2D#readme</PackageProjectUrl>
     <RepositoryUrl>https://github.com/RonildoSouza/Curupira2D</RepositoryUrl>
+    <Description>https://raw.githubusercontent.com/RonildoSouza/Curupira2D/main/README.md</Description>
   </PropertyGroup>
   <ItemGroup>
     <Compile Remove="BackgroundComponent.cs" />
