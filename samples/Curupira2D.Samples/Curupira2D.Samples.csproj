@@ -17,15 +17,11 @@
     <None Remove="Systems\Menu\**" />
   </ItemGroup>
   <ItemGroup>
-    <None Remove="Content\Arial.TTF" />
     <None Remove="Content\TiledMap\PlatformerTiledMap.tmx" />
     <None Remove="Icon.ico" />
     <None Remove="Icon.bmp" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Content\Arial.TTF">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
     <Content Include="Content\TiledMap\PlatformerTiledMap.tmx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
