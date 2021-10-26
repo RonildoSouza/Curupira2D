@@ -17,11 +17,15 @@
     <None Remove="Systems\Menu\**" />
   </ItemGroup>
   <ItemGroup>
+    <None Remove="Content\Arial.TTF" />
     <None Remove="Content\TiledMap\PlatformerTiledMap.tmx" />
     <None Remove="Icon.ico" />
     <None Remove="Icon.bmp" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Content\Arial.TTF">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="Content\TiledMap\PlatformerTiledMap.tmx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
@@ -42,10 +46,5 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\src\Curupira2D\Curupira2D.csproj" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Update="Content\Arial.TTF">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
   </ItemGroup>
 </Project>
