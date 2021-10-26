@@ -45,7 +45,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Update="Content\Arial.TTF">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>
 </Project>
