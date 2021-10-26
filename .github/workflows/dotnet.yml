@@ -17,9 +17,6 @@ jobs:
       uses: actions/setup-dotnet@v1
       with:
         dotnet-version: 5.0.x
-        source-url: https://nuget.pkg.github.com/<organization>/index.json
-      env:
-        NUGET_AUTH_TOKEN: ${{secrets.CURUPIRA2D_TOKEN}}
         
     - name: Restore dependencies
       run: dotnet restore src/Curupira2D.sln
@@ -27,8 +24,18 @@ jobs:
     - name: Build
       run: dotnet build --no-restore src/Curupira2D.sln
 
-    - name: Generate NuGet package
-      run: dotnet pack src/Curupira2D.sln -c Release -o nupkgs  
-
-    - name: Push generated package to GitHub registry
-      run: dotnet nuget push nupkgs/*.nupkg --skip-duplicate --no-symbols true
+    - name: Publish NuGet - Curupira2D
+      uses: brandedoutcast/publish-nuget@v2.5.5
+      with:
+        # Filepath of the project to be packaged, relative to root of repository
+        PROJECT_FILE_PATH: src/Curupira2D/Curupira2D.csproj
+        # API key to authenticate with NuGet server
+        NUGET_KEY: ${{secrets.CURUPIRA2D_TOKEN}}
+        
+    - name: Publish NuGet - Curupira2D.GameComponents
+      uses: brandedoutcast/publish-nuget@v2.5.5
+      with:
+        # Filepath of the project to be packaged, relative to root of repository
+        PROJECT_FILE_PATH: src/Curupira2D.GameComponents/Curupira2D.GameComponents.csproj
+        # API key to authenticate with NuGet server
+        NUGET_KEY: ${{secrets.CURUPIRA2D_TOKEN}}
