@@ -1,0 +1,41 @@
+name: Build and Publish
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: 3.1.x
+        
+    - name: Restore dependencies
+      run: dotnet restore src/Curupira2D.sln
+      
+    - name: Build
+      run: dotnet build --no-restore src/Curupira2D.sln
+
+    - name: Publish NuGet - Curupira2D
+      uses: brandedoutcast/publish-nuget@v2.5.5
+      with:
+        # Filepath of the project to be packaged, relative to root of repository
+        PROJECT_FILE_PATH: src/Curupira2D/Curupira2D.csproj
+        # API key to authenticate with NuGet server
+        NUGET_KEY: ${{secrets.CURUPIRA2D_TOKEN}}
+        
+    - name: Publish NuGet - Curupira2D.GameComponents
+      uses: brandedoutcast/publish-nuget@v2.5.5
+      with:
+        # Filepath of the project to be packaged, relative to root of repository
+        PROJECT_FILE_PATH: src/Curupira2D.GameComponents/Curupira2D.GameComponents.csproj
+        # API key to authenticate with NuGet server
+        NUGET_KEY: ${{secrets.CURUPIRA2D_TOKEN}}
