@@ -1,4 +1,5 @@
 # Curupira2D
+[![Build and Publish](https://github.com/RonildoSouza/Curupira2D/actions/workflows/dotnet.yml/badge.svg)](https://github.com/RonildoSouza/Curupira2D/actions/workflows/dotnet.yml)
 
 Simple helper library to development 2D games with [MonoGame](https://www.monogame.net/) using ECS (_Entity-Component-System_) game architecture.
 
