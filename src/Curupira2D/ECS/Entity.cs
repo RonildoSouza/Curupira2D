@@ -1,5 +1,4 @@
 ﻿using Curupira2D.ECS.Components;
-using Curupira2D.ECS.Components.Drawables;
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;

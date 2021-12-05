@@ -2,7 +2,7 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.1</TargetFramework>
     <Authors>Ronildo Souza</Authors>
-    <Version>1.0.0-beta.4</Version>
+    <Version>1.0.0-beta.5</Version>
     <PackageOutputPath>..\..\nupkgs</PackageOutputPath>
     <PackageProjectUrl>https://github.com/RonildoSouza/Curupira2D#readme</PackageProjectUrl>
     <RepositoryUrl>https://github.com/RonildoSouza/Curupira2D</RepositoryUrl>
@@ -21,9 +21,13 @@
   </ItemGroup>
   <ItemGroup>
     <None Remove="Content\DiagnosticsFont.xnb" />
+    <None Remove="Content\FontArial18.xnb" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Content\DiagnosticsFont.xnb">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\FontArial18.xnb">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>

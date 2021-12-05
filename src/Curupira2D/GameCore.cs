@@ -1,4 +1,5 @@
-﻿using Curupira2D.ECS;
+﻿using Curupira2D.Diagnostics;
+using Curupira2D.ECS;
 using Curupira2D.GameComponents;
 using Curupira2D.GameComponents.Camera2D;
 using Microsoft.Xna.Framework;
@@ -18,7 +19,7 @@ namespace Curupira2D
         readonly int _height;
         readonly bool _disabledExit;
 
-        public GameCore(int width = 800, int height = 480, bool debugActive = false, bool disabledExit = false)
+        public GameCore(int width = 0, int height = 0, bool debugActive = false, bool disabledExit = false)
         {
             _width = width;
             _height = height;
@@ -32,6 +33,7 @@ namespace Curupira2D
             {
                 _fpsCounterComponent = new FPSCounterComponent(this);
                 Components.Add(_fpsCounterComponent);
+                Components.Add(new DebugComponent(this));
             }
         }
 
@@ -44,8 +46,13 @@ namespace Curupira2D
         protected override void Initialize()
         {
             _graphics.GraphicsProfile = GraphicsProfile.Reach;
-            _graphics.PreferredBackBufferWidth = _width;
-            _graphics.PreferredBackBufferHeight = _height;
+
+            if (_width != 0 && _height != 0)
+            {
+                _graphics.PreferredBackBufferWidth = _width;
+                _graphics.PreferredBackBufferHeight = _height;
+            }
+
             _graphics.ApplyChanges();
 
             Camera2D = new Camera2DComponent(this);
@@ -73,15 +80,8 @@ namespace Curupira2D
 
             _sceneManager.CurrentScene?.Draw();
 
-            if (DebugActive)
-            {
-                Window.Title = $"{_sceneManager.CurrentScene?.Title ?? GetType().Assembly.GetName().Name} " +
-                           $"| {GraphicsDevice.Viewport.Width}x{GraphicsDevice.Viewport.Height} " +
-                           $"| FPS: {_fpsCounterComponent.FPS}" +
-                           $"| v{GetVersion()}";
-            }
-            else
-                Window.Title = $"{_sceneManager.CurrentScene?.Title ?? GetType().Assembly.GetName().Name}";
+            if (!DebugActive)
+                Window.Title = !string.IsNullOrEmpty(_sceneManager.CurrentScene?.Title) ? _sceneManager.CurrentScene.Title : GetType().Assembly.GetName().Name;
 
             base.Draw(gameTime);
         }
