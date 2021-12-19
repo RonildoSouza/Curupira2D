@@ -55,7 +55,7 @@ namespace Curupira2D.Extensions
             return null;
         }
 
-        internal static Rectangle GetHitBox(this Entity entity)
+        public static Rectangle GetHitBox(this Entity entity)
         {
             if (entity.Components.Any(_ => _.Key == typeof(SpriteComponent) || _.Key == typeof(SpriteAnimationComponent)))
             {
@@ -81,7 +81,7 @@ namespace Curupira2D.Extensions
                 return new Rectangle(position.ToPoint(), size * textComponent.Scale.ToPoint());
             }
 
-            return Rectangle.Empty;
+            return new Rectangle(entity.Position.ToPoint(), Point.Zero);
         }
     }
 }
