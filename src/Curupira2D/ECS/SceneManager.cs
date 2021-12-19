@@ -16,6 +16,7 @@ namespace Curupira2D.ECS
             // Clean current scene before change
             CurrentScene?.RemoveAllSystems();
             CurrentScene?.RemoveAllEntities();
+            CurrentScene?.RemoveAllGameComponents();
 
             CurrentScene = scene;
             CurrentScene.SetGameCore(gameCore);

@@ -19,6 +19,7 @@ namespace Curupira2D.ECS
         readonly SystemManager _systemManager = new SystemManager();
         PhysicsSystem _physicsSystem;
         float _deltaTime;
+        readonly List<IGameComponent> _gameComponents = new List<IGameComponent>();
 
         public GameCore GameCore { get; private set; }
         public SpriteBatch SpriteBatch { get; private set; }
@@ -41,33 +42,6 @@ namespace Curupira2D.ECS
         public Quadtree Quadtree { get; private set; }
 
         public Vector2 Gravity { get; set; }
-
-        public void SetGameCore(GameCore gameCore)
-        {
-            var entities = _entityManager.GetAll(_ => true);
-            Parallel.ForEach(entities, _ => _.OnChange -= Entity_OnChange);
-
-            GameCore = gameCore;
-            SpriteBatch = new SpriteBatch(GameCore.GraphicsDevice);
-
-            var cameraInitialOrigin = new Vector2(ScreenWidth * 0.5f, ScreenHeight * 0.5f);
-            var cameraInitialPosition = new Vector2(ScreenWidth * 0.5f, ScreenHeight * 0.5f);
-
-            GameCore.Camera2D.Reset();
-            GameCore.Camera2D.Origin = cameraInitialOrigin;
-            GameCore.Camera2D.Position = cameraInitialPosition;
-            Camera2D = GameCore.Camera2D;
-
-            GameCore.UICamera2D.Reset();
-            GameCore.UICamera2D.Origin = cameraInitialOrigin;
-            GameCore.UICamera2D.Position = cameraInitialPosition;
-            UICamera2D = GameCore.UICamera2D;
-
-            Gravity = new Vector2(0f, -9.80665f);
-            CleanColor = FallbackCleanColor = Color.LightGray;
-
-            Quadtree = new Quadtree(GameCore.GraphicsDevice.Viewport.Bounds);
-        }
 
         public virtual void LoadContent()
         {
@@ -180,21 +154,33 @@ namespace Curupira2D.ECS
         #region Methods of managing game core
         public Scene AddGameComponent(IGameComponent gameComponent)
         {
-            if (!GameCore.Components.Any(c => c.GetType() == gameComponent.GetType()))
+            if (!GameCore.Components.Any(c => c.Equals(gameComponent) || c.GetType() == gameComponent.GetType()))
+            {
+                _gameComponents.Add(gameComponent);
                 GameCore.Components.Add(gameComponent);
+            }
 
             return this;
         }
 
         public Scene RemoveGameComponent(IGameComponent gameComponent)
         {
-            if (GameCore.Components.Any(c => c.GetType() == gameComponent.GetType()))
+            if (GameCore.Components.Any(c => c.Equals(gameComponent) || c.GetType() == gameComponent.GetType()))
             {
-                var index = GameCore.Components.ToList().FindIndex(c => c.GetType() == gameComponent.GetType());
+                var index = GameCore.Components.ToList().FindIndex(c => c.Equals(gameComponent) || c.GetType() == gameComponent.GetType());
                 GameCore.Components.RemoveAt(index);
+                _gameComponents.RemoveAll(c => c.Equals(gameComponent) || c.GetType() == gameComponent.GetType());
             }
 
             return this;
+        }
+
+        public void RemoveAllGameComponents()
+        {
+            foreach (var gameComponent in _gameComponents)
+                RemoveGameComponent(gameComponent);
+
+            _gameComponents.Clear();
         }
         #endregion
 
@@ -259,7 +245,7 @@ namespace Curupira2D.ECS
         public bool ExistsEntities(Func<Entity, bool> match) => _entityManager.Exists(match);
 
         public Vector2 GetEntityPosition(string uniqueId) => GetEntity(uniqueId).GetPositionInScene(this);
-        #endregion       
+        #endregion
 
         public virtual void Dispose()
         {
@@ -272,6 +258,33 @@ namespace Curupira2D.ECS
             Quadtree.Dispose();
 
             GC.Collect();
+        }
+
+        internal void SetGameCore(GameCore gameCore)
+        {
+            var entities = _entityManager.GetAll(_ => true);
+            Parallel.ForEach(entities, _ => _.OnChange -= Entity_OnChange);
+
+            GameCore = gameCore;
+            SpriteBatch = new SpriteBatch(GameCore.GraphicsDevice);
+
+            var cameraInitialOrigin = new Vector2(ScreenWidth * 0.5f, ScreenHeight * 0.5f);
+            var cameraInitialPosition = new Vector2(ScreenWidth * 0.5f, ScreenHeight * 0.5f);
+
+            GameCore.Camera2D.Reset();
+            GameCore.Camera2D.Origin = cameraInitialOrigin;
+            GameCore.Camera2D.Position = cameraInitialPosition;
+            Camera2D = GameCore.Camera2D;
+
+            GameCore.UICamera2D.Reset();
+            GameCore.UICamera2D.Origin = cameraInitialOrigin;
+            GameCore.UICamera2D.Position = cameraInitialPosition;
+            UICamera2D = GameCore.UICamera2D;
+
+            Gravity = new Vector2(0f, -9.80665f);
+            CleanColor = FallbackCleanColor = Color.LightGray;
+
+            Quadtree = new Quadtree(GameCore.GraphicsDevice.Viewport.Bounds);
         }
 
         private void Entity_OnChange(object sender, EventArgs e)
