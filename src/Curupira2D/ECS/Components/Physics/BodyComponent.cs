@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using Curupira2D.Extensions;
+using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
 using tainicom.Aether.Physics2D.Dynamics;
@@ -83,6 +84,8 @@ namespace Curupira2D.ECS.Components.Physics
 
         public void ApplyLinearImpulseY(float y)
             => ApplyLinearImpulse(new Vector2(0f, y));
+
+        public Vector2 RotationToVector() => Rotation.AngleToVector();
 
         void ValidateRadiusValue(float radius)
         {

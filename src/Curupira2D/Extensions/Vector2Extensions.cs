@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
+using System;
 
 namespace Curupira2D.Extensions
 {
@@ -12,5 +13,11 @@ namespace Curupira2D.Extensions
             vector2.Normalize();
             return vector2;
         }
+
+        public static Vector2 AngleToVector(this float angle)
+             => new Vector2((float)Math.Sin(angle), -(float)Math.Cos(angle));
+
+        public static float VectorToAngle(this Vector2 vector)
+             => (float)Math.Atan2(vector.X, -vector.Y);
     }
 }

@@ -1,4 +1,5 @@
 ﻿using Curupira2D.ECS.Components;
+using Curupira2D.Extensions;
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
@@ -99,6 +100,8 @@ namespace Curupira2D.ECS
             child.Parent = null;
             return this;
         }
+
+        public Vector2 RotationToVector() => MathHelper.ToRadians(Rotation).AngleToVector();
 
         public bool Equals(Entity other) => other != null && other.UniqueId == UniqueId;
 
