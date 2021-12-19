@@ -2,39 +2,40 @@
 using Curupira2D.ECS.Components.Drawables;
 using Curupira2D.Extensions;
 using Curupira2D.GameComponents.Joystick;
+using Curupira2D.Mobile.Samples.Common.Scenes;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
 namespace Curupira2D.Mobile.Samples.Scenes
 {
-    public class JoystickScene : Scene
+    public class S01JoystickScene : SceneBase
     {
         TouchJoystickComponent _touchJoystickComponent;
-        Entity playerEntity;
+        Entity _playerEntity;
 
         public override void LoadContent()
         {
-            SetTitle(nameof(JoystickScene));
+            SetTitle(nameof(S01JoystickScene));
 
             var touchJoystickPosition = new Vector2(50, ScreenHeight - 450);
-            var joystickBackgroundTexture = GameCore.Content.Load<Texture2D>("JoystickBackground");
-            var joystickHandleTexture = GameCore.Content.Load<Texture2D>("JoystickHandle");
+            var joystickBackgroundTexture = GameCore.Content.Load<Texture2D>("Common/JoystickBackground");
+            var joystickHandleTexture = GameCore.Content.Load<Texture2D>("Common/JoystickHandle");
 
             _touchJoystickComponent = new TouchJoystickComponent(
                 GameCore,
                 new JoystickConfiguration(400, touchJoystickPosition)
                 {
-                    InvertY_Axis = true
-                },
-                new JoystickTexture(joystickBackgroundTexture),
-                new JoystickTexture(joystickHandleTexture));
+                    BackgroundTexture = joystickBackgroundTexture,
+                    HandleTexture = joystickHandleTexture,
+                    InvertY_Axis = true,
+                });
 
-            GameCore.Components.Add(_touchJoystickComponent);
+            AddGameComponent(_touchJoystickComponent);
 
             var playerTexture = new Texture2D(GameCore.GraphicsDevice, 1, 1);
             playerTexture.SetData(new Color[] { Color.DodgerBlue });
 
-            playerEntity = CreateEntity("player", ScreenCenter)
+            _playerEntity = CreateEntity("player", ScreenCenter)
                 .AddComponent(new SpriteComponent(texture: playerTexture, scale: new Vector2(200f)));
 
             base.LoadContent();
@@ -42,10 +43,10 @@ namespace Curupira2D.Mobile.Samples.Scenes
 
         public override void Update(GameTime gameTime)
         {
-            var tempPosition = playerEntity.Position;
+            var tempPosition = _playerEntity.Position;
             tempPosition += (float)(200f * DeltaTime) * _touchJoystickComponent.Direction.GetSafeNormalize();
 
-            playerEntity.SetPosition(tempPosition);
+            _playerEntity.SetPosition(tempPosition);
 
             base.Update(gameTime);
         }

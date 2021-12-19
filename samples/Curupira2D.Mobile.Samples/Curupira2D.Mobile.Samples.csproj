@@ -59,8 +59,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Activity1.cs" />
+    <Compile Include="Common\Scenes\SceneBase.cs" />
     <Compile Include="Game1.cs" />
-    <Compile Include="Scenes\JoystickScene.cs" />
+    <Compile Include="Scenes\S03AsteroidsMovementScene.cs" />
+    <Compile Include="Scenes\S02TopDownCarMovementScene.cs" />
+    <Compile Include="Scenes\MenuScene.cs" />
+    <Compile Include="Scenes\S01JoystickScene.cs" />
     <Compile Include="Resources\Resource.Designer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -70,6 +74,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Content\Content.mgcb" />
+    <Content Include="Content\DiagnosticsFont.xnb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <None Include="Properties\AndroidManifest.xml" />
   </ItemGroup>
   <ItemGroup>

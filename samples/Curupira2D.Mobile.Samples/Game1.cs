@@ -4,14 +4,22 @@ namespace Curupira2D.Mobile.Samples
 {
     public class Game1 : GameCore
     {
-        public Game1() : base(debugActive: true)
+        public Game1() : base(debugActive: false)
         {
             IsMouseVisible = true;
         }
 
         protected override void LoadContent()
         {
-            SetScene<JoystickScene>();
+            AddScene<MenuScene>();
+            AddScene<S01JoystickScene>();
+            AddScene<S02TopDownCarMovementScene>();
+            AddScene<S03AsteroidsMovementScene>();
+
+            ChangeScene<MenuScene>();
+
+            //SetScene<S02TopDownCarMovementScene>();
+
             base.LoadContent();
         }
     }
