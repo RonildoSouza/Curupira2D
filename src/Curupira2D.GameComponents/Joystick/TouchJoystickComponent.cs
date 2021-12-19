@@ -12,18 +12,16 @@ namespace Curupira2D.GameComponents.Joystick
         readonly Rectangle _joystickHandleFallbackSizeAndLocation;
         Rectangle _joystickHandleSizeAndLocation;
         readonly SpriteBatch _spriteBatch;
-        readonly JoystickTexture _joystickBackgroundTexture;
-        readonly JoystickTexture _joystickHandleTexture;
         readonly Texture2D _joystickBackgroundLineTexture;
-        JoystickConfiguration _joystickConfiguration;
+        readonly JoystickConfiguration _joystickConfiguration;
 
-        public TouchJoystickComponent(Game game, JoystickConfiguration joystickConfiguration, JoystickTexture joystickBackgroundTexture = null, JoystickTexture joystickHandleTexture = null) : base(game)
+        public TouchJoystickComponent(Game game, JoystickConfiguration joystickConfiguration) : base(game)
         {
             Active = true;
             _joystickConfiguration = joystickConfiguration ?? throw new ArgumentNullException();
             _joystickBackgroundSizeAndLocation = new Rectangle(_joystickConfiguration.Position.ToPoint(), new Point(_joystickConfiguration.Size));
 
-            var joystickHandleSizeValue = _joystickConfiguration.JoystickHandleSize == JoystickHandleSize.Large ? 1.5f : (float)_joystickConfiguration.JoystickHandleSize;
+            var joystickHandleSizeValue = _joystickConfiguration.HandleSize == JoystickHandleSize.Large ? 1.5f : (float)_joystickConfiguration.HandleSize;
             var joystickHandleWidth = (int)(_joystickBackgroundSizeAndLocation.Width / joystickHandleSizeValue);
             var joystickHandleHeight = (int)(_joystickBackgroundSizeAndLocation.Height / joystickHandleSizeValue);
             _joystickHandleFallbackSizeAndLocation = new Rectangle(
@@ -36,26 +34,23 @@ namespace Curupira2D.GameComponents.Joystick
 
             _spriteBatch = new SpriteBatch(GraphicsDevice);
 
-            _joystickBackgroundTexture = joystickBackgroundTexture;
-            _joystickHandleTexture = joystickHandleTexture;
-
-            if (_joystickBackgroundTexture == null || _joystickBackgroundTexture.Texture == null)
+            if (_joystickConfiguration.BackgroundTexture == null)
             {
                 var texture = new Texture2D(GraphicsDevice, 1, 1);
                 texture.SetData(new Color[] { Color.Black });
 
-                _joystickBackgroundTexture = new JoystickTexture(texture);
+                _joystickConfiguration.BackgroundTexture = texture;
 
                 _joystickBackgroundLineTexture = new Texture2D(GraphicsDevice, 1, 1);
                 _joystickBackgroundLineTexture.SetData(new Color[] { Color.White });
             }
 
-            if (_joystickHandleTexture == null || _joystickHandleTexture.Texture == null)
+            if (_joystickConfiguration.HandleTexture == null)
             {
                 var texture = new Texture2D(GraphicsDevice, 1, 1);
                 texture.SetData(new Color[] { Color.Gray });
 
-                _joystickHandleTexture = new JoystickTexture(texture);
+                _joystickConfiguration.HandleTexture = texture;
             }
 
             Direction = Vector2.Zero;
@@ -117,14 +112,14 @@ namespace Curupira2D.GameComponents.Joystick
             _spriteBatch.Begin();
 
             _spriteBatch.Draw(
-                _joystickBackgroundTexture.Texture,
+                _joystickConfiguration.BackgroundTexture,
                 _joystickBackgroundSizeAndLocation,
-                Color.White * _joystickBackgroundTexture.Opacity);
+                Color.White * _joystickConfiguration.BackgroundOpacity);
 
             _spriteBatch.Draw(
-                _joystickHandleTexture.Texture,
+                _joystickConfiguration.HandleTexture,
                 _joystickHandleSizeAndLocation,
-                Color.White * _joystickHandleTexture.Opacity);
+                Color.White * _joystickConfiguration.HandleOpacity);
 
             if (_joystickBackgroundLineTexture != null)
             {
