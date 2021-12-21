@@ -177,8 +177,8 @@ namespace Curupira2D.ECS
 
         public void RemoveAllGameComponents()
         {
-            foreach (var gameComponent in _gameComponents)
-                RemoveGameComponent(gameComponent);
+            for (int i = 0; i < _gameComponents.Count; i++)
+                RemoveGameComponent(_gameComponents[i]);
 
             _gameComponents.Clear();
         }
