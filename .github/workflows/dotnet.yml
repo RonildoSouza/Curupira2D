@@ -22,7 +22,7 @@ jobs:
       run: dotnet restore src/Curupira2D.sln
       
     - name: Build
-      run: dotnet build --no-restore src/Curupira2D.sln
+      run: dotnet build --no-restore src/Curupira2D*.csproj
 
     - name: Publish NuGet - Curupira2D
       uses: brandedoutcast/publish-nuget@v2.5.5
