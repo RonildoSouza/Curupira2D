@@ -24,7 +24,6 @@ namespace Curupira2D.Samples.Systems.Camera
 
         public void Update()
         {
-
             _cameraPosition.X = Scene.MouseInputManager.GetPosition().X;
             _cameraPosition.Y = Scene.InvertPositionY(Scene.MouseInputManager.GetPosition().Y);
 

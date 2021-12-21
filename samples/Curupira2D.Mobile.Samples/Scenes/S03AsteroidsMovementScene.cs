@@ -13,7 +13,7 @@ namespace Curupira2D.Mobile.Samples.Scenes
         TouchGamepadButtonsComponent _touchGamepadButtonsComponent;
         BodyComponent _bodyComponent;
         TextComponent _textComponent;
-        Entity _playerEntity;
+        Entity _shipEntity;
         Entity _textEntity;
 
         public override void LoadContent()
@@ -21,26 +21,24 @@ namespace Curupira2D.Mobile.Samples.Scenes
             SetTitle(nameof(S03AsteroidsMovementScene));
 
             var gamepadButtonsPosition = new Vector2(50, ScreenHeight - 450);
-            var texture = new Texture2D(GameCore.GraphicsDevice, 1, 1);
-            texture.SetData(new Color[] { Color.Black });
+            var texture = GameCore.Content.Load<Texture2D>("Common/D-Pad");
 
             _touchGamepadButtonsComponent = new TouchGamepadButtonsComponent(
                 GameCore,
-                new GamepadButtonsConfiguration(400, gamepadButtonsPosition, texture, texture, texture, texture));
+                new GamepadButtonsConfiguration(400, gamepadButtonsPosition, texture));
 
             AddGameComponent(_touchGamepadButtonsComponent);
 
-            var playerTexture = new Texture2D(GameCore.GraphicsDevice, 1, 1);
-            playerTexture.SetData(new Color[] { Color.DarkRed });
+            var shipTexture = GameCore.Content.Load<Texture2D>("Sample03/Ship");
 
-            _bodyComponent = new BodyComponent(playerTexture.Width, playerTexture.Height, EntityType.Dynamic, EntityShape.Rectangle)
+            _bodyComponent = new BodyComponent(shipTexture.Width, shipTexture.Height, EntityType.Dynamic, EntityShape.Rectangle)
             {
                 IgnoreGravity = true,
             };
 
-            _playerEntity = CreateEntity("player", ScreenCenter)
+            _shipEntity = CreateEntity("ship", ScreenCenter)
                 .AddComponent(_bodyComponent)
-                .AddComponent(new SpriteComponent(texture: playerTexture, scale: new Vector2(100f, 150f)));
+                .AddComponent(new SpriteComponent(shipTexture));
 
             var spriteFont = GameCore.Content.Load<SpriteFont>("Common/FontArial18");
             _textComponent = new TextComponent(spriteFont, "", color: Color.Black);
@@ -52,20 +50,26 @@ namespace Curupira2D.Mobile.Samples.Scenes
 
         public override void Update(GameTime gameTime)
         {
-            var rotationToVector = _playerEntity.RotationToVector();
+            var rotationToVector = _shipEntity.RotationToVector();
 
-            _textEntity.SetPosition(new Vector2(_playerEntity.Position.X, _playerEntity.Position.Y + 100f));
+            _textEntity.SetPosition(new Vector2(_shipEntity.Position.X, _shipEntity.Position.Y + 100f));
             _textComponent.Text = $"Rotation to Vector: {rotationToVector}" +
                 $"\nButton Touched: {_touchGamepadButtonsComponent.ButtonTouched}";
 
+            // F = m * a
+            var linearImpulse = _bodyComponent.Mass * 4;
+
+            // T = I * a
+            var angularImpulse = _bodyComponent.Inertia * 0.1f;
+
             // Change Angle
-            if (_touchGamepadButtonsComponent.ButtonTouched == Buttons.Button02)
+            if (_touchGamepadButtonsComponent.IsTouched(Buttons.Button02))
             {
-                _bodyComponent.ApplyAngularImpulse(-0.01f);
+                _bodyComponent.ApplyAngularImpulse(-angularImpulse);
             }
-            else if (_touchGamepadButtonsComponent.ButtonTouched == Buttons.Button03)
+            else if (_touchGamepadButtonsComponent.IsTouched(Buttons.Button03))
             {
-                _bodyComponent.ApplyAngularImpulse(0.01f);
+                _bodyComponent.ApplyAngularImpulse(angularImpulse);
             }
             else
             {
@@ -73,18 +77,17 @@ namespace Curupira2D.Mobile.Samples.Scenes
             }
 
             // Change Linear Impulse
-            if (_touchGamepadButtonsComponent.ButtonTouched == Buttons.Button01)
+            if (_touchGamepadButtonsComponent.IsTouched(Buttons.Button01))
             {
-                _bodyComponent.ApplyLinearImpulse(new Vector2(-100f * rotationToVector.X, -100f * rotationToVector.Y));
+                _bodyComponent.ApplyLinearImpulse(new Vector2(-linearImpulse * rotationToVector.X, -linearImpulse * rotationToVector.Y));
             }
 
-            if (_touchGamepadButtonsComponent.ButtonTouched == Buttons.Button04)
+            if (_touchGamepadButtonsComponent.IsTouched(Buttons.Button04))
             {
-                _bodyComponent.ApplyLinearImpulse(new Vector2(25f * rotationToVector.X, 25f * rotationToVector.Y));
+                _bodyComponent.ApplyLinearImpulse(new Vector2(linearImpulse / 4 * rotationToVector.X, linearImpulse / 4 * rotationToVector.Y));
             }
 
             base.Update(gameTime);
         }
     }
 }
-

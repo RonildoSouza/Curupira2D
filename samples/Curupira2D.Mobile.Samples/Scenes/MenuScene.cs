@@ -22,27 +22,27 @@ namespace Curupira2D.Mobile.Samples.Scenes
         {
             SetTitle(nameof(MenuScene));
 
-            var spriteFont = GameCore.Content.Load<SpriteFont>("Common/FontArial18");
+            var spriteFont = GameCore.Content.Load<SpriteFont>("Common/FontImpact18");
             _itemsEntity = new List<Entity>
             {
                 CreateEntity("S01", Vector2.Zero)
                     .AddComponent(new TextComponent(
                         spriteFont,
-                        "S01 - Joystick",
+                        "S01 - JOYSTICK",
                         color: Color.Black,
-                        scale: new Vector2(2f))),
+                        scale: new Vector2(3f))),
                 CreateEntity("S02", Vector2.Zero)
                     .AddComponent(new TextComponent(
                         spriteFont,
-                        "S02 - Top Down Car Movement",
+                        "S02 - TOP DOWN CAR MOVEMENT",
                         color: Color.Black,
-                        scale: new Vector2(2f))),
+                        scale: new Vector2(3f))),
                 CreateEntity("S03", Vector2.Zero)
                     .AddComponent(new TextComponent(
                         spriteFont,
-                        "S03 - Asteroids Movement",
+                        "S03 - ASTEROIDS MOVEMENT",
                         color: Color.Black,
-                        scale: new Vector2(2f))),
+                        scale: new Vector2(3f))),
             };
 
             var itemHeightSize = ScreenHeight / _itemsEntity.Count;

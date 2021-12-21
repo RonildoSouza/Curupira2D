@@ -34,7 +34,7 @@ namespace Curupira2D.Mobile.Samples.Scenes
 
             AddGameComponent(_touchJoystickComponent);
 
-            var carTexture = GameCore.Content.Load<Texture2D>("Sample02/car");
+            var carTexture = GameCore.Content.Load<Texture2D>("Sample02/Car");
 
             _bodyComponent = new BodyComponent(carTexture.Width, carTexture.Height, EntityType.Dynamic, EntityShape.Rectangle)
             {
@@ -57,6 +57,12 @@ namespace Curupira2D.Mobile.Samples.Scenes
         {
             var rotationToVector = _carEntity.RotationToVector();
 
+            // F = m * a
+            var linearImpulse = _bodyComponent.Mass * 4;
+
+            // T = I * a
+            var angularImpulse = _bodyComponent.Inertia * 0.1f;
+
             _textEntity.SetPosition(new Vector2(_carEntity.Position.X, _carEntity.Position.Y + 150f));
             _textComponent.Text = $"Rotation to Vector: {rotationToVector}" +
                 $"\nAngular Velocity: {_bodyComponent.AngularVelocity}" +
@@ -67,7 +73,7 @@ namespace Curupira2D.Mobile.Samples.Scenes
             {
                 if ((_touchJoystickComponent.Direction.X == -1 && _bodyComponent.AngularVelocity < 0.5f)
                     || (_touchJoystickComponent.Direction.X == 1 && _bodyComponent.AngularVelocity > -0.5f))
-                    _bodyComponent.ApplyAngularImpulse(_touchJoystickComponent.Direction.X * -10000000f);
+                    _bodyComponent.ApplyAngularImpulse(_touchJoystickComponent.Direction.X * -angularImpulse);
             }
             else
             {
@@ -78,8 +84,8 @@ namespace Curupira2D.Mobile.Samples.Scenes
             if (_touchJoystickComponent.Direction.Y != 0)
             {
                 _bodyComponent.ApplyLinearImpulse(new Vector2(
-                    _touchJoystickComponent.Direction.Y * 200000f * rotationToVector.X,
-                    _touchJoystickComponent.Direction.Y * 200000f * rotationToVector.Y));
+                    _touchJoystickComponent.Direction.Y * linearImpulse * rotationToVector.X,
+                    _touchJoystickComponent.Direction.Y * linearImpulse * rotationToVector.Y));
             }
             else
             {

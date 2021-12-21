@@ -18,8 +18,6 @@ namespace Curupira2D.Mobile.Samples
 
             ChangeScene<MenuScene>();
 
-            //SetScene<S02TopDownCarMovementScene>();
-
             base.LoadContent();
         }
     }
