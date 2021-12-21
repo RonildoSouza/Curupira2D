@@ -16,13 +16,13 @@ jobs:
     - name: Setup .NET
       uses: actions/setup-dotnet@v1
       with:
-        dotnet-version: 3.1.x
+        dotnet-version: 5.x
         
     - name: Restore dependencies
-      run: dotnet restore src/Curupira2D.sln
+      run: dotnet restore src/Curupira2D-NoSamples.sln
       
     - name: Build
-      run: dotnet build --no-restore src/Curupira2D.sln
+      run: dotnet build --no-restore src/Curupira2D-NoSamples.sln
 
     - name: Publish NuGet - Curupira2D
       uses: brandedoutcast/publish-nuget@v2.5.5
