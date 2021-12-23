@@ -287,7 +287,7 @@ namespace Curupira2D.ECS
             Quadtree = new Quadtree(GameCore.GraphicsDevice.Viewport.Bounds);
         }
 
-        private void Entity_OnChange(object sender, EventArgs e)
+        void Entity_OnChange(object sender, EventArgs e)
         {
             if (!(sender is Entity entity)
                 || !(entity?.Active ?? false)
