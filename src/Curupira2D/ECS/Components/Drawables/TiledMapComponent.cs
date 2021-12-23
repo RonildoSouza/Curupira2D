@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using TiledLib;
+using System;
 
 namespace Curupira2D.ECS.Components.Drawables
 {
@@ -15,6 +16,7 @@ namespace Curupira2D.ECS.Components.Drawables
             Map = map;
         }
 
+        public override float LayerDepth => throw new NotImplementedException("Layer depth can't be define!");
         public override Vector2 Origin => new Vector2(Map.CellWidth * 0.5f, Map.CellHeight * 0.5f);
         public Map Map { get; }
     }

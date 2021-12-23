@@ -58,6 +58,9 @@ namespace Curupira2D.ECS.Systems.Drawables
 
                 foreach (var layer in layers)
                 {
+                    var propertyValueOrder = layer.Properties.GetValue(TiledMapSystemConstants.Properties.Order);
+                    var valueOrder = string.IsNullOrEmpty(propertyValueOrder) ? layer.Id : int.Parse(propertyValueOrder);
+
                     for (int y = 0, j = 0; y < layer.Height; y++)
                     {
                         for (int x = 0; x < layer.Width; x++, j++)
@@ -79,13 +82,11 @@ namespace Curupira2D.ECS.Systems.Drawables
                                 tiledMapComponent.Texture,
                                 new Rectangle(tilePosX, tilePosY, tile.Width, tile.Height),
                                 new Rectangle(tile.Left, tile.Top, tile.Width, tile.Height),
-                                Color.White,
+                                Color.White * (float)layer.Opacity,
                                 MathHelper.ToRadians(tileRotation),
                                 tiledMapComponent.Origin,
                                 tileSpriteEffect | tiledMapComponent.SpriteEffect,
-                                tiledMapComponent.LayerDepth == 0f
-                                    ? layers.Count() - layer.Id
-                                    : tiledMapComponent.LayerDepth);
+                                (layers.Count() - valueOrder) / 1000f);
                         }
                     }
                 }
@@ -132,7 +133,7 @@ namespace Curupira2D.ECS.Systems.Drawables
                     var posY = Scene.InvertPositionY((float)polygonObject.Y);
                     var polygonBodyComponent = new BodyComponent((float)polygonObject.Width, (float)polygonObject.Height, EntityType.Static, EntityShape.Polygon)
                     {
-                        Vertices = polygonObject.Polygon.Select(_ => new Vector2((float)_.X, (float)_.Y))
+                        Vertices = polygonObject.Polygon.Select(_ => new Vector2((float)_.X, (float)polygonObject.Height - (float)_.Y))
                     };
 
                     SetPhysicsProperties(polygonObject, objectLayer, ref polygonBodyComponent);

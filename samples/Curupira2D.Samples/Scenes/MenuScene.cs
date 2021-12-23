@@ -10,15 +10,17 @@ namespace Curupira2D.Samples.Scenes
         {
             SetTitle(nameof(MenuScene));
 
-            ShowText("1 - SpriteAnimationScene\n" +
-                     "2 - SceneGraphScene\n" +
-                     "3 - CameraScene\n" +
-                     "4 - PhysicScene\n" +
-                     "5 - TiledMapScene\n" +
+            ShowText("1 - Sprite Animation\n" +
+                     "2 - Scene Graph\n" +
+                     "3 - Camera 2D\n" +
+                     "4 - Physic\n" +
+                     "5 - Platformer Tiled Map\n" +
                      "6 - Aether Physics2D - HelloWorld\n" +
-                     "7 - QuadtreeCheckCollisionScene\n",
+                     "7 - Quadtree Check Collision\n" +
+                     "8 - Tiled Map With Many Layers\n",
                      ScreenCenter.X,
-                     ScreenHeight * 0.8f);
+                     ScreenCenter.Y,
+                     scale: Vector2.One);
 
             base.LoadContent();
         }
@@ -43,13 +45,16 @@ namespace Curupira2D.Samples.Scenes
                 GameCore.ChangeScene<PhysicScene>();
 
             if (KeyboardInputManager.IsKeyPressed(Keys.D5))
-                GameCore.ChangeScene<TiledMapScene>();
+                GameCore.ChangeScene<PlatformerTiledMapScene>();
 
             if (KeyboardInputManager.IsKeyPressed(Keys.D6))
                 GameCore.ChangeScene<AetherPhysics2DHelloWorldScene>();
             
             if (KeyboardInputManager.IsKeyPressed(Keys.D7))
                 GameCore.ChangeScene<QuadtreeCheckCollisionScene>();
+            
+            if (KeyboardInputManager.IsKeyPressed(Keys.D8))
+                GameCore.ChangeScene<TiledMapWithManyLayersScene>();
 
             KeyboardInputManager.End();
 
