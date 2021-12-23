@@ -4,6 +4,7 @@ using Microsoft.Xna.Framework.Input.Touch;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace Curupira2D.GameComponents.GamepadButtons
 {
@@ -62,23 +63,22 @@ namespace Curupira2D.GameComponents.GamepadButtons
             if (!Active)
                 return;
 
+            ButtonTouched = Buttons.None;
             var touchCollections = TouchPanel.GetState();
 
             if (!touchCollections.Any())
-            {
-                ButtonTouched = Buttons.None;
                 return;
-            }
 
-            ButtonTouched = Buttons.None;
-            var touch = touchCollections.FirstOrDefault();
-            var touchPosition = new Rectangle(touch.Position.ToPoint(), Point.Zero);
+            var touchPositions = touchCollections.Select(_ => new Rectangle(_.Position.ToPoint(), Point.Zero));
 
-            foreach (var button in _gamepadButtons)
+            Parallel.ForEach(touchPositions, touchPosition =>
             {
-                if (touchPosition.Intersects(button.Value))
-                    ButtonTouched = button.Key;
-            }
+                foreach (var button in _gamepadButtons)
+                {
+                    if (touchPosition.Intersects(button.Value))
+                        ButtonTouched = button.Key;
+                }
+            });
         }
 
         public override void Draw(GameTime gameTime)

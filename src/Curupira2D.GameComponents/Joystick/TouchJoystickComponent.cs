@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input.Touch;
 using System;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace Curupira2D.GameComponents.Joystick
 {
@@ -74,34 +75,36 @@ namespace Curupira2D.GameComponents.Joystick
                 return;
             }
 
-            var touch = touchCollections.FirstOrDefault();
-            var touchPosition = new Rectangle(touch.Position.ToPoint(), Point.Zero);
+            var touchPositions = touchCollections.Select(_ => new Rectangle(_.Position.ToPoint(), Point.Zero));
 
-            if (touchPosition.Intersects(_joystickBackgroundSizeAndLocation))
+            Parallel.ForEach(touchPositions, touchPosition =>
             {
-                var half = _joystickBackgroundSizeAndLocation.Center - _joystickBackgroundSizeAndLocation.Location;
-                var touchPositionInBound = touchPosition.Location - _joystickBackgroundSizeAndLocation.Location;
-                var direction = Vector2.Zero;
+                if (touchPosition.Intersects(_joystickBackgroundSizeAndLocation))
+                {
+                    var half = _joystickBackgroundSizeAndLocation.Center - _joystickBackgroundSizeAndLocation.Location;
+                    var touchPositionInBound = touchPosition.Location - _joystickBackgroundSizeAndLocation.Location;
+                    var direction = Vector2.Zero;
 
-                if (touchPositionInBound.X < half.X * 0.9f)
-                    direction.X = _joystickConfiguration.InvertX_Axis ? 1 : -1; // LEFT
+                    if (touchPositionInBound.X < half.X * 0.9f)
+                        direction.X = _joystickConfiguration.InvertX_Axis ? 1 : -1; // LEFT
 
-                if (touchPositionInBound.Y < half.Y * 0.9f)
-                    direction.Y = _joystickConfiguration.InvertY_Axis ? 1 : -1; // UP
+                    if (touchPositionInBound.Y < half.Y * 0.9f)
+                        direction.Y = _joystickConfiguration.InvertY_Axis ? 1 : -1; // UP
 
-                if (touchPositionInBound.X > half.X * 1.1f)
-                    direction.X = _joystickConfiguration.InvertX_Axis ? -1 : 1; // RIGHT
+                    if (touchPositionInBound.X > half.X * 1.1f)
+                        direction.X = _joystickConfiguration.InvertX_Axis ? -1 : 1; // RIGHT
 
-                if (touchPositionInBound.Y > (half.Y * 1.1f))
-                    direction.Y = _joystickConfiguration.InvertY_Axis ? -1 : 1; // DOWN
+                    if (touchPositionInBound.Y > (half.Y * 1.1f))
+                        direction.Y = _joystickConfiguration.InvertY_Axis ? -1 : 1; // DOWN
 
-                Direction = direction;
+                    Direction = direction;
 
-                var posX = touchPosition.X - _joystickHandleSizeAndLocation.Width / 2;
-                var posY = touchPosition.Y - _joystickHandleSizeAndLocation.Height / 2;
-                var joystickHandleLocaltion = new Point(posX, posY);
-                _joystickHandleSizeAndLocation = new Rectangle(joystickHandleLocaltion, _joystickHandleSizeAndLocation.Size);
-            }
+                    var posX = touchPosition.X - _joystickHandleSizeAndLocation.Width / 2;
+                    var posY = touchPosition.Y - _joystickHandleSizeAndLocation.Height / 2;
+                    var joystickHandleLocaltion = new Point(posX, posY);
+                    _joystickHandleSizeAndLocation = new Rectangle(joystickHandleLocaltion, _joystickHandleSizeAndLocation.Size);
+                }
+            });
         }
 
         public override void Draw(GameTime gameTime)
