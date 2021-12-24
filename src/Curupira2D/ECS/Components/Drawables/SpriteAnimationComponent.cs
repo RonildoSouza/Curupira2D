@@ -30,6 +30,8 @@ namespace Curupira2D.ECS.Components.Drawables
 
             if (sourceRectangle == null)
                 SourceRectangle = new Rectangle(0, 0, FrameWidth, FrameHeight);
+
+            Origin = new Vector2(FrameWidth * 0.5f, FrameHeight * 0.5f);
         }
 
         public SpriteAnimationComponent(
@@ -61,7 +63,6 @@ namespace Curupira2D.ECS.Components.Drawables
                 drawInUICamera)
         { }
 
-        public override Vector2 Origin => new Vector2(FrameWidth * 0.5f, FrameHeight * 0.5f);
         public int FrameRowsCount { get; set; }
         public int FrameColumnsCount { get; set; }
         public TimeSpan FrameTime { get; set; }

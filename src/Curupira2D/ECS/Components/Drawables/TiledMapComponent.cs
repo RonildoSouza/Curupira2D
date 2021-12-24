@@ -14,10 +14,10 @@ namespace Curupira2D.ECS.Components.Drawables
             bool drawInUICamera = false) : base(texture: texture, color: color, drawInUICamera: drawInUICamera)
         {
             Map = map;
+            Origin = new Vector2(Map.CellWidth * 0.5f, Map.CellHeight * 0.5f);
         }
 
         public override float LayerDepth => throw new NotImplementedException("Layer depth can't be define!");
-        public override Vector2 Origin => new Vector2(Map.CellWidth * 0.5f, Map.CellHeight * 0.5f);
         public Map Map { get; }
     }
 }

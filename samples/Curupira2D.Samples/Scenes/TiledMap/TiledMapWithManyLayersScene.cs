@@ -16,7 +16,8 @@ namespace Curupira2D.Samples.Scenes
             ShowControlTips("MOVIMENT: W, A, S, D"
                             + "\nZOOM: Mouse Wheel"
                             + "\nROTATION: Mouse Left Button"
-                            + "\nRESET ROTATION: Mouse Right Button");
+                            + "\nRESET ROTATION: Mouse Right Button",
+                            y: 120f);
 
             base.LoadContent();
         }

@@ -17,9 +17,9 @@ namespace Curupira2D.ECS.Components.Drawables
         {
             SpriteFont = spriteFont;
             Text = text;
+            Origin = TextSize * 0.5f;
         }
 
-        public override Vector2 Origin => TextSize * 0.5f;
         public SpriteFont SpriteFont { get; set; }
         public string Text { get; set; }
         public Vector2 TextSize => SpriteFont.MeasureString(Text);

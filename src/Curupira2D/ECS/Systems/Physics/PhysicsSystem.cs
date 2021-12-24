@@ -68,6 +68,7 @@ namespace Curupira2D.ECS.Systems.Physics
                 _debugView.AppendFlags(DebugViewFlags.Joint);
                 _debugView.AppendFlags(DebugViewFlags.PerformanceGraph);
                 _debugView.AppendFlags(DebugViewFlags.DebugPanel);
+                _debugView.AppendFlags(DebugViewFlags.CenterOfMass);
                 _debugView.DefaultShapeColor = Color.Orange;
                 _debugView.SleepingShapeColor = Color.DodgerBlue;
                 _debugView.TextColor = Color.Black;
@@ -107,7 +108,12 @@ namespace Curupira2D.ECS.Systems.Physics
         internal void DrawDebugData()
         {
             if (Scene.GameCore.DebugActive && Scene.ExistsEntities(_ => MatchActiveEntitiesAndComponents(_)))
-                _debugView.RenderDebugData(Scene.Camera2D.Projection, Scene.Camera2D.View);
+            {
+                if (Scene.GameCore.DebugWithUICamera2D)
+                    _debugView.RenderDebugData(Scene.UICamera2D.Projection, Scene.UICamera2D.View);
+                else
+                    _debugView.RenderDebugData(Scene.Camera2D.Projection, Scene.Camera2D.View);
+            }
         }
     }
 }

@@ -21,7 +21,7 @@ namespace Curupira2D.ECS.Components.Drawables
             DrawInUICamera = drawInUICamera;
         }
 
-        public abstract Vector2 Origin { get; }
+        public Vector2 Origin { get; set; }
         public SpriteEffects SpriteEffect { get; set; }
         public Color Color { get; set; }
         public Rectangle? SourceRectangle { get; set; }
