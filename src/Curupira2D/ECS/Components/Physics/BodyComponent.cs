@@ -85,6 +85,12 @@ namespace Curupira2D.ECS.Components.Physics
         public void ApplyLinearImpulseY(float y)
             => ApplyLinearImpulse(new Vector2(0f, y));
 
+        public void ApplyLinearImpulse(float x, float y)
+            => ApplyLinearImpulse(new Vector2(x, y));
+
+        public void ApplyForce(float x, float y)
+            => ApplyForce(new Vector2(x, y));
+
         public Vector2 RotationToVector() => Rotation.AngleToVector();
 
         void ValidateRadiusValue(float radius)

@@ -31,7 +31,7 @@ namespace Curupira2D.ECS.Components.Drawables
             if (sourceRectangle == null)
                 SourceRectangle = new Rectangle(0, 0, FrameWidth, FrameHeight);
 
-            Origin = new Vector2(FrameWidth * 0.5f, FrameHeight * 0.5f);
+            Origin = Half = new Vector2(FrameWidth * 0.5f, FrameHeight * 0.5f);
         }
 
         public SpriteAnimationComponent(

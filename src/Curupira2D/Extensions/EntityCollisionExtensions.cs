@@ -97,7 +97,7 @@ namespace Curupira2D.Extensions
                 var drawableComponent = entity.GetDrawableComponent();
 
                 return Matrix.CreateTranslation(
-                        new Vector3(-drawableComponent.Origin, 0.0f)) *
+                        new Vector3(-(drawableComponent?.Origin ?? Vector2.Zero), 0.0f)) *
                         Matrix.CreateRotationZ(entity.Rotation) *
                         Matrix.CreateTranslation(new Vector3(entity.Position, 0.0f));
             }

@@ -15,7 +15,7 @@ namespace Curupira2D.ECS.Components.Drawables
             bool drawInUICamera = false) : base(spriteEffect, color, sourceRectangle, layerDepth, scale, drawInUICamera)
         {
             Texture = texture;
-            Origin = SourceRectangle.HasValue ? SourceRectangle.Value.Size.ToVector2() * 0.5f : TextureSize * 0.5f;
+            Origin = Half = SourceRectangle.HasValue ? SourceRectangle.Value.Size.ToVector2() * 0.5f : TextureSize * 0.5f; ;
         }
 
         public Texture2D Texture { get; set; }
