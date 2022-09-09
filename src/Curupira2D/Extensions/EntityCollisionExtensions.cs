@@ -23,7 +23,7 @@ namespace Curupira2D.Extensions
         /// <summary>
         /// https://gamedev.stackexchange.com/questions/15191/is-there-a-good-way-to-get-pixel-perfect-collision-detection-in-xna
         /// </summary>
-        private static bool PerPixelCollision(this Entity entity, Entity otherEntity)
+        static bool PerPixelCollision(this Entity entity, Entity otherEntity)
         {
             var transformA = CreateTranslation(entity);
             var dataA = GetTextureData(entity);
@@ -97,7 +97,7 @@ namespace Curupira2D.Extensions
                 var drawableComponent = entity.GetDrawableComponent();
 
                 return Matrix.CreateTranslation(
-                        new Vector3(-drawableComponent.Origin, 0.0f)) *
+                        new Vector3(-(drawableComponent?.Origin ?? Vector2.Zero), 0.0f)) *
                         Matrix.CreateRotationZ(entity.Rotation) *
                         Matrix.CreateTranslation(new Vector3(entity.Position, 0.0f));
             }

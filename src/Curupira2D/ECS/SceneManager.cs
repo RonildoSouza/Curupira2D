@@ -48,7 +48,7 @@ namespace Curupira2D.ECS
         public void Change<TScene>(GameCore gameCore) where TScene : Scene
         {
             if (!_scenes.Any() || !_scenes.Any(_ => _.GetType() == typeof(TScene)))
-                return;
+                throw new Exception($"Scene ({typeof(TScene).Name}) not register with method {nameof(GameCore.AddScene)}!");
 
             var scene = _scenes.OfType<TScene>().FirstOrDefault();
             Set(gameCore, scene);

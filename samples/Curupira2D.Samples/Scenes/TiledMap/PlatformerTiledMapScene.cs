@@ -3,13 +3,13 @@ using Curupira2D.Samples.Systems.TiledMap;
 
 namespace Curupira2D.Samples.Scenes
 {
-    class TiledMapScene : SceneBase
+    class PlatformerTiledMapScene : SceneBase
     {
         public override void LoadContent()
         {
-            SetTitle(nameof(TiledMapScene));
+            SetTitle(nameof(PlatformerTiledMapScene));
 
-            AddSystem<MapSystem>();
+            AddSystem(new MapSystem("TiledMap/PlatformerTiledMap.tmx", "TiledMap/PlatformerTileset"));
             AddSystem<CharacterMovementSystem>();
 
             ShowControlTips("MOVIMENT: Keyboard Arrows");

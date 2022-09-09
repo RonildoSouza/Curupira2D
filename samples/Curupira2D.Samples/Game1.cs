@@ -16,9 +16,10 @@ namespace Curupira2D.Samples
             AddScene<SceneGraphScene>();
             AddScene<CameraScene>();
             AddScene<PhysicScene>();
-            AddScene<TiledMapScene>();
+            AddScene<PlatformerTiledMapScene>();
             AddScene<AetherPhysics2DHelloWorldScene>();
             AddScene<QuadtreeCheckCollisionScene>();
+            AddScene<TiledMapWithManyLayersScene>();
 
             ChangeScene<MenuScene>();
 

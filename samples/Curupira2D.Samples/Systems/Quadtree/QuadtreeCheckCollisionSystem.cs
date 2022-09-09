@@ -26,7 +26,7 @@ namespace Curupira2D.Samples.Systems.Quadtree
             var enemyTexture = Scene.GameCore.Content.Load<Texture2D>("Quadtree/red-square");
             var fontArial = Scene.GameCore.Content.Load<SpriteFont>("FontArial");
 
-            _playerTextComponent = new TextComponent(fontArial, string.Empty, color: Color.Black, drawInUICamera: false, layerDepth: 1f, scale: new Vector2(0.6f));
+            _playerTextComponent = new TextComponent(fontArial, string.Empty, color: Color.Black, drawInUICamera: false, layerDepth: 1f, scale: new Vector2(0.5f));
             _playerEntity = Scene.CreateEntity(EntityUniqueId, Scene.ScreenCenter)
                 .AddComponent(new SpriteComponent(playerTexture))
                 .AddComponent(_playerTextComponent);
@@ -37,7 +37,7 @@ namespace Curupira2D.Samples.Systems.Quadtree
 
                 var enemyEntity = Scene.CreateEntity(uniqueId, default)
                     .AddComponent(new SpriteComponent(enemyTexture))
-                    .AddComponent(new TextComponent(fontArial, uniqueId, color: Color.White, drawInUICamera: false, layerDepth: 1f));
+                    .AddComponent(new TextComponent(fontArial, uniqueId, color: Color.White, drawInUICamera: false, layerDepth: 1f, scale: new Vector2(0.5f)));
 
                 SetEnemyPosition(enemyEntity, enemyTexture.Width, enemyTexture.Height);
             }

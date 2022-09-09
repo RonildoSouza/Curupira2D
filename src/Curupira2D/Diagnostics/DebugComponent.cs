@@ -68,11 +68,11 @@ namespace Curupira2D.Diagnostics
                         break;
                     case MonoGamePlatform.WebGL:
                         break;
-                    case MonoGamePlatform.PSVita:
-                        break;
                     case MonoGamePlatform.XboxOne:
                         break;
                     case MonoGamePlatform.PlayStation4:
+                        break;
+                    case MonoGamePlatform.PlayStation5:
                         break;
                     case MonoGamePlatform.NintendoSwitch:
                         break;

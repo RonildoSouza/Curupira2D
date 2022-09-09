@@ -1,7 +1,10 @@
-﻿using Curupira2D.ECS.Components.Physics;
+﻿using Curupira2D.ECS.Components.Drawables;
+using Curupira2D.ECS.Components.Physics;
 using Curupira2D.ECS.Systems.Attributes;
+using Curupira2D.Extensions;
 using Microsoft.Xna.Framework;
 using System.Linq;
+using System.Threading.Tasks;
 using tainicom.Aether.Physics2D.Common;
 using tainicom.Aether.Physics2D.Diagnostics;
 using tainicom.Aether.Physics2D.Dynamics;
@@ -29,18 +32,20 @@ namespace Curupira2D.ECS.Systems.Physics
             {
                 var entity = entities[i];
                 var bodyComponent = entity.GetComponent<BodyComponent>();
+                var drawableComponent = entity.GetDrawableComponent();
+
                 Fixture fixture = null;
 
                 switch (bodyComponent.EntityShape)
                 {
                     case EntityShape.Circle:
-                        fixture = bodyComponent.CreateCircle(bodyComponent.Radius, bodyComponent.Density, Vector2.Zero);
+                        fixture = bodyComponent.CreateCircle(bodyComponent.Radius, bodyComponent.Density, -(drawableComponent?.Origin - drawableComponent?.Half) ?? Vector2.Zero);
                         break;
                     case EntityShape.Ellipse:
                         fixture = bodyComponent.CreateEllipse(bodyComponent.Size.X * 0.5f, bodyComponent.Size.Y * 0.5f, 8, bodyComponent.Density);
                         break;
                     case EntityShape.Rectangle:
-                        fixture = bodyComponent.CreateRectangle(bodyComponent.Size.X, bodyComponent.Size.Y, bodyComponent.Density, Vector2.Zero);
+                        fixture = bodyComponent.CreateRectangle(bodyComponent.Size.X, bodyComponent.Size.Y, bodyComponent.Density, -(drawableComponent?.Origin - drawableComponent?.Half) ?? Vector2.Zero);
                         break;
                     case EntityShape.Polygon:
                         var vertices = new Vertices(bodyComponent.Vertices);
@@ -68,6 +73,7 @@ namespace Curupira2D.ECS.Systems.Physics
                 _debugView.AppendFlags(DebugViewFlags.Joint);
                 _debugView.AppendFlags(DebugViewFlags.PerformanceGraph);
                 _debugView.AppendFlags(DebugViewFlags.DebugPanel);
+                _debugView.AppendFlags(DebugViewFlags.CenterOfMass);
                 _debugView.DefaultShapeColor = Color.Orange;
                 _debugView.SleepingShapeColor = Color.DodgerBlue;
                 _debugView.TextColor = Color.Black;
@@ -85,7 +91,16 @@ namespace Curupira2D.ECS.Systems.Physics
                 _world.Gravity = Scene.Gravity;
 
             if (entities.Any() && entities.Count != _world.BodyList.Count)
-                LoadContent();
+            {
+                Task.Factory.StartNew(() =>
+                {
+                    var exceptUniqueIds = entities.Select(_ => _.UniqueId).Except(_world.BodyList.Select(_ => _.Tag.ToString()));
+                    var bodiesToDestroy = _world.BodyList.Where(_ => exceptUniqueIds.Contains(_.Tag.ToString()));
+
+                    foreach (var body in bodiesToDestroy)
+                        _world.Remove(body);
+                });
+            }
 
             for (int i = 0; i < entities.Count(); i++)
             {
@@ -107,7 +122,12 @@ namespace Curupira2D.ECS.Systems.Physics
         internal void DrawDebugData()
         {
             if (Scene.GameCore.DebugActive && Scene.ExistsEntities(_ => MatchActiveEntitiesAndComponents(_)))
-                _debugView.RenderDebugData(Scene.Camera2D.Projection, Scene.Camera2D.View);
+            {
+                if (Scene.GameCore.DebugWithUICamera2D)
+                    _debugView.RenderDebugData(Scene.UICamera2D.Projection, Scene.UICamera2D.View);
+                else
+                    _debugView.RenderDebugData(Scene.Camera2D.Projection, Scene.Camera2D.View);
+            }
         }
     }
 }

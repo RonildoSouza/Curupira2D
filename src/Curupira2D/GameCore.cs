@@ -19,7 +19,7 @@ namespace Curupira2D
         readonly int _height;
         readonly bool _disabledExit;
 
-        public GameCore(int width = 0, int height = 0, bool debugActive = false, bool disabledExit = false)
+        public GameCore(int width = 0, int height = 0, bool disabledExit = false, bool debugActive = false, bool debugWithUICamera2D = false)
         {
             _width = width;
             _height = height;
@@ -35,11 +35,13 @@ namespace Curupira2D
                 Components.Add(_fpsCounterComponent);
                 Components.Add(new DebugComponent(this));
             }
+            DebugWithUICamera2D = debugWithUICamera2D;
         }
 
         public int FPS => (_fpsCounterComponent?.FPS).GetValueOrDefault();
 
         internal bool DebugActive { get; }
+        internal bool DebugWithUICamera2D { get; }
         internal ICamera2D Camera2D { get; private set; }
         internal ICamera2D UICamera2D { get; private set; }
 

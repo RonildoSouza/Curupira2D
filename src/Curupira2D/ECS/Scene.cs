@@ -82,24 +82,7 @@ namespace Curupira2D.ECS
 
         public virtual void Draw()
         {
-            // Begin/End sprite batch to UI Camera
-            SpriteBatch.Begin(
-                sortMode: SpriteSortMode.FrontToBack,
-                rasterizerState: RasterizerState.CullClockwise,
-                effect: UICamera2D.SpriteBatchEffect);
-
-            _systemManager.RenderableSystemsIteration(system =>
-            {
-                return system.Scene.GetEntities(_ =>
-                {
-                    var drawableComponent = _.GetComponent(_ => _.Value is DrawableComponent) as DrawableComponent;
-                    return system.MatchActiveEntitiesAndComponents(_) && (drawableComponent?.DrawInUICamera ?? false);
-                }).Any();
-            });
-
-            SpriteBatch.End();
-
-            // Begin/End sprite batch to Camera
+            #region Begin/End sprite batch to Camera
             SpriteBatch.Begin(
                 sortMode: SpriteSortMode.FrontToBack,
                 rasterizerState: RasterizerState.CullClockwise,
@@ -115,11 +98,31 @@ namespace Curupira2D.ECS
             });
 
             SpriteBatch.End();
+            #endregion
 
-            // Begin/End sprite batch to physics system debug data
+            #region Begin/End sprite batch to UI Camera
+            SpriteBatch.Begin(
+                sortMode: SpriteSortMode.FrontToBack,
+                rasterizerState: RasterizerState.CullClockwise,
+                effect: UICamera2D.SpriteBatchEffect);
+
+            _systemManager.RenderableSystemsIteration(system =>
+            {
+                return system.Scene.GetEntities(_ =>
+                {
+                    var drawableComponent = _.GetComponent(_ => _.Value is DrawableComponent) as DrawableComponent;
+                    return system.MatchActiveEntitiesAndComponents(_) && (drawableComponent?.DrawInUICamera ?? false);
+                }).Any();
+            });
+
+            SpriteBatch.End();
+            #endregion
+
+            #region Begin/End sprite batch to physics system debug data
             SpriteBatch.Begin();
             _physicsSystem.DrawDebugData();
             SpriteBatch.End();
+            #endregion
         }
 
         public Scene SetTitle(string title)
@@ -287,7 +290,7 @@ namespace Curupira2D.ECS
             Quadtree = new Quadtree(GameCore.GraphicsDevice.Viewport.Bounds);
         }
 
-        private void Entity_OnChange(object sender, EventArgs e)
+        void Entity_OnChange(object sender, EventArgs e)
         {
             if (!(sender is Entity entity)
                 || !(entity?.Active ?? false)

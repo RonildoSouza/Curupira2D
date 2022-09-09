@@ -51,7 +51,7 @@ namespace Curupira2D.ECS
                 return;
 
             Position = newPosition;
-            OnChange?.Invoke(this, null);
+            OnChange?.Invoke(this, EventArgs.Empty);
         }
 
         public void SetPosition(Vector2 position) => SetPosition(position.X, position.Y);
@@ -69,14 +69,14 @@ namespace Curupira2D.ECS
                 return this;
 
             Rotation = rotationInDegrees;
-            OnChange?.Invoke(this, null);
+            OnChange?.Invoke(this, EventArgs.Empty);
 
             return this;
         }
 
         public Entity SetActive(bool active)
         {
-            OnChange?.Invoke(this, null);
+            OnChange?.Invoke(this, EventArgs.Empty);
             Active = active;
             return this;
         }
@@ -109,7 +109,7 @@ namespace Curupira2D.ECS
         public Entity AddComponent(IComponent component)
         {
             if (_components.TryAdd(component.GetType(), component))
-                OnChange?.Invoke(this, null);
+                OnChange?.Invoke(this, EventArgs.Empty);
 
             return this;
         }
@@ -123,7 +123,7 @@ namespace Curupira2D.ECS
         public void RemoveComponent<TComponent>() where TComponent : IComponent
         {
             if (_components.Remove(typeof(TComponent)))
-                OnChange?.Invoke(this, null);
+                OnChange?.Invoke(this, EventArgs.Empty);
         }
 
         public void UpdateComponent(IComponent component)
@@ -132,7 +132,7 @@ namespace Curupira2D.ECS
                 return;
 
             _components[component.GetType()] = component;
-            OnChange?.Invoke(this, null);
+            OnChange?.Invoke(this, EventArgs.Empty);
         }
 
         public IComponent GetComponent(Func<KeyValuePair<Type, IComponent>, bool> predicate)
