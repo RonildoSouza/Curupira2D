@@ -27,7 +27,7 @@ namespace Curupira2D.Extensions
 
             var tiledMapExtension = Path.GetExtension(tiledMapRelativePath);
             if (tiledMapExtension != ".tmx" && tiledMapExtension != ".json" && tiledMapExtension != ".tmj")
-                throw new FormatException("The Tiled Map must have the extension .tmx or .json!");
+                throw new FormatException("The Tiled Map must have the extension .tmx, .json or .tmj!");
 
             var tiledMapFilePath = Path.Combine(content.RootDirectory, tiledMapRelativePath);
 
