@@ -26,7 +26,7 @@ namespace Curupira2D.Extensions
                 throw new ArgumentNullException($"Argument {nameof(tiledMapRelativePath)} can't be null or empty!");
 
             var tiledMapExtension = Path.GetExtension(tiledMapRelativePath);
-            if (tiledMapExtension != ".tmx" && tiledMapExtension != ".json")
+            if (tiledMapExtension != ".tmx" && tiledMapExtension != ".json" && tiledMapExtension != ".tmj")
                 throw new FormatException("The Tiled Map must have the extension .tmx or .json!");
 
             var tiledMapFilePath = Path.Combine(content.RootDirectory, tiledMapRelativePath);
@@ -38,7 +38,7 @@ namespace Curupira2D.Extensions
         {
             var map = content.LoadTiledMap(tiledMapRelativePath);
 
-            tilesetRelativePath ??= Regex.Replace(tiledMapRelativePath, @"\.tmx|\.json", string.Empty);
+            tilesetRelativePath ??= Regex.Replace(tiledMapRelativePath, @"\.tmx|\.json|\.tmj", string.Empty);
             var tilesetTexture = content.Load<Texture2D>(tilesetRelativePath);
 
             return new TiledMapComponent(map, tilesetTexture, color, fixedPosition);
