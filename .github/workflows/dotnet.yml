@@ -7,8 +7,7 @@ on:
     branches: [ main ]
 
 jobs:
-  build:
-
+  build_and_publish:
     runs-on: windows-latest
 
     steps:
@@ -16,14 +15,15 @@ jobs:
     - name: Setup .NET
       uses: actions/setup-dotnet@v1
       with:
-        dotnet-version: 5.x
+        dotnet-version: 6.x
         
     - name: Restore dependencies
       run: dotnet restore src/Curupira2D-NoSamples.sln
       
     - name: Build
       run: dotnet build --no-restore src/Curupira2D-NoSamples.sln
-
+      
+      
     - name: Publish NuGet - Curupira2D
       uses: brandedoutcast/publish-nuget@v2.5.5
       with:
