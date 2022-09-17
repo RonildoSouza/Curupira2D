@@ -2,7 +2,7 @@
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
     <Authors>Ronildo Souza</Authors>
-    <Version>1.0.0-beta.8</Version>
+    <Version>1.0.0-beta.9</Version>
     <PackageOutputPath>..\..\nupkgs</PackageOutputPath>
     <PackageProjectUrl>https://github.com/RonildoSouza/Curupira2D#readme</PackageProjectUrl>
     <RepositoryUrl>https://github.com/RonildoSouza/Curupira2D</RepositoryUrl>
