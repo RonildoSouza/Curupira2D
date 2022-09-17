@@ -7,8 +7,7 @@ on:
     branches: [ main ]
 
 jobs:
-  build:
-
+  build_and_publish:
     runs-on: windows-latest
 
     steps:
@@ -23,7 +22,8 @@ jobs:
       
     - name: Build
       run: dotnet build --no-restore src/Curupira2D-NoSamples.sln
-
+      
+      
     - name: Publish NuGet - Curupira2D
       uses: brandedoutcast/publish-nuget@v2.5.5
       with:
