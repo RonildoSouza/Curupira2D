@@ -22,18 +22,33 @@ jobs:
       
     - name: Build
       run: dotnet build --no-restore src/Curupira2D-NoSamples.sln
-      
+
+    # - name: Publish NuGet - Curupira2D
+    #   uses: brandedoutcast/publish-nuget@v2.5.5
+    #   with:
+    #     # Filepath of the project to be packaged, relative to root of repository
+    #     PROJECT_FILE_PATH: src/Curupira2D/Curupira2D.csproj
+    #     # API key to authenticate with NuGet server
+    #     NUGET_KEY: ${{secrets.CURUPIRA2D_TOKEN}}
+        
+    # - name: Publish NuGet - Curupira2D.GameComponents
+    #   uses: brandedoutcast/publish-nuget@v2.5.5
+    #   with:
+    #     # Filepath of the project to be packaged, relative to root of repository
+    #     PROJECT_FILE_PATH: src/Curupira2D.GameComponents/Curupira2D.GameComponents.csproj
+    #     # API key to authenticate with NuGet server
+    #     NUGET_KEY: ${{secrets.CURUPIRA2D_TOKEN}} 
       
     - name: Publish NuGet - Curupira2D
-      uses: brandedoutcast/publish-nuget@v2.5.5
+      uses: rollycodes/publish-nuget-private@v3.0.1
       with:
         # Filepath of the project to be packaged, relative to root of repository
         PROJECT_FILE_PATH: src/Curupira2D/Curupira2D.csproj
         # API key to authenticate with NuGet server
         NUGET_KEY: ${{secrets.CURUPIRA2D_TOKEN}}
-        
+
     - name: Publish NuGet - Curupira2D.GameComponents
-      uses: brandedoutcast/publish-nuget@v2.5.5
+      uses: rollycodes/publish-nuget-private@v3.0.1
       with:
         # Filepath of the project to be packaged, relative to root of repository
         PROJECT_FILE_PATH: src/Curupira2D.GameComponents/Curupira2D.GameComponents.csproj
