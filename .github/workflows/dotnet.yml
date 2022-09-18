@@ -46,6 +46,8 @@ jobs:
         PROJECT_FILE_PATH: src/Curupira2D/Curupira2D.csproj
         # API key to authenticate with NuGet server
         NUGET_KEY: ${{secrets.CURUPIRA2D_TOKEN}}
+        # NuGet server uri hosting the packages, defaults to https://api.nuget.org
+        NUGET_SOURCE: https://api.nuget.org/v3/index.json
 
     - name: Publish NuGet - Curupira2D.GameComponents
       uses: rollycodes/publish-nuget-private@v3.0.1
@@ -54,3 +56,5 @@ jobs:
         PROJECT_FILE_PATH: src/Curupira2D.GameComponents/Curupira2D.GameComponents.csproj
         # API key to authenticate with NuGet server
         NUGET_KEY: ${{secrets.CURUPIRA2D_TOKEN}}
+        # NuGet server uri hosting the packages, defaults to https://api.nuget.org
+        NUGET_SOURCE: https://api.nuget.org/v3/index.json
