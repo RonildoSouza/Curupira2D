@@ -24,27 +24,46 @@ jobs:
       run: dotnet build --no-restore src/Curupira2D-NoSamples.sln
   
   
-  publish:
+  publish_nupkg:
     needs: [build]
     runs-on: windows-latest
 
     steps:
-    - name: Publish NuGet - Curupira2D
-      uses: brandedoutcast/publish-nuget@v2.5.5
+    - uses: actions/checkout@v2
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v1
       with:
-        # Filepath of the project to be packaged, relative to root of repository
-        PROJECT_FILE_PATH: src/Curupira2D/Curupira2D.csproj
-        # API key to authenticate with NuGet server
-        NUGET_KEY: ${{secrets.CURUPIRA2D_TOKEN}}
-        # Flag to toggle pushing symbols along with nuget package to the server, disabled by default
-        INCLUDE_SYMBOLS: false
+        dotnet-version: 6.x
         
-    - name: Publish NuGet - Curupira2D.GameComponents
-      uses: brandedoutcast/publish-nuget@v2.5.5
-      with:
-        # Filepath of the project to be packaged, relative to root of repository
-        PROJECT_FILE_PATH: src/Curupira2D.GameComponents/Curupira2D.GameComponents.csproj
-        # API key to authenticate with NuGet server
-        NUGET_KEY: ${{secrets.CURUPIRA2D_TOKEN}}
-        # Flag to toggle pushing symbols along with nuget package to the server, disabled by default
-        INCLUDE_SYMBOLS: false
+    - name: Pack - Curupira2D
+      run: dotnet pack src/Curupira2D/Curupira2D.csproj -c Release
+
+    - name: Publish - Curupira2D 
+      run: dotnet nuget push /home/runner/work/Curupira2D/Curupira2D/Curupira2D/bin/Release/*.nupkg --api-key ${{secrets.CURUPIRA2D_TOKEN}} --source https://api.nuget.org/v3/index.json --skip-duplicate --no-symbols`
+      
+    - name: Pack - Curupira2D.GameComponents
+      run: dotnet pack src/Curupira2D.GameComponents/Curupira2D.GameComponents.csproj -c Release
+
+    - name: Publish - Curupira2D.GameComponents 
+      run: dotnet nuget push /home/runner/work/Curupira2D.GameComponents/Curupira2D.GameComponents/Curupira2D.GameComponents/bin/Release/*.nupkg --api-key ${{secrets.CURUPIRA2D_TOKEN}} --source https://api.nuget.org/v3/index.json --skip-duplicate --no-symbols`
+    
+    
+    #- name: Publish NuGet - Curupira2D
+    #  uses: brandedoutcast/publish-nuget@v2.5.5
+    #  with:
+    #    # Filepath of the project to be packaged, relative to root of repository
+    #    PROJECT_FILE_PATH: src/Curupira2D/Curupira2D.csproj
+    #    # API key to authenticate with NuGet server
+    #    NUGET_KEY: ${{secrets.CURUPIRA2D_TOKEN}}
+    #    # Flag to toggle pushing symbols along with nuget package to the server, disabled by default
+    #    INCLUDE_SYMBOLS: true
+        
+    #- name: Publish NuGet - Curupira2D.GameComponents
+    #  uses: brandedoutcast/publish-nuget@v2.5.5
+    #  with:
+    #    # Filepath of the project to be packaged, relative to root of repository
+    #    PROJECT_FILE_PATH: src/Curupira2D.GameComponents/Curupira2D.GameComponents.csproj
+    #    # API key to authenticate with NuGet server
+    #    NUGET_KEY: ${{secrets.CURUPIRA2D_TOKEN}}
+    #    # Flag to toggle pushing symbols along with nuget package to the server, disabled by default
+    #    INCLUDE_SYMBOLS: true
