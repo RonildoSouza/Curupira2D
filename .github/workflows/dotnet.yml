@@ -38,11 +38,11 @@ jobs:
       run: dotnet pack src/Curupira2D/Curupira2D.csproj -c Release
 
     - name: Publish - Curupira2D 
-      run: dotnet nuget push D:/a/Curupira2D/Curupira2D/nupkgs/*.nupkg --api-key ${{secrets.CURUPIRA2D_TOKEN}} --source https://api.nuget.org/v3/index.json --skip-duplicate --no-symbols
+      run: dotnet nuget push Curupira2D*.nupkg --api-key ${{secrets.CURUPIRA2D_TOKEN}} --source https://api.nuget.org/v3/index.json --skip-duplicate --no-symbols
       
-    - name: Pack - Curupira2D.GameComponents
-      run: dotnet pack src/Curupira2D.GameComponents/Curupira2D.GameComponents.csproj -c Release
+    #- name: Pack - Curupira2D.GameComponents
+    #  run: dotnet pack src/Curupira2D.GameComponents/Curupira2D.GameComponents.csproj -c Release
 
-    - name: Publish - Curupira2D.GameComponents 
-      run: dotnet nuget push D:/a/Curupira2D.GameComponents/Curupira2D.GameComponents/nupkgs/*.nupkg --api-key ${{secrets.CURUPIRA2D_TOKEN}} --source https://api.nuget.org/v3/index.json --skip-duplicate --no-symbols
+    #- name: Publish - Curupira2D.GameComponents 
+    #  run: dotnet nuget push D:/a/Curupira2D.GameComponents/Curupira2D.GameComponents/nupkgs/*.nupkg --api-key ${{secrets.CURUPIRA2D_TOKEN}} --source https://api.nuget.org/v3/index.json --skip-duplicate --no-symbols
   
