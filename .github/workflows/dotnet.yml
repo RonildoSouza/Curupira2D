@@ -23,7 +23,6 @@ jobs:
     - name: Build
       run: dotnet build --no-restore src/Curupira2D-NoSamples.sln
   
-  
   publish:
     needs: [build]
     runs-on: windows-latest
@@ -39,31 +38,11 @@ jobs:
       run: dotnet pack src/Curupira2D/Curupira2D.csproj -c Release
 
     - name: Publish - Curupira2D 
-      run: dotnet nuget push D:/a/Curupira2D/Curupira2D/nupkgs/*.nupkg --api-key ${{secrets.CURUPIRA2D_TOKEN}} --source https://api.nuget.org/v3/index.json --skip-duplicate`
+      run: dotnet nuget push D:/a/Curupira2D/Curupira2D/nupkgs/*.nupkg --api-key ${{secrets.CURUPIRA2D_TOKEN}} --source https://api.nuget.org/v3/index.json --skip-duplicate --no-symbols
       
     - name: Pack - Curupira2D.GameComponents
       run: dotnet pack src/Curupira2D.GameComponents/Curupira2D.GameComponents.csproj -c Release
 
     - name: Publish - Curupira2D.GameComponents 
-      run: dotnet nuget push D:/a/Curupira2D.GameComponents/Curupira2D.GameComponents/nupkgs/*.nupkg --api-key ${{secrets.CURUPIRA2D_TOKEN}} --source https://api.nuget.org/v3/index.json --skip-duplicate`
-    
-    
-    #- name: Publish NuGet - Curupira2D
-    #  uses: brandedoutcast/publish-nuget@v2.5.5
-    #  with:
-    #    # Filepath of the project to be packaged, relative to root of repository
-    #    PROJECT_FILE_PATH: src/Curupira2D/Curupira2D.csproj
-    #    # API key to authenticate with NuGet server
-    #    NUGET_KEY: ${{secrets.CURUPIRA2D_TOKEN}}
-    #    # Flag to toggle pushing symbols along with nuget package to the server, disabled by default
-    #    INCLUDE_SYMBOLS: true
-        
-    #- name: Publish NuGet - Curupira2D.GameComponents
-    #  uses: brandedoutcast/publish-nuget@v2.5.5
-    #  with:
-    #    # Filepath of the project to be packaged, relative to root of repository
-    #    PROJECT_FILE_PATH: src/Curupira2D.GameComponents/Curupira2D.GameComponents.csproj
-    #    # API key to authenticate with NuGet server
-    #    NUGET_KEY: ${{secrets.CURUPIRA2D_TOKEN}}
-    #    # Flag to toggle pushing symbols along with nuget package to the server, disabled by default
-    #    INCLUDE_SYMBOLS: true
+      run: dotnet nuget push D:/a/Curupira2D.GameComponents/Curupira2D.GameComponents/nupkgs/*.nupkg --api-key ${{secrets.CURUPIRA2D_TOKEN}} --source https://api.nuget.org/v3/index.json --skip-duplicate --no-symbols
+  
