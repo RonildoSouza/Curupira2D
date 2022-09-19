@@ -37,7 +37,7 @@ jobs:
         # API key to authenticate with NuGet server
         NUGET_KEY: ${{secrets.CURUPIRA2D_TOKEN}}
         # Flag to toggle pushing symbols along with nuget package to the server, disabled by default
-        INCLUDE_SYMBOLS: --no-symbols
+        INCLUDE_SYMBOLS: false
         
     - name: Publish NuGet - Curupira2D.GameComponents
       uses: brandedoutcast/publish-nuget@v2.5.5
@@ -47,4 +47,4 @@ jobs:
         # API key to authenticate with NuGet server
         NUGET_KEY: ${{secrets.CURUPIRA2D_TOKEN}}
         # Flag to toggle pushing symbols along with nuget package to the server, disabled by default
-        INCLUDE_SYMBOLS: --no-symbols
+        INCLUDE_SYMBOLS: false
