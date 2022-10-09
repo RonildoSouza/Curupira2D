@@ -20,7 +20,7 @@ namespace Curupira2D.Samples.Scenes
             CreateEntity("explosion", ScreenCenter)
                 .AddComponent(new SpriteAnimationComponent(explosionTexture, 5, 5, 150, AnimateType.All, default, true, true));
 
-            ShowControlTips("MOVIMENT: Keyboard Arrows");
+            ShowControlTips("MOVIMENT: Keyboard Arrows OR WASD");
 
             base.LoadContent();
         }

@@ -13,7 +13,7 @@ namespace Curupira2D.Samples.Scenes
             AddSystem(new MapSystem("TiledMap/MapWithManyLayers.tmx"));
             AddSystem(new CameraSystem(moveWithKeyboard: true));
 
-            ShowControlTips("MOVIMENT: W, A, S, D"
+            ShowControlTips("MOVIMENT: WASD"
                             + "\nZOOM: Mouse Wheel"
                             + "\nROTATION: Mouse Left Button"
                             + "\nRESET ROTATION: Mouse Right Button",

@@ -37,16 +37,16 @@ namespace Curupira2D.Samples.Systems.Physic
 
             var linearImpulse = Vector2.Zero;
 
-            if (Scene.KeyboardInputManager.IsKeyDown(Keys.Left))
+            if (Scene.KeyboardInputManager.IsKeyDown(Keys.Left) || Scene.KeyboardInputManager.IsKeyDown(Keys.A))
                 linearImpulse += new Vector2(-IMPULSE, 0);
 
-            if (Scene.KeyboardInputManager.IsKeyDown(Keys.Up))
+            if (Scene.KeyboardInputManager.IsKeyDown(Keys.Up) || Scene.KeyboardInputManager.IsKeyDown(Keys.W))
                 linearImpulse += new Vector2(0, IMPULSE);
 
-            if (Scene.KeyboardInputManager.IsKeyDown(Keys.Right))
+            if (Scene.KeyboardInputManager.IsKeyDown(Keys.Right) || Scene.KeyboardInputManager.IsKeyDown(Keys.D))
                 linearImpulse += new Vector2(IMPULSE, 0);
 
-            if (Scene.KeyboardInputManager.IsKeyDown(Keys.Down))
+            if (Scene.KeyboardInputManager.IsKeyDown(Keys.Down) || Scene.KeyboardInputManager.IsKeyDown(Keys.S))
                 linearImpulse += new Vector2(0, -IMPULSE);
 
             ballBodyComponent.ApplyLinearImpulse(linearImpulse);
