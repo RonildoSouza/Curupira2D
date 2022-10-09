@@ -41,7 +41,7 @@ namespace Curupira2D.Samples.Systems.TiledMap
                 _impulse = _characterBodyComponent.Mass * 10 / Scene.DeltaTime;
 
             // Moving updates
-            if (Scene.KeyboardInputManager.IsKeyDown(Keys.Right))
+            if (Scene.KeyboardInputManager.IsKeyDown(Keys.Right) || Scene.KeyboardInputManager.IsKeyDown(Keys.D))
             {
                 _characterBodyComponent.ApplyTorque(-_impulse * 5);
 
@@ -49,7 +49,7 @@ namespace Curupira2D.Samples.Systems.TiledMap
                     Scene.Camera2D.Position = new Vector2(cameraPosition.X, Scene.Camera2D.Position.Y);
             }
 
-            if (Scene.KeyboardInputManager.IsKeyDown(Keys.Left))
+            if (Scene.KeyboardInputManager.IsKeyDown(Keys.Left) || Scene.KeyboardInputManager.IsKeyDown(Keys.A))
             {
                 _characterBodyComponent.ApplyTorque(_impulse * 5);
 
@@ -58,7 +58,7 @@ namespace Curupira2D.Samples.Systems.TiledMap
             }
 
             // Jumping updates
-            if (Scene.KeyboardInputManager.IsKeyPressed(Keys.Up) || Scene.KeyboardInputManager.IsKeyPressed(Keys.Space))
+            if ((Scene.KeyboardInputManager.IsKeyPressed(Keys.Up) || Scene.KeyboardInputManager.IsKeyDown(Keys.W)) || Scene.KeyboardInputManager.IsKeyPressed(Keys.Space))
                 _characterBodyComponent.ApplyLinearImpulseY(_impulse);
 
             if (_characterEntity.Position.Y < Scene.ScreenCenter.Y)

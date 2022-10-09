@@ -66,7 +66,7 @@ namespace Curupira2D.ECS.Systems.Physics
                 }
             };
 
-            if (Scene.GameCore.DebugActive && entities.Any())
+            if (Scene.GameCore.DebugOptions.DebugActive && entities.Any())
             {
                 _debugView = new DebugView(_world);
                 _debugView.AppendFlags(DebugViewFlags.Shape);
@@ -76,7 +76,7 @@ namespace Curupira2D.ECS.Systems.Physics
                 _debugView.AppendFlags(DebugViewFlags.CenterOfMass);
                 _debugView.DefaultShapeColor = Color.Orange;
                 _debugView.SleepingShapeColor = Color.DodgerBlue;
-                _debugView.TextColor = Color.Black;
+                _debugView.TextColor = Scene.GameCore.DebugOptions.TextColor;
                 _debugView.StaticShapeColor = Color.Red;
 
                 _debugView.LoadContent(Scene.GameCore.GraphicsDevice, Scene.GameCore.Content);
@@ -115,15 +115,15 @@ namespace Curupira2D.ECS.Systems.Physics
 
             _world.Step(Scene.DeltaTime);
 
-            if (Scene.GameCore.DebugActive && entities.Any())
+            if (Scene.GameCore.DebugOptions.DebugActive && entities.Any())
                 _debugView.UpdatePerformanceGraph(_world.UpdateTime);
         }
 
         internal void DrawDebugData()
         {
-            if (Scene.GameCore.DebugActive && Scene.ExistsEntities(_ => MatchActiveEntitiesAndComponents(_)))
+            if (Scene.GameCore.DebugOptions.DebugActive && Scene.ExistsEntities(_ => MatchActiveEntitiesAndComponents(_)))
             {
-                if (Scene.GameCore.DebugWithUICamera2D)
+                if (Scene.GameCore.DebugOptions.DebugWithUICamera2D)
                     _debugView.RenderDebugData(Scene.UICamera2D.Projection, Scene.UICamera2D.View);
                 else
                     _debugView.RenderDebugData(Scene.Camera2D.Projection, Scene.Camera2D.View);

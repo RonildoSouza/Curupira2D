@@ -19,29 +19,28 @@ namespace Curupira2D
         readonly int _height;
         readonly bool _disabledExit;
 
-        public GameCore(int width = 0, int height = 0, bool disabledExit = false, bool debugActive = false, bool debugWithUICamera2D = false)
+        public GameCore(int width = 0, int height = 0, bool disabledExit = false, DebugOptions debugOptions = null)
         {
+            DebugOptions = debugOptions != null ? debugOptions : new DebugOptions();
+
             _width = width;
             _height = height;
-            DebugActive = debugActive;
             _disabledExit = disabledExit;
 
             _graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
 
-            if (DebugActive)
+            if (DebugOptions.DebugActive)
             {
                 _fpsCounterComponent = new FPSCounterComponent(this);
                 Components.Add(_fpsCounterComponent);
                 Components.Add(new DebugComponent(this));
             }
-            DebugWithUICamera2D = debugWithUICamera2D;
         }
 
         public int FPS => (_fpsCounterComponent?.FPS).GetValueOrDefault();
 
-        internal bool DebugActive { get; }
-        internal bool DebugWithUICamera2D { get; }
+        internal DebugOptions DebugOptions { get; }
         internal ICamera2D Camera2D { get; private set; }
         internal ICamera2D UICamera2D { get; private set; }
 
@@ -82,7 +81,7 @@ namespace Curupira2D
 
             _sceneManager.CurrentScene?.Draw();
 
-            if (!DebugActive)
+            if (!DebugOptions.DebugActive)
                 Window.Title = !string.IsNullOrEmpty(_sceneManager.CurrentScene?.Title) ? _sceneManager.CurrentScene.Title : GetType().Assembly.GetName().Name;
 
             base.Draw(gameTime);

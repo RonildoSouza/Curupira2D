@@ -12,7 +12,7 @@ namespace Curupira2D.Samples.Scenes
             AddSystem<CharacterMovementSystem>();
             AddSystem<EquipmentMovimentSystem>();
 
-            ShowControlTips("MOVIMENT: Keyboard Arrows\nEQUIPMENTS: Key 1, 2");
+            ShowControlTips("MOVIMENT: Keyboard Arrows OR WASD\nEQUIPMENTS: Key 1, 2");
 
             base.LoadContent();
         }

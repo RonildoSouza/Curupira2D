@@ -4,7 +4,7 @@ namespace Curupira2D.Mobile.Samples
 {
     public class Game1 : GameCore
     {
-        public Game1() : base(debugActive: false)
+        public Game1() : base()
         {
             IsMouseVisible = true;
         }

@@ -11,7 +11,7 @@ namespace Curupira2D.Samples.Scenes
 
             AddSystem<QuadtreeCheckCollisionSystem>();
 
-            ShowControlTips("MOVIMENT: Keyboard Arrows");
+            ShowControlTips("MOVIMENT: Keyboard Arrows OR WASD");
 
             base.LoadContent();
         }

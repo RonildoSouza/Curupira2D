@@ -6,7 +6,7 @@ namespace Curupira2D.Samples
 {
     public class Game1 : GameCore
     {
-        public Game1() : base(width: 800, height: 640, debugActive: true) { }
+        public Game1() : base(width: 800, height: 640, debugOptions: new Diagnostics.DebugOptions { DebugActive = true }) { }
 
         protected override void LoadContent()
         {

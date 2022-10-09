@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using Curupira2D.Extensions;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Framework.Utilities;
 using System;
@@ -30,7 +31,7 @@ namespace Curupira2D.Diagnostics
 
         public override void Update(GameTime gameTime)
         {
-            if (_gameCore.DebugActive)
+            if (_gameCore.DebugOptions.DebugActive)
             {
                 var title = !string.IsNullOrEmpty(_gameCore.GetCurrentScene()?.Title) ? _gameCore.GetCurrentScene().Title : GetType().Assembly.GetName().Name;
                 _gameCore.Window.Title = $"{title}" +
@@ -47,13 +48,13 @@ namespace Curupira2D.Diagnostics
 
         public override void Draw(GameTime gameTime)
         {
-            if (_gameCore.DebugActive)
+            if (_gameCore.DebugOptions.DebugActive)
             {
                 switch (PlatformInfo.MonoGamePlatform)
                 {
                     case MonoGamePlatform.Android:
                         _spriteBatch.Begin();
-                        _spriteBatch.DrawString(_fontArial18, _text, new Vector2((GraphicsDevice.Viewport.Width * 0.5f) - (_textSize.X * 0.5f), _textSize.Y * 1.1f), Color.Black);
+                        _spriteBatch.DrawString(_fontArial18, _text, new Vector2((GraphicsDevice.Viewport.Width * 0.5f) - (_textSize.X * 0.5f), _textSize.Y * 1.1f), _gameCore.DebugOptions.TextColor);
                         _spriteBatch.End();
                         break;
                     case MonoGamePlatform.iOS:
