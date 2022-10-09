@@ -7,7 +7,7 @@ on:
     branches: [ main ]
 
 jobs:
-  build_and_publish:
+  build:
     runs-on: windows-latest
 
     steps:
@@ -22,20 +22,27 @@ jobs:
       
     - name: Build
       run: dotnet build --no-restore src/Curupira2D-NoSamples.sln
-      
-      
-    - name: Publish NuGet - Curupira2D
-      uses: brandedoutcast/publish-nuget@v2.5.5
+  
+  publish:
+    needs: [build]
+    runs-on: windows-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v1
       with:
-        # Filepath of the project to be packaged, relative to root of repository
-        PROJECT_FILE_PATH: src/Curupira2D/Curupira2D.csproj
-        # API key to authenticate with NuGet server
-        NUGET_KEY: ${{secrets.CURUPIRA2D_TOKEN}}
+        dotnet-version: 6.x
         
-    - name: Publish NuGet - Curupira2D.GameComponents
-      uses: brandedoutcast/publish-nuget@v2.5.5
-      with:
-        # Filepath of the project to be packaged, relative to root of repository
-        PROJECT_FILE_PATH: src/Curupira2D.GameComponents/Curupira2D.GameComponents.csproj
-        # API key to authenticate with NuGet server
-        NUGET_KEY: ${{secrets.CURUPIRA2D_TOKEN}}
+    - name: Pack - Curupira2D
+      run: dotnet pack src/Curupira2D/Curupira2D.csproj -c Release
+
+    - name: Publish - Curupira2D 
+      run: dotnet nuget push D:\a\Curupira2D\Curupira2D\nupkgs\Curupira2D.*.nupkg --api-key ${{secrets.CURUPIRA2D_TOKEN}} --source https://api.nuget.org/v3/index.json --skip-duplicate --no-symbols
+      
+    - name: Pack - Curupira2D.GameComponents
+      run: dotnet pack src/Curupira2D.GameComponents/Curupira2D.GameComponents.csproj -c Release
+
+    - name: Publish - Curupira2D.GameComponents 
+      run: dotnet nuget push D:\a\Curupira2D\Curupira2D\nupkgs\Curupira2D.GameComponents.*.nupkg --api-key ${{secrets.CURUPIRA2D_TOKEN}} --source https://api.nuget.org/v3/index.json --skip-duplicate --no-symbols
+  
