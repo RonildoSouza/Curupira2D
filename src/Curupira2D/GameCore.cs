@@ -87,15 +87,15 @@ namespace Curupira2D
             base.Draw(gameTime);
         }
 
+        protected override void UnloadContent()
+        {
+            _sceneManager.CurrentScene?.UnloadContent();
+            base.UnloadContent();
+        }
+
         public Scene SetScene(Scene scene) => _sceneManager.Set(this, scene);
 
         public TScene SetScene<TScene>(params object[] args) where TScene : Scene => _sceneManager.Set<TScene>(this, args);
-
-        public void AddScene(Scene scene) => _sceneManager.Add(scene);
-
-        public void AddScene<TScene>(params object[] args) where TScene : Scene => _sceneManager.Add<TScene>(args);
-
-        public void ChangeScene<TScene>() where TScene : Scene => _sceneManager.Change<TScene>(this);
 
         public bool CurrentSceneIs<TScene>() where TScene : Scene => _sceneManager.CurrentScene.GetType() == typeof(TScene);
 

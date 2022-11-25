@@ -14,9 +14,7 @@ namespace Curupira2D.Mobile.Samples.Scenes
     {
         IList<Entity> _itemsEntity;
 
-        public MenuScene() : base(activeReturnButton: false)
-        {
-        }
+        public MenuScene() : base(activeReturnButton: false) { }
 
         public override void LoadContent()
         {
@@ -63,13 +61,13 @@ namespace Curupira2D.Mobile.Samples.Scenes
             switch (itemEntity?.UniqueId)
             {
                 case "S01":
-                    GameCore.ChangeScene<S01JoystickScene>();
+                    GameCore.SetScene<S01JoystickScene>();
                     break;
                 case "S02":
-                    GameCore.ChangeScene<S02TopDownCarMovementScene>();
+                    GameCore.SetScene<S02TopDownCarMovementScene>();
                     break;
                 case "S03":
-                    GameCore.ChangeScene<S03AsteroidsMovementScene>();
+                    GameCore.SetScene<S03AsteroidsMovementScene>();
                     break;
             }
 

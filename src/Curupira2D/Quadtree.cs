@@ -70,6 +70,9 @@ namespace Curupira2D
         /// <param name="entity"><see cref="Entity"/></param>
         public void Insert(Entity entity)
         {
+            if (entity == null)
+                return;
+
             if (_nodes[0] != null)
             {
                 var index = GetIndex(entity.GetHitBox());

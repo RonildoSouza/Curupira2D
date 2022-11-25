@@ -11,7 +11,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Curupira2D.Samples", "..\sa
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Curupira2D.GameComponents", "Curupira2D.GameComponents\Curupira2D.GameComponents.csproj", "{07F3723C-DA23-4223-B97D-B0D4CFAC8411}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Curupira2D.Mobile.Samples", "..\samples\Curupira2D.Mobile.Samples\Curupira2D.Mobile.Samples.csproj", "{DCDED6C6-E02D-4137-B37E-240B6596CDD0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Curupira2D.Mobile.Samples", "..\samples\Curupira2D.Mobile.Samples\Curupira2D.Mobile.Samples.csproj", "{DCDED6C6-E02D-4137-B37E-240B6596CDD0}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "WebSocket", "WebSocket", "{7311327C-472B-413D-9ACF-5DEA84333700}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebSocketClient", "..\samples\WebSocket\WebSocketClient\WebSocketClient.csproj", "{5ACC58E4-EB42-460C-B01C-9D0AA2460130}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -37,6 +41,10 @@ Global
 		{DCDED6C6-E02D-4137-B37E-240B6596CDD0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DCDED6C6-E02D-4137-B37E-240B6596CDD0}.Release|Any CPU.Build.0 = Release|Any CPU
 		{DCDED6C6-E02D-4137-B37E-240B6596CDD0}.Release|Any CPU.Deploy.0 = Release|Any CPU
+		{5ACC58E4-EB42-460C-B01C-9D0AA2460130}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5ACC58E4-EB42-460C-B01C-9D0AA2460130}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5ACC58E4-EB42-460C-B01C-9D0AA2460130}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5ACC58E4-EB42-460C-B01C-9D0AA2460130}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -44,6 +52,8 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{30F9F3F4-D049-447F-AFEF-D0CE5F38EC3F} = {FE4E0B1F-9B5B-4FA7-B12D-8CABBF5F98F6}
 		{DCDED6C6-E02D-4137-B37E-240B6596CDD0} = {FE4E0B1F-9B5B-4FA7-B12D-8CABBF5F98F6}
+		{7311327C-472B-413D-9ACF-5DEA84333700} = {FE4E0B1F-9B5B-4FA7-B12D-8CABBF5F98F6}
+		{5ACC58E4-EB42-460C-B01C-9D0AA2460130} = {7311327C-472B-413D-9ACF-5DEA84333700}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {F7FBE376-4118-4915-9F60-A6E7253981BD}

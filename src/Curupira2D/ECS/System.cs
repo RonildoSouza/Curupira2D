@@ -13,6 +13,7 @@ namespace Curupira2D.ECS
     {
         Scene Scene { get; }
         bool MatchActiveEntitiesAndComponents(Entity entity);
+        void OnRemoveFromScene();
     }
 
     public abstract class System : ISystem
@@ -41,6 +42,8 @@ namespace Curupira2D.ECS
         }
 
         public bool MatchActiveEntitiesAndComponents(Entity entity) => entity.Active && MatchComponents(entity);
+
+        public virtual void OnRemoveFromScene() { }
 
         protected virtual void SetupRequiredComponents()
         {

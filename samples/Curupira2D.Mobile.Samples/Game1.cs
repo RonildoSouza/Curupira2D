@@ -11,12 +11,7 @@ namespace Curupira2D.Mobile.Samples
 
         protected override void LoadContent()
         {
-            AddScene<MenuScene>();
-            AddScene<S01JoystickScene>();
-            AddScene<S02TopDownCarMovementScene>();
-            AddScene<S03AsteroidsMovementScene>();
-
-            ChangeScene<MenuScene>();
+            SetScene<MenuScene>();
 
             base.LoadContent();
         }
