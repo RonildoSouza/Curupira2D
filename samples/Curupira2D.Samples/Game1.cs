@@ -10,18 +10,7 @@ namespace Curupira2D.Samples
 
         protected override void LoadContent()
         {
-            AddScene<MenuScene>();
-            AddScene<SceneTest>();
-            AddScene<SpriteAnimationScene>();
-            AddScene<SceneGraphScene>();
-            AddScene<CameraScene>();
-            AddScene<PhysicScene>();
-            AddScene<PlatformerTiledMapScene>();
-            AddScene<AetherPhysics2DHelloWorldScene>();
-            AddScene<QuadtreeCheckCollisionScene>();
-            AddScene<TiledMapWithManyLayersScene>();
-
-            ChangeScene<MenuScene>();
+            SetScene<MenuScene>();
 
             base.LoadContent();
         }
@@ -32,7 +21,7 @@ namespace Curupira2D.Samples
 
             if (keyState.IsKeyDown(Keys.Q) && !CurrentSceneIs<MenuScene>())
             {
-                ChangeScene<MenuScene>();
+                SetScene<MenuScene>();
             }
 
             base.Update(gameTime);

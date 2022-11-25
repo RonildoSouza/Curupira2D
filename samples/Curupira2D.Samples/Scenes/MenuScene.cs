@@ -17,7 +17,8 @@ namespace Curupira2D.Samples.Scenes
                      "5 - Platformer Tiled Map\n" +
                      "6 - Aether Physics2D - HelloWorld\n" +
                      "7 - Quadtree Check Collision\n" +
-                     "8 - Tiled Map With Many Layers\n",
+                     "8 - Tiled Map With Many Layers\n" +
+                     "9 - Massively Multiplayer Online (MMO)\n",
                      ScreenCenter.X,
                      ScreenCenter.Y,
                      scale: Vector2.One);
@@ -30,31 +31,34 @@ namespace Curupira2D.Samples.Scenes
             KeyboardInputManager.Begin();
 
             if (KeyboardInputManager.IsKeyPressed(Keys.T))
-                GameCore.ChangeScene<SceneTest>();
+                GameCore.SetScene<SceneTest>();
 
             if (KeyboardInputManager.IsKeyPressed(Keys.D1))
-                GameCore.ChangeScene<SpriteAnimationScene>();
+                GameCore.SetScene<SpriteAnimationScene>();
 
             if (KeyboardInputManager.IsKeyPressed(Keys.D2))
-                GameCore.ChangeScene<SceneGraphScene>();
+                GameCore.SetScene<SceneGraphScene>();
 
             if (KeyboardInputManager.IsKeyPressed(Keys.D3))
-                GameCore.ChangeScene<CameraScene>();
+                GameCore.SetScene<CameraScene>();
 
             if (KeyboardInputManager.IsKeyPressed(Keys.D4))
-                GameCore.ChangeScene<PhysicScene>();
+                GameCore.SetScene<PhysicScene>();
 
             if (KeyboardInputManager.IsKeyPressed(Keys.D5))
-                GameCore.ChangeScene<PlatformerTiledMapScene>();
+                GameCore.SetScene<PlatformerTiledMapScene>();
 
             if (KeyboardInputManager.IsKeyPressed(Keys.D6))
-                GameCore.ChangeScene<AetherPhysics2DHelloWorldScene>();
+                GameCore.SetScene<AetherPhysics2DHelloWorldScene>();
             
             if (KeyboardInputManager.IsKeyPressed(Keys.D7))
-                GameCore.ChangeScene<QuadtreeCheckCollisionScene>();
+                GameCore.SetScene<QuadtreeCheckCollisionScene>();
             
             if (KeyboardInputManager.IsKeyPressed(Keys.D8))
-                GameCore.ChangeScene<TiledMapWithManyLayersScene>();
+                GameCore.SetScene<TiledMapWithManyLayersScene>();
+
+            if (KeyboardInputManager.IsKeyPressed(Keys.D9))
+                GameCore.SetScene<MassivelyMultiplayerOnlineScene>();
 
             KeyboardInputManager.End();
 

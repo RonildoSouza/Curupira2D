@@ -12,12 +12,12 @@ namespace Curupira2D.Samples.Common.Systems
         protected Entity _entityToMove;
         protected Vector2 _entitySize;
         protected float Velocity { get; set; } = 100f;
+        protected bool ChangePosition { get; set; }
         protected abstract string EntityUniqueId { get; }
 
         public virtual void LoadContent()
         {
-            if (_entityToMove == null)
-                _entityToMove = Scene.GetEntity(EntityUniqueId);
+            _entityToMove ??= Scene.GetEntity(EntityUniqueId);
 
             var spriteComponent = _entityToMove.GetComponent<SpriteComponent>();
             var spriteAnimationComponent = _entityToMove.GetComponent<SpriteAnimationComponent>();
@@ -35,18 +35,31 @@ namespace Curupira2D.Samples.Common.Systems
 
             var tempPosition = _entityToMove.Position;
             var direction = Vector2.Zero;
+            ChangePosition = false;
 
             if (Scene.KeyboardInputManager.IsKeyDown(Keys.Left) || Scene.KeyboardInputManager.IsKeyDown(Keys.A))
+            {
+                ChangePosition = true;
                 direction.X -= 1;
+            }
 
             if (Scene.KeyboardInputManager.IsKeyDown(Keys.Up) || Scene.KeyboardInputManager.IsKeyDown(Keys.W))
+            {
+                ChangePosition = true;
                 direction.Y += 1;
+            }
 
             if (Scene.KeyboardInputManager.IsKeyDown(Keys.Right) || Scene.KeyboardInputManager.IsKeyDown(Keys.D))
+            {
+                ChangePosition = true;
                 direction.X += 1;
+            }
 
             if (Scene.KeyboardInputManager.IsKeyDown(Keys.Down) || Scene.KeyboardInputManager.IsKeyDown(Keys.S))
+            {
+                ChangePosition = true;
                 direction.Y -= 1;
+            }
 
             tempPosition += (float)(Velocity * Scene.DeltaTime) * direction.GetSafeNormalize();
 
