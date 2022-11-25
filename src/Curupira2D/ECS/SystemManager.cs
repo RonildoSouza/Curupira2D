@@ -63,22 +63,37 @@ namespace Curupira2D.ECS
 
         public void Remove<TSystem>() where TSystem : System
         {
-            _loadableSystems.RemoveAll(_ => _.GetType().Name == typeof(TSystem).Name);
-            _updatableSystems.RemoveAll(_ => _.GetType().Name == typeof(TSystem).Name);
-            _renderableSystems.RemoveAll(_ => _.GetType().Name == typeof(TSystem).Name);
+            _loadableSystems.RemoveAll(Predicate);
+            _updatableSystems.RemoveAll(Predicate);
+            _renderableSystems.RemoveAll(Predicate);
+
+            static bool Predicate(ISystem _)
+            {
+                var canRemove = _.GetType().Name == typeof(TSystem).Name;
+
+                if (canRemove)
+                    _.OnRemoveFromScene();
+
+                return canRemove;
+            }
         }
 
         public void RemoveAll()
         {
-            _loadableSystems.RemoveAll(_ => true);
-            _updatableSystems.RemoveAll(_ => true);
-            _renderableSystems.RemoveAll(_ => true);
+            _loadableSystems.RemoveAll(Predicate);
+            _updatableSystems.RemoveAll(Predicate);
+            _renderableSystems.RemoveAll(Predicate);
+
+            static bool Predicate(ISystem _)
+            {
+                _.OnRemoveFromScene();
+                return true;
+            }
         }
 
         public void Dispose()
         {
             RemoveAll();
-
             GC.Collect();
         }
 

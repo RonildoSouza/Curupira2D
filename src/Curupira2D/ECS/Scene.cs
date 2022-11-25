@@ -43,6 +43,8 @@ namespace Curupira2D.ECS
 
         public Vector2 Gravity { get; set; }
 
+        public bool PauseUpdatableSystems { get; set; }
+
         public virtual void LoadContent()
         {
             AddSystem<SpriteSystem>();
@@ -60,8 +62,6 @@ namespace Curupira2D.ECS
             GamePadInputManager = new GamePadInputManager();
             MouseInputManager = new MouseInputManager();
         }
-
-        public bool PauseUpdatableSystems { get; set; }
 
         public virtual void Update(GameTime gameTime)
         {
@@ -123,6 +123,13 @@ namespace Curupira2D.ECS
             _physicsSystem.DrawDebugData();
             SpriteBatch.End();
             #endregion
+        }
+
+        public virtual void UnloadContent()
+        {
+            RemoveAllSystems();
+            RemoveAllEntities();
+            RemoveAllGameComponents();
         }
 
         public Scene SetTitle(string title)
@@ -246,6 +253,8 @@ namespace Curupira2D.ECS
         }
 
         public bool ExistsEntities(Func<Entity, bool> match) => _entityManager.Exists(match);
+
+        public bool ExistsEntities(string uniqueId) => ExistsEntities(e => e.UniqueId == uniqueId);
 
         public Vector2 GetEntityPosition(string uniqueId) => GetEntity(uniqueId).GetPositionInScene(this);
         #endregion

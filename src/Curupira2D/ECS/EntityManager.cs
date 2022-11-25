@@ -2,7 +2,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace Curupira2D.ECS
 {
@@ -34,14 +33,11 @@ namespace Curupira2D.ECS
         {
             Remove(_ =>
             {
-                Task.Factory.StartNew(() =>
+                if (_.UniqueId == uniqueId && _.Children.Any())
                 {
-                    if (_.UniqueId == uniqueId && _.Children.Any())
-                    {
-                        foreach (var child in _.Children)
-                            Remove(child.UniqueId);
-                    }
-                }).ConfigureAwait(true);
+                    foreach (var child in _.Children)
+                        Remove(child.UniqueId);
+                }
 
                 return _.UniqueId == uniqueId;
             });

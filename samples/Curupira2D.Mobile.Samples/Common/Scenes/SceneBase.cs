@@ -1,6 +1,6 @@
 ﻿using Curupira2D.ECS;
-using Curupira2D.Extensions;
 using Curupira2D.ECS.Components.Drawables;
+using Curupira2D.Extensions;
 using Curupira2D.Mobile.Samples.Scenes;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -13,7 +13,7 @@ namespace Curupira2D.Mobile.Samples.Common.Scenes
     {
         Entity _returnButtonEntity;
         readonly bool _activeReturnButton;
-        
+
 
         protected SceneBase(bool activeReturnButton = true)
         {
@@ -54,7 +54,7 @@ namespace Curupira2D.Mobile.Samples.Common.Scenes
             if (_activeReturnButton
                 && TouchLocation.State == TouchLocationState.Released
                 && TouchLocationRectangle.Intersects(_returnButtonEntity.GetHitBox()))
-                GameCore.ChangeScene<MenuScene>();
+                GameCore.SetScene<MenuScene>();
         }
     }
 }
