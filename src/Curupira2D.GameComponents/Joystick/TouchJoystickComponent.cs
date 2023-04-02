@@ -10,6 +10,7 @@ namespace Curupira2D.GameComponents.Joystick
     public class TouchJoystickComponent : DrawableGameComponent, IEquatable<TouchJoystickComponent>
     {
         readonly Rectangle _joystickBackgroundSizeAndLocation;
+        Rectangle _joystickBackgroundSizeAndLocationMovimentLimit;
         readonly Rectangle _joystickHandleFallbackSizeAndLocation;
         Rectangle _joystickHandleSizeAndLocation;
         readonly SpriteBatch _spriteBatch;
@@ -22,7 +23,7 @@ namespace Curupira2D.GameComponents.Joystick
             _joystickConfiguration = joystickConfiguration ?? throw new ArgumentNullException();
             _joystickBackgroundSizeAndLocation = new Rectangle(_joystickConfiguration.Position.ToPoint(), new Point(_joystickConfiguration.Size));
 
-            var joystickHandleSizeValue = _joystickConfiguration.HandleSize == JoystickHandleSize.Large ? 1.5f : (float)_joystickConfiguration.HandleSize;
+            var joystickHandleSizeValue = (float)_joystickConfiguration.HandleSize / 100;
             var joystickHandleWidth = (int)(_joystickBackgroundSizeAndLocation.Width / joystickHandleSizeValue);
             var joystickHandleHeight = (int)(_joystickBackgroundSizeAndLocation.Height / joystickHandleSizeValue);
             _joystickHandleFallbackSizeAndLocation = new Rectangle(
@@ -60,7 +61,6 @@ namespace Curupira2D.GameComponents.Joystick
         public bool Active { get; private set; }
         public Vector2 Direction { get; private set; }
 
-
         public override void Update(GameTime gameTime)
         {
             if (!Active)
@@ -72,14 +72,23 @@ namespace Curupira2D.GameComponents.Joystick
             {
                 Direction = Vector2.Zero;
                 _joystickHandleSizeAndLocation = _joystickHandleFallbackSizeAndLocation;
+                _joystickBackgroundSizeAndLocationMovimentLimit = _joystickBackgroundSizeAndLocation;
                 return;
             }
 
             var touchPositions = touchCollections.Select(_ => new Rectangle(_.Position.ToPoint(), Point.Zero));
 
+            if (touchPositions.Any(_ => _.Intersects(_joystickBackgroundSizeAndLocation)))
+                _joystickBackgroundSizeAndLocationMovimentLimit = new Rectangle(
+                    _joystickBackgroundSizeAndLocation.Location.X / _joystickConfiguration.JoystickHandleMovimentScale.X,
+                    _joystickBackgroundSizeAndLocation.Location.Y / _joystickConfiguration.JoystickHandleMovimentScale.Y,
+                    _joystickBackgroundSizeAndLocation.Size.X * _joystickConfiguration.JoystickHandleMovimentScale.X,
+                    _joystickBackgroundSizeAndLocation.Size.Y * _joystickConfiguration.JoystickHandleMovimentScale.Y
+                );
+
             Parallel.ForEach(touchPositions, touchPosition =>
             {
-                if (touchPosition.Intersects(_joystickBackgroundSizeAndLocation))
+                if (touchPosition.Intersects(_joystickBackgroundSizeAndLocationMovimentLimit))
                 {
                     var half = _joystickBackgroundSizeAndLocation.Center - _joystickBackgroundSizeAndLocation.Location;
                     var touchPositionInBound = touchPosition.Location - _joystickBackgroundSizeAndLocation.Location;

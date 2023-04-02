@@ -192,6 +192,9 @@ namespace Curupira2D.ECS
 
             _gameComponents.Clear();
         }
+
+        public TGameComponent GetGameComponent<TGameComponent>() where TGameComponent : IGameComponent
+            => (TGameComponent)GameCore.Components.FirstOrDefault(_ => _.GetType() == typeof(TGameComponent));
         #endregion
 
         #region Methods of managing systems
