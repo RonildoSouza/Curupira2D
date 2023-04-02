@@ -2,8 +2,8 @@
 {
     public enum JoystickHandleSize
     {
-        Small = 3,
-        Medium = 2,
-        Large = 1,
+        Small = 300,
+        Medium = 200,
+        Large = 150,
     }
 }

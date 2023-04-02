@@ -28,6 +28,7 @@ namespace Curupira2D.Mobile.Samples.Scenes
                     BackgroundTexture = joystickBackgroundTexture,
                     HandleTexture = joystickHandleTexture,
                     InvertY_Axis = true,
+                    HandleSize = JoystickHandleSize.Large
                 });
 
             AddGameComponent(_touchJoystickComponent);

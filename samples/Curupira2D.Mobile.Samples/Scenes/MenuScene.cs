@@ -28,19 +28,19 @@ namespace Curupira2D.Mobile.Samples.Scenes
                         spriteFont,
                         "S01 - JOYSTICK",
                         color: Color.Black,
-                        scale: new Vector2(3f))),
+                        scale: new Vector2(3.5f))),
                 CreateEntity("S02", Vector2.Zero)
                     .AddComponent(new TextComponent(
                         spriteFont,
                         "S02 - TOP DOWN CAR MOVEMENT",
                         color: Color.Black,
-                        scale: new Vector2(3f))),
+                        scale: new Vector2(3.5f))),
                 CreateEntity("S03", Vector2.Zero)
                     .AddComponent(new TextComponent(
                         spriteFont,
                         "S03 - ASTEROIDS MOVEMENT",
                         color: Color.Black,
-                        scale: new Vector2(3f))),
+                        scale: new Vector2(3.5f))),
             };
 
             var itemHeightSize = ScreenHeight / _itemsEntity.Count;
