@@ -21,7 +21,7 @@ namespace Curupira2D
 
         public GameCore(int width = 0, int height = 0, bool disabledExit = false, DebugOptions debugOptions = null)
         {
-            DebugOptions = debugOptions != null ? debugOptions : new DebugOptions();
+            DebugOptions = debugOptions ?? new DebugOptions();
 
             _width = width;
             _height = height;
@@ -39,6 +39,7 @@ namespace Curupira2D
         }
 
         public int FPS => (_fpsCounterComponent?.FPS).GetValueOrDefault();
+        public GraphicsDeviceManager GraphicsDeviceManager => _graphics;
 
         internal DebugOptions DebugOptions { get; }
         internal ICamera2D Camera2D { get; private set; }

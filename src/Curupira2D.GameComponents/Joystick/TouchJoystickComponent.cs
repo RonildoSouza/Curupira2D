@@ -68,14 +68,6 @@ namespace Curupira2D.GameComponents.Joystick
 
             var touchCollections = TouchPanel.GetState();
 
-            if (!touchCollections.Any())
-            {
-                Direction = Vector2.Zero;
-                _joystickHandleSizeAndLocation = _joystickHandleFallbackSizeAndLocation;
-                _joystickBackgroundSizeAndLocationMovimentLimit = _joystickBackgroundSizeAndLocation;
-                return;
-            }
-
             var touchPositions = touchCollections.Select(_ => new Rectangle(_.Position.ToPoint(), Point.Zero));
 
             if (touchPositions.Any(_ => _.Intersects(_joystickBackgroundSizeAndLocation)))
@@ -85,6 +77,15 @@ namespace Curupira2D.GameComponents.Joystick
                     _joystickBackgroundSizeAndLocation.Size.X * _joystickConfiguration.JoystickHandleMovimentScale.X,
                     _joystickBackgroundSizeAndLocation.Size.Y * _joystickConfiguration.JoystickHandleMovimentScale.Y
                 );
+
+
+            if (touchPositions.All(_ => !_.Intersects(_joystickBackgroundSizeAndLocationMovimentLimit)))
+            {
+                Direction = Vector2.Zero;
+                _joystickHandleSizeAndLocation = _joystickHandleFallbackSizeAndLocation;
+                _joystickBackgroundSizeAndLocationMovimentLimit = _joystickBackgroundSizeAndLocation;
+                return;
+            }
 
             Parallel.ForEach(touchPositions, touchPosition =>
             {
