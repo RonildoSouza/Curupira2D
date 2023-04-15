@@ -1,6 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using tainicom.Aether.Physics2D.Dynamics;
 
 namespace Curupira2D.ECS.Components.Drawables
 {
