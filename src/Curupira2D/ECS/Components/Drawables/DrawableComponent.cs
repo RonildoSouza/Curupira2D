@@ -30,5 +30,6 @@ namespace Curupira2D.ECS.Components.Drawables
         public bool DrawInUICamera { get; set; }
         public Vector2? Position { get; set; }
         public Vector2 Half { get; protected set; }
+        public Color[] TextureData { get; protected set; }
     }
 }

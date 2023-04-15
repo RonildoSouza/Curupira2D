@@ -1,10 +1,13 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using tainicom.Aether.Physics2D.Dynamics;
 
 namespace Curupira2D.ECS.Components.Drawables
 {
     public class TextComponent : DrawableComponent
     {
+        string _text;
+
         public TextComponent(
             SpriteFont spriteFont,
             string text,
@@ -21,7 +24,20 @@ namespace Curupira2D.ECS.Components.Drawables
         }
 
         public SpriteFont SpriteFont { get; set; }
-        public string Text { get; set; }
-        public Vector2 TextSize => SpriteFont.MeasureString(Text);
+        public string Text
+        {
+            get => _text;
+            set
+            {
+                _text = value;
+
+                //if (TextSize != Vector2.Zero)
+                //{
+                //    TextureData = new Color[SpriteFont.Texture.Width * SpriteFont.Texture.Height / 4];
+                //    SpriteFont.Texture.GetData(TextureData);
+                //}
+            }
+        }
+        public Vector2 TextSize => Scale == default ? SpriteFont.MeasureString(Text) : SpriteFont.MeasureString(Text) * Scale;
     }
 }

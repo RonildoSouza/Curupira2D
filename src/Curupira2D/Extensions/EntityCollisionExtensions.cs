@@ -1,5 +1,4 @@
 ﻿using Curupira2D.ECS;
-using Curupira2D.ECS.Components.Drawables;
 using Microsoft.Xna.Framework;
 using System;
 using System.Linq;
@@ -8,17 +7,17 @@ namespace Curupira2D.Extensions
 {
     public static class EntityCollisionExtensions
     {
-        public static bool IsCollidedWithAny(this Entity entity, Scene scene)
-            => IsCollidedWith(entity, scene, _ => entity.PerPixelCollision(_));
+        public static bool IsCollidedWithAny(this Entity entity, Scene scene, bool perPixelCollision = false)
+            => IsCollidedWith(entity, scene, _ => perPixelCollision ? entity.PerPixelCollision(_) : entity.GetHitBox().Intersects(_.GetHitBox()));
 
-        public static bool IsCollidedWithAny(this Entity entity, Scene scene, string entityGroup)
-            => IsCollidedWith(entity, scene, _ => _.Group == entityGroup && entity.PerPixelCollision(_));
+        public static bool IsCollidedWithAny(this Entity entity, Scene scene, string entityGroup, bool perPixelCollision = false)
+            => IsCollidedWith(entity, scene, _ => _.Group == entityGroup && (perPixelCollision ? entity.PerPixelCollision(_) : entity.GetHitBox().Intersects(_.GetHitBox())));
 
-        public static bool IsCollidedWith(this Entity entity, Scene scene, Entity otherEntity)
-            => IsCollidedWith(entity, scene, _ => _.Equals(otherEntity) && entity.PerPixelCollision(_));
+        public static bool IsCollidedWith(this Entity entity, Scene scene, Entity otherEntity, bool perPixelCollision = false)
+            => IsCollidedWith(entity, scene, _ => _.Equals(otherEntity) && (perPixelCollision ? entity.PerPixelCollision(_) : entity.GetHitBox().Intersects(_.GetHitBox())));
 
-        public static bool IsCollidedWith(this Entity entity, Scene scene, string otherEntityUniqueId)
-            => IsCollidedWith(entity, scene, _ => _.UniqueId == otherEntityUniqueId && entity.PerPixelCollision(_));
+        public static bool IsCollidedWith(this Entity entity, Scene scene, string otherEntityUniqueId, bool perPixelCollision = false)
+            => IsCollidedWith(entity, scene, _ => _.UniqueId == otherEntityUniqueId && (perPixelCollision ? entity.PerPixelCollision(_) : entity.GetHitBox().Intersects(_.GetHitBox())));
 
         /// <summary>
         /// https://gamedev.stackexchange.com/questions/15191/is-there-a-good-way-to-get-pixel-perfect-collision-detection-in-xna
@@ -26,12 +25,12 @@ namespace Curupira2D.Extensions
         static bool PerPixelCollision(this Entity entity, Entity otherEntity)
         {
             var transformA = CreateTranslation(entity);
-            var dataA = GetTextureData(entity);
+            var dataA = entity.GetDrawableComponent().TextureData;
             var widthA = entity.GetHitBox().Width;
             var heightA = entity.GetHitBox().Height;
 
             var transformB = CreateTranslation(otherEntity);
-            var dataB = GetTextureData(otherEntity);
+            var dataB = otherEntity.GetDrawableComponent().TextureData;
             var widthB = otherEntity.GetHitBox().Width;
             var heightB = otherEntity.GetHitBox().Height;
 
@@ -60,8 +59,8 @@ namespace Curupira2D.Extensions
                 for (int xA = 0; xA < widthA; xA++)
                 {
                     // Round to the nearest pixel
-                    int xB = (int)Math.Round(posInB.X);
-                    int yB = (int)Math.Round(posInB.Y);
+                    int xB = (int)posInB.X;
+                    int yB = (int)posInB.Y;
 
                     // If the pixel lies within the bounds of B
                     if (0 <= xB && xB < widthB &&
@@ -113,40 +112,6 @@ namespace Curupira2D.Extensions
 
             var returnObjects = scene.Quadtree.Retrieve(entity);
             return returnObjects.Any(predicate);
-        }
-
-        static Color[] GetTextureData(Entity entity)
-        {
-            if (entity.Components.Any(_ => _.Key == typeof(SpriteComponent) || _.Key == typeof(SpriteAnimationComponent)))
-            {
-                Color[] textureData = null;
-                var spriteComponent = entity.GetComponent<SpriteComponent>() ?? entity.GetComponent<SpriteAnimationComponent>();
-
-                if (spriteComponent is SpriteComponent)
-                {
-                    textureData = new Color[spriteComponent.Texture.Width * spriteComponent.Texture.Height];
-                    spriteComponent.Texture.GetData(textureData);
-                }
-
-                if (spriteComponent is SpriteAnimationComponent)
-                {
-                    textureData = new Color[spriteComponent.SourceRectangle.Value.Width * spriteComponent.SourceRectangle.Value.Height];
-                    spriteComponent.Texture.GetData(0, spriteComponent.SourceRectangle, textureData, 0, spriteComponent.SourceRectangle.Value.Width * spriteComponent.SourceRectangle.Value.Height);
-                }
-
-                return textureData;
-            }
-
-            if (entity.Components.Any(_ => _.Key == typeof(TextComponent)))
-            {
-                var textComponent = entity.GetComponent<TextComponent>();
-                var textureData = new Color[textComponent.SpriteFont.Texture.Width * textComponent.SpriteFont.Texture.Height / 4];
-                textComponent.SpriteFont.Texture.GetData(textureData);
-
-                return textureData;
-            }
-
-            return null;
         }
     }
 }

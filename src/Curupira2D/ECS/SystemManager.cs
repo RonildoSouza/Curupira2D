@@ -97,6 +97,6 @@ namespace Curupira2D.ECS
             GC.Collect();
         }
 
-        bool SystemIsValid(ISystem system) => system.Scene != null && system.Scene.GameTime != null;
+        static bool SystemIsValid(ISystem system) => system.Scene != null && system.Scene.GameTime != null;
     }
 }

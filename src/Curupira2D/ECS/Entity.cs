@@ -101,6 +101,14 @@ namespace Curupira2D.ECS
             return this;
         }
 
+        public Entity GetChild(string uniqueId)
+        {
+            if (!_children.Any(_ => _.UniqueId == uniqueId))
+                return this;
+
+            return _children.FirstOrDefault(_ => _.UniqueId == uniqueId);
+        }
+
         public Vector2 RotationToVector() => MathHelper.ToRadians(Rotation).AngleToVector();
 
         public bool Equals(Entity other) => other != null && other.UniqueId == UniqueId;

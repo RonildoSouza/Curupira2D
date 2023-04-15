@@ -26,7 +26,7 @@ namespace Curupira2D.GameComponents
             {
                 FPS = _totalFrames;
                 _totalFrames = 0;
-                _elapsedTime -= TimeSpan.FromSeconds(1);
+                _elapsedTime = TimeSpan.Zero;
             }
 
             base.Draw(gameTime);

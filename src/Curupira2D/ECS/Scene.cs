@@ -304,7 +304,7 @@ namespace Curupira2D.ECS
 
         void Entity_OnChange(object sender, EventArgs e)
         {
-            if (!(sender is Entity entity)
+            if (sender is not Entity entity
                 || !(entity?.Active ?? false)
                 || !(entity?.IsCollidable ?? false))
                 return;
