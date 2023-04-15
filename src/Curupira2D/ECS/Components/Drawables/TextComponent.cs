@@ -38,6 +38,6 @@ namespace Curupira2D.ECS.Components.Drawables
                 //}
             }
         }
-        public Vector2 TextSize => Scale == default ? SpriteFont.MeasureString(Text) : SpriteFont.MeasureString(Text) * Scale;
+        public Vector2 TextSize => SpriteFont.MeasureString(Text);
     }
 }
