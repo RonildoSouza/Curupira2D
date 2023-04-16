@@ -14,11 +14,13 @@ namespace Curupira2D.GameComponents.GamepadButtons
             Position = position;
             Texture = texture;
             Opacity = 0.6f;
+            Color = Color.White;
         }
 
         public int Size { get; }
         public Vector2 Position { get; }
         public Texture2D Texture { get; }
         public float Opacity { get; set; }
+        public Color Color { get; set; }
     }
 }

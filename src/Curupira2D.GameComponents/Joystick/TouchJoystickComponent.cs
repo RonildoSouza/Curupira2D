@@ -39,7 +39,7 @@ namespace Curupira2D.GameComponents.Joystick
             if (_joystickConfiguration.BackgroundTexture == null)
             {
                 var texture = new Texture2D(GraphicsDevice, 1, 1);
-                texture.SetData(new Color[] { Color.Black });
+                texture.SetData(new Color[] { _joystickConfiguration.Color != Color.White ? _joystickConfiguration.Color : Color.Black });
 
                 _joystickConfiguration.BackgroundTexture = texture;
 
@@ -127,12 +127,12 @@ namespace Curupira2D.GameComponents.Joystick
             _spriteBatch.Draw(
                 _joystickConfiguration.BackgroundTexture,
                 _joystickBackgroundSizeAndLocation,
-                Color.White * _joystickConfiguration.BackgroundOpacity);
+                _joystickConfiguration.Color * _joystickConfiguration.BackgroundOpacity);
 
             _spriteBatch.Draw(
                 _joystickConfiguration.HandleTexture,
                 _joystickHandleSizeAndLocation,
-                Color.White * _joystickConfiguration.HandleOpacity);
+                _joystickConfiguration.Color * _joystickConfiguration.HandleOpacity);
 
             if (_joystickBackgroundLineTexture != null)
             {

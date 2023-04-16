@@ -91,7 +91,7 @@ namespace Curupira2D.GameComponents.GamepadButtons
             _spriteBatch.Draw(
                    _gamepadButtonsConfiguration.Texture,
                    _gamepadButtonsBoundSizeAndLocation,
-                   Color.White * _gamepadButtonsConfiguration.Opacity);
+                   _gamepadButtonsConfiguration.Color * _gamepadButtonsConfiguration.Opacity);
 
             _spriteBatch.End();
 

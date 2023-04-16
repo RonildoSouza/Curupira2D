@@ -13,6 +13,7 @@ namespace Curupira2D.GameComponents.Joystick
             BackgroundOpacity = 0.6f;
             HandleOpacity = 0.6f;
             JoystickHandleMovimentScale = new Point(2);
+            Color = Color.White;
         }
 
         public int Size { get; }
@@ -25,5 +26,6 @@ namespace Curupira2D.GameComponents.Joystick
         public bool InvertX_Axis { get; set; }
         public bool InvertY_Axis { get; set; }
         public Point JoystickHandleMovimentScale { get; set; }
+        public Color Color { get; set; }
     }
 }
