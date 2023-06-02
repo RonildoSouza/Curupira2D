@@ -13,7 +13,7 @@ namespace Curupira2D.Samples.Systems.SpriteAnimation
 
         public override void Update()
         {
-            if (_entityToMove.IsCollidedWith(Scene, "explosion"))
+            if (_entityToMove.IsCollidedWith(Scene, "explosion", true))
                 Scene.SetCleanColor(Color.MonoGameOrange);
             else
                 Scene.SetFallbackCleanColor();

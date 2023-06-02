@@ -19,7 +19,7 @@ namespace Curupira2D.ECS.Components.Drawables
         {
             SpriteFont = spriteFont;
             Text = text;
-            Origin = Half = TextSize * 0.5f;
+            Origin = TextSize * 0.5f;
         }
 
         public SpriteFont SpriteFont { get; set; }

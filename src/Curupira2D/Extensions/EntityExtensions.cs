@@ -63,28 +63,28 @@ namespace Curupira2D.Extensions
             if (entity.Components.Any(_ => _.Key == typeof(SpriteComponent) || _.Key == typeof(SpriteAnimationComponent)))
             {
                 var spriteComponent = entity.GetComponent<SpriteComponent>() ?? entity.GetComponent<SpriteAnimationComponent>();
-                var size = spriteComponent.SourceRectangle?.Size ?? spriteComponent.TextureSize.ToPoint();
-                var x = entity.Position.X - spriteComponent.Origin.X;
-                var y = entity.Position.Y - spriteComponent.Origin.Y;
-
-                var position = new Vector2(x, y);
-
-                return new Rectangle(position.ToPoint(), size * spriteComponent.Scale.ToPoint());
+                return RectangleHitBoxBuilder(spriteComponent, entity, spriteComponent.TextureSize.ToPoint());
             }
 
             if (entity.Components.Any(_ => _.Key == typeof(TextComponent)))
             {
                 var textComponent = entity.GetComponent<TextComponent>();
-                var size = textComponent.SourceRectangle?.Size ?? textComponent.TextSize.ToPoint();
-                var x = entity.Position.X - textComponent.Origin.X;
-                var y = entity.Position.Y - textComponent.Origin.Y;
-
-                var position = new Vector2(x, y);
-
-                return new Rectangle(position.ToPoint(), size * textComponent.Scale.ToPoint());
+                return RectangleHitBoxBuilder(textComponent, entity, textComponent.TextSize.ToPoint());
             }
 
             return new Rectangle(entity.Position.ToPoint(), Point.Zero);
+
+            static Rectangle RectangleHitBoxBuilder(DrawableComponent component, Entity entity, Point sizeIfNullSourceRectangle)
+            {
+                var size = component.SourceRectangle?.Size ?? sizeIfNullSourceRectangle;
+                var x = entity.Position.X - (component.Origin.X * component.Scale.X);
+                var y = entity.Position.Y - (component.Origin.Y * component.Scale.Y);
+
+                var position = new Vector2(x, y);
+                var sizeToPoint = (size.ToVector2() * component.Scale).ToPoint();
+
+                return new Rectangle(position.ToPoint(), sizeToPoint);
+            }
         }
     }
 }
