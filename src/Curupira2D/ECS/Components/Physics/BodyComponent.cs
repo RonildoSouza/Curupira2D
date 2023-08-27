@@ -11,24 +11,26 @@ namespace Curupira2D.ECS.Components.Physics
         private float _radius;
         private float _restitution;
 
-        public BodyComponent(Vector2 size, EntityType entityType, EntityShape entityShape, float density = 1f)
+        public BodyComponent(Vector2 size, EntityType entityType, EntityShape entityShape, float density = 1f, Vector2 offset = default)
         {
             Size = size;
             EntityShape = entityShape;
             BodyType = (BodyType)entityType;
             Density = density;
+            Offset = offset;
         }
 
-        public BodyComponent(float width, float height, EntityType entityType, EntityShape entityShape, float density = 1f)
-            : this(new Vector2(width, height), entityType, entityShape, density) { }
+        public BodyComponent(float width, float height, EntityType entityType, EntityShape entityShape, float density = 1f, Vector2 offset = default)
+            : this(new Vector2(width, height), entityType, entityShape, density, offset) { }
 
         /// <summary>
         /// Create circle shape body
         /// </summary>
-        public BodyComponent(float radius, EntityType entityType, float density = 1f)
-            : this(Vector2.Zero, entityType, EntityShape.Circle, density)
+        public BodyComponent(float radius, EntityType entityType, float density = 1f, Vector2 offset = default)
+            : this(Vector2.Zero, entityType, EntityShape.Circle, density, offset)
         {
             Radius = radius;
+            Offset = offset;
         }
 
         public BodyComponent(IEnumerable<Vector2> vertices, EntityType entityType, EntityShape entityShape, float density = 1f)
@@ -72,6 +74,11 @@ namespace Curupira2D.ECS.Components.Physics
         public float Friction { get; set; }
 
         public IEnumerable<Vector2> Vertices { get; set; }
+
+        /// <summary>
+        /// Set offset to Circle and Rectangle
+        /// </summary>
+        public Vector2 Offset { get; }
 
         public Vector2 SetLinearVelocityX(float x)
             => LinearVelocity = new Vector2(x, LinearVelocity.Y);

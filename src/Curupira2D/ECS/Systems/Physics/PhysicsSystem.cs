@@ -38,13 +38,13 @@ namespace Curupira2D.ECS.Systems.Physics
                 switch (bodyComponent.EntityShape)
                 {
                     case EntityShape.Circle:
-                        fixture = bodyComponent.CreateCircle(bodyComponent.Radius, bodyComponent.Density, Vector2.Zero);
+                        fixture = bodyComponent.CreateCircle(bodyComponent.Radius, bodyComponent.Density, bodyComponent.Offset);
                         break;
                     case EntityShape.Ellipse:
                         fixture = bodyComponent.CreateEllipse(bodyComponent.Size.X * 0.5f, bodyComponent.Size.Y * 0.5f, 8, bodyComponent.Density);
                         break;
                     case EntityShape.Rectangle:
-                        fixture = bodyComponent.CreateRectangle(bodyComponent.Size.X, bodyComponent.Size.Y, bodyComponent.Density, Vector2.Zero);
+                        fixture = bodyComponent.CreateRectangle(bodyComponent.Size.X, bodyComponent.Size.Y, bodyComponent.Density, bodyComponent.Offset);
                         break;
                     case EntityShape.Polygon:
                         var vertices = new Vertices(bodyComponent.Vertices);
