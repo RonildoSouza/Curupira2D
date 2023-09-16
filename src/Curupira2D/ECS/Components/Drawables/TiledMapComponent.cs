@@ -1,7 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using TiledLib;
 using System;
+using TiledLib;
 
 namespace Curupira2D.ECS.Components.Drawables
 {
@@ -14,7 +14,21 @@ namespace Curupira2D.ECS.Components.Drawables
             bool drawInUICamera = false) : base(texture: texture, color: color, drawInUICamera: drawInUICamera)
         {
             Map = map;
-            Origin = new Vector2(Map.CellWidth * 0.5f, Map.CellHeight * 0.5f);
+
+            if (Map != null)
+                Origin = new Vector2(Map.CellWidth * 0.5f, Map.CellHeight * 0.5f);
+        }
+
+        public override Texture2D Texture
+        {
+            get => _texture;
+            set
+            {
+                _texture = value;
+
+                TextureData = new Color[(int)(TextureSize.X * TextureSize.Y)];
+                _texture.GetData(TextureData);
+            }
         }
 
         public override float LayerDepth => throw new NotImplementedException("Layer depth can't be define!");

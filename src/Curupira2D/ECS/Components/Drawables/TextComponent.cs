@@ -29,6 +29,7 @@ namespace Curupira2D.ECS.Components.Drawables
             set
             {
                 _text = value;
+                Origin = TextSize * 0.5f;
 
                 //if (TextSize != Vector2.Zero)
                 //{

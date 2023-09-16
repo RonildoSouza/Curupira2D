@@ -18,14 +18,16 @@ namespace Curupira2D
         readonly int _width;
         readonly int _height;
         readonly bool _disabledExit;
+        readonly bool _isFullScreen;
 
-        public GameCore(int width = 0, int height = 0, bool disabledExit = false, DebugOptions debugOptions = null)
+        public GameCore(int width = 0, int height = 0, bool disabledExit = false, DebugOptions debugOptions = null, bool isFullScreen = false)
         {
             DebugOptions = debugOptions ?? new DebugOptions();
 
             _width = width;
             _height = height;
             _disabledExit = disabledExit;
+            _isFullScreen = isFullScreen;
 
             _graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
@@ -53,6 +55,13 @@ namespace Curupira2D
             {
                 _graphics.PreferredBackBufferWidth = _width;
                 _graphics.PreferredBackBufferHeight = _height;
+            }
+
+            if (_isFullScreen)
+            {
+                _graphics.IsFullScreen = _isFullScreen;
+                _graphics.PreferredBackBufferWidth = GraphicsDevice.DisplayMode.Width;
+                _graphics.PreferredBackBufferHeight = GraphicsDevice.DisplayMode.Height;
             }
 
             _graphics.ApplyChanges();

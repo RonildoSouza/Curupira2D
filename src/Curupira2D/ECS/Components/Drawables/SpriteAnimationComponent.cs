@@ -34,7 +34,7 @@ namespace Curupira2D.ECS.Components.Drawables
             Origin = new Vector2(FrameWidth * 0.5f, FrameHeight * 0.5f);
 
             TextureData = new Color[SourceRectangle.Value.Width * SourceRectangle.Value.Height];
-            texture.GetData(0, SourceRectangle, TextureData, 0, SourceRectangle.Value.Width * SourceRectangle.Value.Height);
+            _texture.GetData(0, SourceRectangle, TextureData, 0, SourceRectangle.Value.Width * SourceRectangle.Value.Height);
         }
 
         public SpriteAnimationComponent(
@@ -66,6 +66,22 @@ namespace Curupira2D.ECS.Components.Drawables
                 drawInUICamera)
         { }
 
+        public override Texture2D Texture
+        {
+            get => _texture;
+            set
+            {
+                _texture = value;
+
+                if (FrameColumnsCount > 0 && FrameRowsCount > 0)
+                {
+                    Origin = new Vector2(FrameWidth * 0.5f, FrameHeight * 0.5f);
+
+                    TextureData = new Color[SourceRectangle.Value.Width * SourceRectangle.Value.Height];
+                    _texture.GetData(0, SourceRectangle, TextureData, 0, SourceRectangle.Value.Width * SourceRectangle.Value.Height);
+                }
+            }
+        }
         public int FrameRowsCount { get; set; }
         public int FrameColumnsCount { get; set; }
         public TimeSpan FrameTime { get; set; }
