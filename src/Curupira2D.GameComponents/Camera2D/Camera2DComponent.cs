@@ -149,15 +149,13 @@ namespace Curupira2D.GameComponents.Camera2D
             base.Update(gameTime);
         }
 
-        public Vector2 ScreenToWorld(Vector2 position)
-        {
-            return Vector2.Transform(position, InverseMatrix);
-        }
+        public Vector2 ScreenToWorld(Vector2 position) => Vector2.Transform(position, InverseMatrix);
 
-        public Vector2 WorldToScreen(Vector2 position)
-        {
-            return Vector2.Transform(position, TransformationMatrix);
-        }
+        public Vector2 ScreenToWorld(float x, float y) => ScreenToWorld(new Vector2(x, y));
+
+        public Vector2 WorldToScreen(Vector2 position) => Vector2.Transform(position, TransformationMatrix);
+
+        public Vector2 WorldToScreen(float x, float y) => WorldToScreen(new Vector2(x, y));
 
         public bool IsInView(Vector2 position, Texture2D texture)
         {
@@ -172,6 +170,8 @@ namespace Curupira2D.GameComponents.Camera2D
             // In View
             return true;
         }
+
+        public bool IsInView(float x, float y, Texture2D texture) => IsInView(new Vector2(x, y), texture);
 
         public void Reset()
         {
