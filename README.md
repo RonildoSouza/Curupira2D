@@ -38,5 +38,5 @@ namespace Sample
 | Name                                                 | Link                                         |
 |------------------------------------------------------|----------------------------------------------|
 | MonoGame                                             | https://github.com/MonoGame/MonoGame         |
-| Aether.Physics2D.MG                                  | https://github.com/tainicom/Aether.Physics2D |
+| Aether.Physics2D.MG                                  | https://github.com/nkast/Aether.Physics2D    |
 | TiledLib.Net                                         | https://github.com/Ragath/TiledLib.Net       |
