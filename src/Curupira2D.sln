@@ -17,6 +17,12 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "WebSocket", "WebSocket", "{
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebSocketClient", "..\samples\WebSocket\WebSocketClient\WebSocketClient.csproj", "{5ACC58E4-EB42-460C-B01C-9D0AA2460130}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "WebSocketServer", "WebSocketServer", "{8C1F2B1E-14C1-4919-B7FA-739D77E44AE1}"
+	ProjectSection(SolutionItems) = preProject
+		..\samples\WebSocket\WebSocketServer\index.js = ..\samples\WebSocket\WebSocketServer\index.js
+		..\samples\WebSocket\WebSocketServer\package.json = ..\samples\WebSocket\WebSocketServer\package.json
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -54,6 +60,7 @@ Global
 		{DCDED6C6-E02D-4137-B37E-240B6596CDD0} = {FE4E0B1F-9B5B-4FA7-B12D-8CABBF5F98F6}
 		{7311327C-472B-413D-9ACF-5DEA84333700} = {FE4E0B1F-9B5B-4FA7-B12D-8CABBF5F98F6}
 		{5ACC58E4-EB42-460C-B01C-9D0AA2460130} = {7311327C-472B-413D-9ACF-5DEA84333700}
+		{8C1F2B1E-14C1-4919-B7FA-739D77E44AE1} = {7311327C-472B-413D-9ACF-5DEA84333700}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {F7FBE376-4118-4915-9F60-A6E7253981BD}

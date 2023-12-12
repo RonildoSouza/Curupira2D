@@ -1,7 +1,7 @@
 ﻿using Curupira2D.ECS;
 using System.Collections.Generic;
 using System.Linq;
-using tainicom.Aether.Physics2D.Dynamics;
+using nkast.Aether.Physics2D.Dynamics;
 
 namespace Curupira2D.Extensions
 {

@@ -4,9 +4,9 @@ using Curupira2D.Extensions;
 using Microsoft.Xna.Framework;
 using System.Linq;
 using System.Threading.Tasks;
-using tainicom.Aether.Physics2D.Common;
-using tainicom.Aether.Physics2D.Diagnostics;
-using tainicom.Aether.Physics2D.Dynamics;
+using nkast.Aether.Physics2D.Common;
+using nkast.Aether.Physics2D.Diagnostics;
+using nkast.Aether.Physics2D.Dynamics;
 
 namespace Curupira2D.ECS.Systems.Physics
 {

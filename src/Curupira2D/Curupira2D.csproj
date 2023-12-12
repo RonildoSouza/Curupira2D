@@ -1,8 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
+    <TargetFramework>net8.0</TargetFramework>
     <Authors>Ronildo Souza</Authors>
-    <Version>2.0.0-beta.6</Version>
+    <Version>3.0.0-beta.1</Version>
     <PackageOutputPath>..\..\nupkgs</PackageOutputPath>
     <PackageProjectUrl>https://github.com/RonildoSouza/Curupira2D#readme</PackageProjectUrl>
     <RepositoryUrl>https://github.com/RonildoSouza/Curupira2D</RepositoryUrl>
@@ -32,12 +32,12 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Aether.Physics2D.Diagnostics.MG" Version="1.6.1" />
-    <PackageReference Include="Aether.Physics2D.MG" Version="1.6.1" />
+    <PackageReference Include="Aether.Physics2D.Diagnostics.MG" Version="2.0.0.1" />
+    <PackageReference Include="Aether.Physics2D.MG" Version="2.0.0" />
     <PackageReference Include="MonoGame.Framework.DesktopGL" Version="3.8.1.303">
       <PrivateAssets>All</PrivateAssets>
     </PackageReference>
-    <PackageReference Include="TiledLib" Version="3.2.0" />
+    <PackageReference Include="TiledLib" Version="4.0.3" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Curupira2D.GameComponents\Curupira2D.GameComponents.csproj" />

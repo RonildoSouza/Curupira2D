@@ -119,9 +119,9 @@ namespace Curupira2D
             var fileVersionInfo = FileVersionInfo.GetVersionInfo(assembly.Location);
 
             if (_sceneManager.CurrentScene == null)
-                return $"{GetType().Assembly.GetName().Name} Version - {fileVersionInfo.ProductVersion}";
+                return $"{GetType().Assembly.GetName().Name} Version - {fileVersionInfo.FileVersion}";
 
-            return fileVersionInfo.ProductVersion;
+            return fileVersionInfo.FileVersion;
         }
     }
 }
