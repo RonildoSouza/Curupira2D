@@ -15,7 +15,7 @@ jobs:
     - name: Setup .NET
       uses: actions/setup-dotnet@v3.0.3
       with:
-        dotnet-version: 6.x
+        dotnet-version: 8.x
         
     - name: Restore dependencies
       run: dotnet restore src/Curupira2D-NoSamples.sln
@@ -32,7 +32,7 @@ jobs:
     - name: Setup .NET
       uses: actions/setup-dotnet@v3.0.3
       with:
-        dotnet-version: 6.x
+        dotnet-version: 8.x
         
     - name: Pack - Curupira2D
       run: dotnet pack src/Curupira2D/Curupira2D.csproj -c Release
