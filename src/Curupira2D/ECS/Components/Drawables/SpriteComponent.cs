@@ -1,11 +1,13 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using System;
 
 namespace Curupira2D.ECS.Components.Drawables
 {
     public class SpriteComponent : DrawableComponent
     {
         protected Texture2D _texture;
+        protected Color[] _textureData;
 
         public SpriteComponent(
             Texture2D texture,
@@ -25,13 +27,23 @@ namespace Curupira2D.ECS.Components.Drawables
             set
             {
                 _texture = value;
-
                 Origin = SourceRectangle.HasValue ? SourceRectangle.Value.Size.ToVector2() * 0.5f : TextureSize * 0.5f;
-
-                TextureData = new Color[(int)(TextureSize.X * TextureSize.Y)];
-                _texture.GetData(TextureData);
             }
         }
         public Vector2 TextureSize => Texture.Bounds.Size.ToVector2();
+
+        public override Color[] TextureData
+        {
+            get
+            {
+                if (_texture is null)
+                    return [];
+
+                _textureData = new Color[(int)(TextureSize.X * TextureSize.Y)];
+                _texture.GetData(_textureData);
+
+                return _textureData;
+            }
+        }
     }
 }

@@ -6,6 +6,7 @@ namespace Curupira2D.ECS.Components.Drawables
     public class TextComponent : DrawableComponent
     {
         string _text;
+        Color[] _textureData;
 
         public TextComponent(
             SpriteFont spriteFont,
@@ -30,14 +31,24 @@ namespace Curupira2D.ECS.Components.Drawables
             {
                 _text = value;
                 Origin = TextSize * 0.5f;
-
-                //if (TextSize != Vector2.Zero)
-                //{
-                //    TextureData = new Color[SpriteFont.Texture.Width * SpriteFont.Texture.Height / 4];
-                //    SpriteFont.Texture.GetData(TextureData);
-                //}
             }
         }
-        public Vector2 TextSize => SpriteFont.MeasureString(Text);
+
+        public Vector2 TextSize => SpriteFont.MeasureString(Text); public override Color[] TextureData
+        {
+            get
+            {
+                if (SpriteFont.Texture is null)
+                    return [];
+
+                if (TextSize != Vector2.Zero)
+                {
+                    _textureData = new Color[SpriteFont.Texture.Width * SpriteFont.Texture.Height / 4];
+                    SpriteFont.Texture.GetData(_textureData);
+                }
+
+                return _textureData;
+            }
+        }
     }
 }

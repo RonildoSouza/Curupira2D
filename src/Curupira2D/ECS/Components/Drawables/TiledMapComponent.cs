@@ -22,16 +22,25 @@ namespace Curupira2D.ECS.Components.Drawables
         public override Texture2D Texture
         {
             get => _texture;
-            set
-            {
-                _texture = value;
-
-                TextureData = new Color[(int)(TextureSize.X * TextureSize.Y)];
-                _texture.GetData(TextureData);
-            }
+            set => _texture = value;
         }
 
         public override float LayerDepth => throw new NotImplementedException("Layer depth can't be define!");
+
+        public override Color[] TextureData
+        {
+            get
+            {
+                if (_texture is null)
+                    return [];
+
+                _textureData = new Color[(int)(TextureSize.X * TextureSize.Y)];
+                _texture.GetData(_textureData);
+
+                return _textureData;
+            }
+        }
+
         public Map Map { get; }
     }
 }

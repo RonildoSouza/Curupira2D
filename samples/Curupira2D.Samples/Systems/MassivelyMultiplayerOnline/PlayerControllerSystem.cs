@@ -61,6 +61,8 @@ namespace Curupira2D.Samples.Systems.MassivelyMultiplayerOnline
 
         public override void Update()
         {
+            base.Update();
+
             UpdatePlayerEyesPositions();
 
             if (_playerEntity.IsCollidedWithAny(Scene, "enemy"))
@@ -75,7 +77,6 @@ namespace Curupira2D.Samples.Systems.MassivelyMultiplayerOnline
             }
 
             _send_message = ChangePosition;
-            base.Update();
         }
 
         public override void OnRemoveFromScene()

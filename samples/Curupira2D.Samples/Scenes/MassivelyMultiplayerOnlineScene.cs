@@ -26,6 +26,12 @@ namespace Curupira2D.Samples.Scenes
             base.LoadContent();
         }
 
+        public override void UnloadContent()
+        {
+            base.UnloadContent();
+            WSClient.DisposeAsync().ConfigureAwait(true);
+        }
+
         internal void WSSendMessage(string message) => WSClient?.Send(new Message(WSChannel, message));
     }
 }
