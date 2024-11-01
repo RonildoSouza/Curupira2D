@@ -1,14 +1,3 @@
-﻿using System;
-
-namespace Curupira2D.Samples
-{
-    public static class Program
-    {
-        [STAThread]
-        static void Main()
-        {
-            using (var game = new Game1())
-                game.Run();
-        }
-    }
-}
+﻿
+using var game = new Curupira2D.Samples.Game1();
+game.Run();

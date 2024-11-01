@@ -57,28 +57,6 @@ namespace Curupira2D.Diagnostics
                         _spriteBatch.DrawString(_fontArial18, _text, new Vector2((GraphicsDevice.Viewport.Width * 0.5f) - (_textSize.X * 0.5f), _textSize.Y * 1.1f), _gameCore.DebugOptions.TextColor);
                         _spriteBatch.End();
                         break;
-                    case MonoGamePlatform.iOS:
-                        break;
-                    case MonoGamePlatform.tvOS:
-                        break;
-                    case MonoGamePlatform.DesktopGL:
-                        break;
-                    case MonoGamePlatform.Windows:
-                        break;
-                    case MonoGamePlatform.WindowsUniversal:
-                        break;
-                    case MonoGamePlatform.WebGL:
-                        break;
-                    case MonoGamePlatform.XboxOne:
-                        break;
-                    case MonoGamePlatform.PlayStation4:
-                        break;
-                    case MonoGamePlatform.PlayStation5:
-                        break;
-                    case MonoGamePlatform.NintendoSwitch:
-                        break;
-                    case MonoGamePlatform.Stadia:
-                        break;
                     default:
                         break;
                 }
