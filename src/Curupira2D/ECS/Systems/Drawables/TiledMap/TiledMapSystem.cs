@@ -75,8 +75,7 @@ namespace Curupira2D.ECS.Systems.Drawables
 
                             GetTileOrientation(tile, out var tileSpriteEffect, out var tileRotation);
 
-                            var tilePosX = x * tile.Width + (int)(tile.Width * 0.5f);
-                            var tilePosY = (int)Scene.InvertPositionY(y * tile.Height + (int)(tile.Height * 0.5f));
+                            var (tilePosX, tilePosY) = GetTilePositionsToScreen(x, y, tile, tiledMapComponent.Map);
 
                             Scene.SpriteBatch.Draw(
                                 tiledMapComponent.Texture,
@@ -144,7 +143,7 @@ namespace Curupira2D.ECS.Systems.Drawables
             }
         }
 
-        void GetTileOrientation(Tile tile, out SpriteEffects tileSpriteEffect, out float tileRotation)
+        static void GetTileOrientation(Tile tile, out SpriteEffects tileSpriteEffect, out float tileRotation)
         {
             tileSpriteEffect = SpriteEffects.None;
             tileRotation = 0f;
@@ -173,7 +172,7 @@ namespace Curupira2D.ECS.Systems.Drawables
             }
         }
 
-        void SetPhysicsProperties(BaseObject baseObject, ObjectLayer objectLayer, ref BodyComponent bodyComponent)
+        static void SetPhysicsProperties(BaseObject baseObject, ObjectLayer objectLayer, ref BodyComponent bodyComponent)
         {
             var restitution = baseObject.Properties.GetValue(TiledMapSystemConstants.Properties.Physics.Restitution)
                 ?? objectLayer.Properties.GetValue(TiledMapSystemConstants.Properties.Physics.Restitution);
@@ -182,7 +181,26 @@ namespace Curupira2D.ECS.Systems.Drawables
                 ?? objectLayer.Properties.GetValue(TiledMapSystemConstants.Properties.Physics.Friction);
 
             bodyComponent.Restitution = float.TryParse(restitution, out float restitutionValue) ? restitutionValue : bodyComponent.Restitution;
-            bodyComponent.Friction = float.TryParse(friction, out float frictionValue) ? frictionValue : bodyComponent.Restitution;
+            bodyComponent.Friction = float.TryParse(friction, out float frictionValue) ? frictionValue : bodyComponent.Friction;
+        }
+
+        (int TilePosX, int TilePosY) GetTilePositionsToScreen(int x, int y, Tile tile, Map map)
+        {
+            int tilePosX;
+            int tilePosY;
+
+            if (map.Orientation == Orientation.isometric)
+            {
+                tilePosX = (x - y) * (int)(tile.Width * 0.5f);
+                tilePosY = (int)Scene.InvertPositionY((x + y) * (int)(tile.Height * 0.5f));
+
+                return (tilePosX, tilePosY);
+            }
+
+            tilePosX = x * tile.Width + (int)(tile.Width * 0.5f);
+            tilePosY = (int)Scene.InvertPositionY(y * tile.Height + (int)(tile.Height * 0.5f));
+
+            return (tilePosX, tilePosY);
         }
     }
 }
