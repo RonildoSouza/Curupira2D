@@ -1,12 +1,11 @@
 ﻿using Curupira2D.ECS.Components.Physics;
 using Curupira2D.ECS.Systems.Attributes;
-using Curupira2D.Extensions;
 using Microsoft.Xna.Framework;
-using System.Linq;
-using System.Threading.Tasks;
 using nkast.Aether.Physics2D.Common;
 using nkast.Aether.Physics2D.Diagnostics;
 using nkast.Aether.Physics2D.Dynamics;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace Curupira2D.ECS.Systems.Physics
 {
@@ -47,8 +46,10 @@ namespace Curupira2D.ECS.Systems.Physics
                         fixture = bodyComponent.CreateRectangle(bodyComponent.Size.X, bodyComponent.Size.Y, bodyComponent.Density, bodyComponent.Offset);
                         break;
                     case EntityShape.Polygon:
-                        var vertices = new Vertices(bodyComponent.Vertices);
-                        fixture = bodyComponent.CreatePolygon(vertices, bodyComponent.Density);
+                        fixture = bodyComponent.CreatePolygon(new Vertices(bodyComponent.Vertices), bodyComponent.Density);
+                        break;
+                    case EntityShape.PolyLine:
+                        fixture = bodyComponent.CreateChainShape(new Vertices(bodyComponent.Vertices));
                         break;
                 }
 

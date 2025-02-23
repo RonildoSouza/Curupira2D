@@ -1,8 +1,8 @@
 ﻿using Curupira2D.Extensions;
 using Microsoft.Xna.Framework;
+using nkast.Aether.Physics2D.Dynamics;
 using System;
 using System.Collections.Generic;
-using nkast.Aether.Physics2D.Dynamics;
 
 namespace Curupira2D.ECS.Components.Physics
 {
@@ -113,6 +113,7 @@ namespace Curupira2D.ECS.Components.Physics
         Ellipse,
         Rectangle,
         Polygon,
+        PolyLine,
     }
 
     public enum EntityType

@@ -139,6 +139,22 @@ namespace Curupira2D.ECS.Systems.Drawables
                     Scene.CreateEntity(entityUniqueId ?? $"{nameof(PolygonObject)}_{polygonObject.Id}", posX, posY, entityGroup)
                         .AddComponent(polygonBodyComponent);
                 }
+
+                // Creates poly line type collision entity
+                if (baseObject is PolyLineObject polyLineObject)
+                {
+                    var posX = (float)polyLineObject.X;
+                    var posY = Scene.InvertPositionY((float)polyLineObject.Y);
+                    var polyLineBodyComponent = new BodyComponent(
+                        polyLineObject.Polyline.Select(_ => new Vector2((float)_.X, (float)polyLineObject.Height - (float)_.Y)),
+                        EntityType.Static,
+                        EntityShape.PolyLine);
+
+                    SetPhysicsProperties(polyLineObject, objectLayer, ref polyLineBodyComponent);
+
+                    Scene.CreateEntity(entityUniqueId ?? $"{nameof(PolyLineObject)}_{polyLineObject.Id}", posX, posY, entityGroup)
+                        .AddComponent(polyLineBodyComponent);
+                }
             }
         }
 
