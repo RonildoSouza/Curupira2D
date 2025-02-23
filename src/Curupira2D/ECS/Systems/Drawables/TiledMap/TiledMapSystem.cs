@@ -53,10 +53,9 @@ namespace Curupira2D.ECS.Systems.Drawables
                     {
                         var propertyValueOrder = _.Properties.GetValue(TiledMapSystemConstants.Properties.Order);
                         return string.IsNullOrEmpty(propertyValueOrder) ? _.Id : int.Parse(propertyValueOrder);
-                    })
-                    .Where(_ => _.Visible);
+                    });
 
-                foreach (var layer in layers)
+                foreach (var layer in layers.Where(_ => _.Visible))
                 {
                     var propertyValueOrder = layer.Properties.GetValue(TiledMapSystemConstants.Properties.Order);
                     var valueOrder = string.IsNullOrEmpty(propertyValueOrder) ? layer.Id : int.Parse(propertyValueOrder);
