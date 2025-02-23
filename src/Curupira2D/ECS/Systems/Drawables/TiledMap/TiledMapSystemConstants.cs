@@ -7,6 +7,7 @@
             public const string EntityUniqueId = "c2D.entityUniqueId";
             public const string EntityGroup = "c2D.entityGroup";
             public const string Order = "c2D.order";
+            public const string Visible = "c2D.visible";
 
             public struct Physics
             {
