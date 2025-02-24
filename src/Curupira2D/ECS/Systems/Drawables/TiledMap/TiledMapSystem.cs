@@ -36,7 +36,18 @@ namespace Curupira2D.ECS.Systems.Drawables
                             .FirstOrDefault();
 
                         if (entity != null && entity.Position == default)
+                        {
+                            if (tiledMapComponent.Map.Orientation == Orientation.isometric)
+                            {
+                                var positionOffset = GetIsometricOffsetPositionY(pointObject, tiledMapComponent.Map);
+                                var position = new Vector2((float)(pointObject.X - pointObject.Y), Scene.InvertPositionY((float)(pointObject.X + pointObject.Y)) + positionOffset);
+
+                                entity.SetPosition(position);
+                                continue;
+                            }
+
                             entity.SetPosition((float)pointObject.X, Scene.InvertPositionY((float)pointObject.Y));
+                        }
                     }
                 }
             }
@@ -239,13 +250,12 @@ namespace Curupira2D.ECS.Systems.Drawables
 
             if (map.Orientation == Orientation.isometric)
             {
-                position = new Vector2((float)baseObject.X - (float)baseObject.Y, Scene.InvertPositionY((float)baseObject.X + (float)baseObject.Y));
+                var positionOffset = GetIsometricOffsetPositionY(baseObject, map);
+
+                position = new Vector2((float)baseObject.X - (float)baseObject.Y, Scene.InvertPositionY((float)baseObject.X + (float)baseObject.Y) + positionOffset);
                 vertices = positions.Select(_ => ConvertPositionOrthogonalToIsometricOfPolyObjects(_.X, _.Y));
 
-                var totalTilesAbovePosition = (float)(baseObject.X + baseObject.Y) / map.CellWidth;
-                var positionOffset = (totalTilesAbovePosition * map.CellHeight) + (map.CellHeight * 0.5f);
-
-                return (position += new Vector2(0f, positionOffset), vertices);
+                return (position, vertices);
             }
 
             position = new Vector2((float)baseObject.X, Scene.InvertPositionY((float)baseObject.Y));
@@ -255,6 +265,12 @@ namespace Curupira2D.ECS.Systems.Drawables
 
             static Vector2 ConvertPositionOrthogonalToIsometricOfPolyObjects(double x, double y)
                 => new() { X = (float)(x - y), Y = (float)(-(x + y) * 0.5f) };
+        }
+
+        static float GetIsometricOffsetPositionY(BaseObject baseObject, Map map)
+        {
+            var totalTilesAbovePosition = (float)(baseObject.X + baseObject.Y) / map.CellWidth;
+            return (totalTilesAbovePosition * map.CellHeight) + (map.CellHeight * 0.5f);
         }
     }
 }
