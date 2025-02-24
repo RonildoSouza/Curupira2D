@@ -18,7 +18,8 @@ namespace Curupira2D.Samples.Scenes
                      "6 - Aether Physics2D - HelloWorld\n" +
                      "7 - Quadtree Check Collision\n" +
                      "8 - Tiled Map With Many Layers\n" +
-                     "9 - Massively Multiplayer Online (MMO)\n",
+                     "9 - Massively Multiplayer Online (MMO)\n" +
+                     "0 - Isometric Tiled Map And Sprite Animation\n",
                      ScreenCenter.X,
                      ScreenCenter.Y,
                      scale: Vector2.One);
@@ -59,6 +60,9 @@ namespace Curupira2D.Samples.Scenes
 
             if (KeyboardInputManager.IsKeyPressed(Keys.D9))
                 GameCore.SetScene<MassivelyMultiplayerOnlineScene>();
+
+            if (KeyboardInputManager.IsKeyPressed(Keys.D0))
+                GameCore.SetScene<IsometricTiledMapScene>();
 
             KeyboardInputManager.End();
 
