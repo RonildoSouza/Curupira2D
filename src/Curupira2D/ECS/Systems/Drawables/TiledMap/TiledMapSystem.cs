@@ -253,7 +253,7 @@ namespace Curupira2D.ECS.Systems.Drawables
                 var positionOffset = GetIsometricOffsetPositionY(baseObject, map);
 
                 position = new Vector2((float)baseObject.X - (float)baseObject.Y, Scene.InvertPositionY((float)baseObject.X + (float)baseObject.Y) + positionOffset);
-                vertices = positions.Select(_ => ConvertPositionOrthogonalToIsometricOfPolyObjects(_.X, _.Y));
+                vertices = positions.Select(_ => CartesianToIsometricOfPolyObjects(_.X, _.Y));
 
                 return (position, vertices);
             }
@@ -263,7 +263,7 @@ namespace Curupira2D.ECS.Systems.Drawables
 
             return (position, vertices);
 
-            static Vector2 ConvertPositionOrthogonalToIsometricOfPolyObjects(double x, double y)
+            static Vector2 CartesianToIsometricOfPolyObjects(double x, double y)
                 => new() { X = (float)(x - y), Y = (float)(-(x + y) * 0.5f) };
         }
 
