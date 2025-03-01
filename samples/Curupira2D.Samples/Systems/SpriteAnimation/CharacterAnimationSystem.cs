@@ -27,31 +27,22 @@ namespace Curupira2D.Samples.Systems.SpriteAnimation
             _spriteAnimationComponent.IsPlaying = false;
 
             if (Scene.KeyboardInputManager.IsKeyDown(Keys.Left) || Scene.KeyboardInputManager.IsKeyDown(Keys.A))
-                HorizontalAnimation(180);
+                ApplyWalkAnimation(WalkDirection.Left);
 
             if (Scene.KeyboardInputManager.IsKeyDown(Keys.Up) || Scene.KeyboardInputManager.IsKeyDown(Keys.W))
-                VerticalAnimation(90);
+                ApplyWalkAnimation(WalkDirection.Up);
 
             if (Scene.KeyboardInputManager.IsKeyDown(Keys.Right) || Scene.KeyboardInputManager.IsKeyDown(Keys.D))
-                HorizontalAnimation(270);
+                ApplyWalkAnimation(WalkDirection.Right);
 
             if (Scene.KeyboardInputManager.IsKeyDown(Keys.Down) || Scene.KeyboardInputManager.IsKeyDown(Keys.S))
-                VerticalAnimation(0);
+                ApplyWalkAnimation(WalkDirection.Down);
         }
 
-        void HorizontalAnimation(int sourcePosY)
+        void ApplyWalkAnimation(WalkDirection walkDirection)
         {
             var sourceRectangle = _spriteAnimationComponent.SourceRectangle.Value;
-            sourceRectangle.Y = sourcePosY;
-
-            _spriteAnimationComponent.IsPlaying = true;
-            _spriteAnimationComponent.SourceRectangle = sourceRectangle;
-        }
-
-        void VerticalAnimation(int sourcePosY)
-        {
-            var sourceRectangle = _spriteAnimationComponent.SourceRectangle.Value;
-            sourceRectangle.Y = sourcePosY;
+            sourceRectangle.Y = (int)walkDirection;
 
             _spriteAnimationComponent.IsPlaying = true;
             _spriteAnimationComponent.SourceRectangle = sourceRectangle;
