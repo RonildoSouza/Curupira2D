@@ -12,7 +12,7 @@ namespace Curupira2D.Samples.Scenes
             AddSystem(new MapSystem("TiledMap/PlatformerTiledMap.tmx", "TiledMap/PlatformerTileset"));
             AddSystem<CharacterMovementSystem>();
 
-            ShowControlTips("MOVIMENT: Keyboard Arrows OR WASD");
+            ShowControlTips("MOVIMENT: Keyboard Arrows OR WASD", y: 120f);
 
             base.LoadContent();
         }

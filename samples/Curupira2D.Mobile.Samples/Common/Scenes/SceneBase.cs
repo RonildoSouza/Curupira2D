@@ -9,16 +9,9 @@ using System.Linq;
 
 namespace Curupira2D.Mobile.Samples.Common.Scenes
 {
-    public abstract class SceneBase : Scene
+    public abstract class SceneBase(bool activeReturnButton = true) : Scene
     {
         Entity _returnButtonEntity;
-        readonly bool _activeReturnButton;
-
-
-        protected SceneBase(bool activeReturnButton = true)
-        {
-            _activeReturnButton = activeReturnButton;
-        }
 
         public TouchLocation TouchLocation { get; set; }
         public Rectangle TouchLocationRectangle { get; set; }
@@ -31,7 +24,7 @@ namespace Curupira2D.Mobile.Samples.Common.Scenes
                 ScreenWidth - returnButtonTexture.Width,
                 ScreenHeight - returnButtonTexture.Height)
                 .AddComponent(new SpriteComponent(returnButtonTexture))
-                .SetActive(_activeReturnButton);
+                .SetActive(activeReturnButton);
 
             base.LoadContent();
         }
@@ -51,7 +44,7 @@ namespace Curupira2D.Mobile.Samples.Common.Scenes
             TouchLocationRectangle = new Rectangle(
                 (int)TouchLocation.Position.X, (int)InvertPositionY(TouchLocation.Position.Y), 0, 0);
 
-            if (_activeReturnButton
+            if (activeReturnButton
                 && TouchLocation.State == TouchLocationState.Released
                 && TouchLocationRectangle.Intersects(_returnButtonEntity.GetHitBox()))
                 GameCore.SetScene<MenuScene>();

@@ -1,18 +1,17 @@
-﻿using Curupira2D.ECS;
-using Curupira2D.ECS.Components.Drawables;
-using Curupira2D.Extensions;
-using Curupira2D.Mobile.Samples.Common.Scenes;
+﻿using Curupira2D.Mobile.Samples.Common.Scenes;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input.Touch;
-using System.Collections.Generic;
-using System.Linq;
+using Myra;
+using Myra.Graphics2D.Brushes;
+using Myra.Graphics2D.TextureAtlases;
+using Myra.Graphics2D.UI;
+using System;
 
 namespace Curupira2D.Mobile.Samples.Scenes
 {
     public class MenuScene : SceneBase
     {
-        IList<Entity> _itemsEntity;
+        private Desktop _desktop;
 
         public MenuScene() : base(activeReturnButton: false) { }
 
@@ -20,58 +19,81 @@ namespace Curupira2D.Mobile.Samples.Scenes
         {
             SetTitle(nameof(MenuScene));
 
-            var spriteFont = GameCore.Content.Load<SpriteFont>("Common/FontImpact18");
-            _itemsEntity = new List<Entity>
+            MyraEnvironment.Game = GameCore;
+
+            var rootVerticalStackPanel = new VerticalStackPanel
             {
-                CreateEntity("S01", Vector2.Zero)
-                    .AddComponent(new TextComponent(
-                        spriteFont,
-                        "S01 - JOYSTICK",
-                        color: Color.Black,
-                        scale: new Vector2(3.5f))),
-                CreateEntity("S02", Vector2.Zero)
-                    .AddComponent(new TextComponent(
-                        spriteFont,
-                        "S02 - TOP DOWN CAR MOVEMENT",
-                        color: Color.Black,
-                        scale: new Vector2(3.5f))),
-                CreateEntity("S03", Vector2.Zero)
-                    .AddComponent(new TextComponent(
-                        spriteFont,
-                        "S03 - ASTEROIDS MOVEMENT",
-                        color: Color.Black,
-                        scale: new Vector2(3.5f))),
+                Spacing = 20,
+                HorizontalAlignment = HorizontalAlignment.Center,
+                VerticalAlignment = VerticalAlignment.Center,
             };
 
-            var itemHeightSize = ScreenHeight / _itemsEntity.Count;
-            for (int i = 0; i < _itemsEntity.Count; i++)
-            {
-                var itemEntity = _itemsEntity[i];
-                itemEntity.SetPosition(ScreenCenter.X, InvertPositionY(itemHeightSize * (i + 0.5f)));
-            }
+            rootVerticalStackPanel.Widgets.Add(
+                BuildMenuItem("S01 - JOYSTICK", (o, e) => GameCore.SetScene<S01JoystickScene>(), "UI/Images/S01JoystickScene"));
+            rootVerticalStackPanel.Widgets.Add(
+                BuildMenuItem("S02 - TOP DOWN CAR MOVEMENT", (o, e) => GameCore.SetScene<S02TopDownCarMovementScene>(), "UI/Images/S02TopDownCarMovementScene"));
+            rootVerticalStackPanel.Widgets.Add(
+                BuildMenuItem("S03 - ASTEROIDS MOVEMENT", (o, e) => GameCore.SetScene<S03AsteroidsMovementScene>(), "UI/Images/S03AsteroidsMovementScene"));
+
+            _desktop = new Desktop { Root = rootVerticalStackPanel };
 
             base.LoadContent();
         }
 
-        public override void Update(GameTime gameTime)
+        public override void Draw()
         {
-            var itemEntity = _itemsEntity.FirstOrDefault(
-                _ => TouchLocationRectangle.Intersects(_.GetHitBox()) && TouchLocation.State == TouchLocationState.Released);
+            _desktop.Render();
+            base.Draw();
+        }
 
-            switch (itemEntity?.UniqueId)
+        public override void Dispose()
+        {
+            _desktop.Dispose();
+            base.Dispose();
+        }
+
+        Button BuildMenuItem(string text, EventHandler click, string imagePath)
+        {
+            var heightItem = (int)(ScreenHeight / 3.5f);
+
+            var buttonContentHorizontalStackPanel = new HorizontalStackPanel
             {
-                case "S01":
-                    GameCore.SetScene<S01JoystickScene>();
-                    break;
-                case "S02":
-                    GameCore.SetScene<S02TopDownCarMovementScene>();
-                    break;
-                case "S03":
-                    GameCore.SetScene<S03AsteroidsMovementScene>();
-                    break;
-            }
+                Spacing = 10,
+                Padding = new Myra.Graphics2D.Thickness(4),
+                HorizontalAlignment = HorizontalAlignment.Left,
+                VerticalAlignment = VerticalAlignment.Center,
+            };
 
-            base.Update(gameTime);
+            // Set image
+            buttonContentHorizontalStackPanel.Widgets.Add(new Image
+            {
+                Width = (int)(ScreenWidth * 0.3f),
+                Height = heightItem,
+                Renderable = new TextureRegion(GameCore.Content.Load<Texture2D>(imagePath))
+            });
+
+            // Set label
+            buttonContentHorizontalStackPanel.Widgets.Add(new Label
+            {
+                Scale = new Vector2(2),
+                Margin = new Myra.Graphics2D.Thickness((int)(ScreenWidth * 0.16f), 0, 0, 0),
+                Width = (int)(ScreenWidth * 0.7f),
+                VerticalAlignment = VerticalAlignment.Center,
+                Text = text
+            });
+
+            var button = new Button
+            {
+                Width = (int)(ScreenWidth * 0.9f),
+                Height = heightItem,
+                HorizontalAlignment = HorizontalAlignment.Center,
+                VerticalAlignment = VerticalAlignment.Center,
+                Content = buttonContentHorizontalStackPanel,
+            };
+
+            button.Click += click;
+
+            return button;
         }
     }
 }

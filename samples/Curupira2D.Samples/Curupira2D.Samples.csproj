@@ -21,11 +21,47 @@
   <ItemGroup>
     <PackageReference Include="MonoGame.Framework.DesktopGL" Version="3.8.2.1105" />
     <PackageReference Include="MonoGame.Content.Builder.Task" Version="3.8.2.1105" />
+    <PackageReference Include="Myra" Version="1.5.9" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\src\Curupira2D.GameComponents\Curupira2D.GameComponents.csproj" />
     <ProjectReference Include="..\..\src\Curupira2D\Curupira2D.csproj" />
     <ProjectReference Include="..\WebSocket\WebSocketClient\WebSocketClient.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Update="Content\UI\Images\AetherPhysics2DHelloWorldScene.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Content\UI\Images\CameraScene.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Content\UI\Images\IsometricTiledMapScene.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Content\UI\Images\MassivelyMultiplayerOnlineScene.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Content\UI\Images\PhysicScene.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Content\UI\Images\PlatformerTiledMapScene.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Content\UI\Images\QuadtreeCheckCollisionScene.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Content\UI\Images\SceneGraphScene.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Content\UI\Images\SpriteAnimationScene.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Content\UI\Images\TiledMapWithManyLayersScene.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Content\UI\Menu.xmmp">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
   <Target Name="RestoreDotnetTools" BeforeTargets="Restore">
     <Message Text="Restoring dotnet tools" Importance="High" />

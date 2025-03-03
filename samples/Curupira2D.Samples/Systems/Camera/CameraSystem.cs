@@ -9,15 +9,9 @@ using Microsoft.Xna.Framework.Input;
 namespace Curupira2D.Samples.Systems.Camera
 {
     [RequiredComponent(typeof(CameraSystem), typeof(SpriteComponent))]
-    class CameraSystem : ECS.System, ILoadable, IUpdatable
+    class CameraSystem(bool moveWithKeyboard) : ECS.System, ILoadable, IUpdatable
     {
         Vector2 _cameraPosition;
-        readonly bool _moveWithKeyboard;
-
-        public CameraSystem(bool moveWithKeyboard)
-        {
-            _moveWithKeyboard = moveWithKeyboard;
-        }
 
         public void LoadContent()
         {
@@ -27,7 +21,7 @@ namespace Curupira2D.Samples.Systems.Camera
 
         public void Update()
         {
-            if (_moveWithKeyboard)
+            if (moveWithKeyboard)
             {
                 _cameraPosition = Scene.Camera2D.Position;
                 var direction = Vector2.Zero;
