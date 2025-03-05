@@ -29,9 +29,10 @@ namespace Curupira2D.Samples.Scenes
             project.Root.FindChildById<Button>("PlatformerTiledMapButton").Click += (o, e) => GameCore.SetScene<PlatformerTiledMapScene>();
             project.Root.FindChildById<Button>("AetherPhysics2DHelloWorldButton").Click += (o, e) => GameCore.SetScene<AetherPhysics2DHelloWorldScene>();
             project.Root.FindChildById<Button>("QuadtreeCheckCollisionButton").Click += (o, e) => GameCore.SetScene<QuadtreeCheckCollisionScene>();
-            project.Root.FindChildById<Button>("TiledMapWithManyLayersButton").Click += (o, e) => GameCore.SetScene<TiledMapWithManyLayersScene>();
             project.Root.FindChildById<Button>("MassivelyMultiplayerOnlineButton").Click += (o, e) => GameCore.SetScene<MassivelyMultiplayerOnlineScene>();
+            project.Root.FindChildById<Button>("TiledMapWithManyLayersButton").Click += (o, e) => GameCore.SetScene<TiledMapWithManyLayersScene>();
             project.Root.FindChildById<Button>("IsometricTiledMapButton").Click += (o, e) => GameCore.SetScene<IsometricTiledMapScene>();
+            project.Root.FindChildById<Button>("IsometricGravityTiledMapButton").Click += (o, e) => GameCore.SetScene<IsometricGravityTiledMapScene>();
 
             _desktop = new Desktop { Root = project.Root };
 

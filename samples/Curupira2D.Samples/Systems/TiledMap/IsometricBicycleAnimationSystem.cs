@@ -10,7 +10,7 @@ using Microsoft.Xna.Framework.Input;
 
 namespace Curupira2D.Samples.Systems.TiledMap
 {
-    [RequiredComponent(typeof(IsometricBicycleAnimationSystem), typeof(SpriteAnimationComponent))]
+    [RequiredComponent(typeof(IsometricBicycleAnimationSystem), [typeof(SpriteAnimationComponent), typeof(BodyComponent)])]
     class IsometricBicycleAnimationSystem : ECS.System, ILoadable, IUpdatable
     {
         Entity _isometricCharacterEntity;

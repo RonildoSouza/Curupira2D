@@ -9,14 +9,14 @@ using Microsoft.Xna.Framework.Input;
 namespace Curupira2D.Samples.Systems.Camera
 {
     [RequiredComponent(typeof(CameraSystem), typeof(SpriteComponent))]
-    class CameraSystem(bool moveWithKeyboard) : ECS.System, ILoadable, IUpdatable
+    class CameraSystem(bool moveWithKeyboard, bool enabledRotation = true) : ECS.System, ILoadable, IUpdatable
     {
         Vector2 _cameraPosition;
 
         public void LoadContent()
         {
             Scene.GameCore.IsMouseVisible = true;
-            Scene.Camera2D.Position = Scene.ScreenCenter;
+            Scene.Camera2D.Position = new Vector2(0f, Scene.ScreenCenter.Y);
         }
 
         public void Update()
@@ -49,10 +49,10 @@ namespace Curupira2D.Samples.Systems.Camera
             Scene.Camera2D.Position = _cameraPosition;
             Scene.Camera2D.Zoom = Scene.MouseInputManager.GetScrollWheel() < 0 ? new Vector2(Scene.MouseInputManager.GetScrollWheel() * -0.01f) : Vector2.One;
 
-            if (Scene.MouseInputManager.IsMouseButtonDown(MouseButton.Left))
+            if (enabledRotation && Scene.MouseInputManager.IsMouseButtonDown(MouseButton.Left))
                 Scene.Camera2D.Rotation += 0.01f;
 
-            if (Scene.MouseInputManager.IsMouseButtonPressed(MouseButton.Right))
+            if (enabledRotation && Scene.MouseInputManager.IsMouseButtonPressed(MouseButton.Right))
                 Scene.Camera2D.Rotation = 0f;
         }
     }

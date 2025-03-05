@@ -35,6 +35,9 @@
     <None Update="Content\UI\Images\CameraScene.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Update="Content\UI\Images\IsometricGravityTiledMapScene.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="Content\UI\Images\IsometricTiledMapScene.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
