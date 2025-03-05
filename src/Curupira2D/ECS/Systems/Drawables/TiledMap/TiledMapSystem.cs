@@ -84,8 +84,7 @@ namespace Curupira2D.ECS.Systems.Drawables
                             var tileset = tiledMapComponent.Map.Tilesets.Single(_ => id >= _.FirstGid && _.FirstGid + _.TileCount > id);
                             var tile = tileset[gid];
 
-                            GetTileOrientation(tile, out var tileSpriteEffect, out var tileRotation);
-
+                            var (tileSpriteEffect, tileRotation) = GetTileOrientation(tile);
                             var (tilePosX, tilePosY) = GetTilePositionsToScreen(x, y, tile, tiledMapComponent.Map);
 
                             Scene.SpriteBatch.Draw(
@@ -176,10 +175,10 @@ namespace Curupira2D.ECS.Systems.Drawables
             }
         }
 
-        static void GetTileOrientation(Tile tile, out SpriteEffects tileSpriteEffect, out float tileRotation)
+        static (SpriteEffects TileSpriteEffect, float TileRotation) GetTileOrientation(Tile tile)
         {
-            tileSpriteEffect = SpriteEffects.None;
-            tileRotation = 0f;
+            var tileSpriteEffect = SpriteEffects.None;
+            var tileRotation = 0f;
 
             switch (tile.Orientation)
             {
@@ -203,6 +202,8 @@ namespace Curupira2D.ECS.Systems.Drawables
                     tileRotation = 270f;
                     break;
             }
+
+            return (tileSpriteEffect, tileRotation);
         }
 
         static void SetPhysicsProperties(BaseObject baseObject, ObjectLayer objectLayer, ref BodyComponent bodyComponent)
@@ -224,8 +225,11 @@ namespace Curupira2D.ECS.Systems.Drawables
 
             if (map.Orientation == Orientation.isometric)
             {
-                tilePosX = (x - y) * (int)(tile.Width * 0.5f);
-                tilePosY = (int)Scene.InvertPositionY((x + y) * (int)(tile.Height * 0.5f));
+                var width = tile.Width != map.CellWidth ? map.CellWidth : tile.Width;
+                var height = tile.Height != map.CellHeight ? map.CellHeight : tile.Height;
+
+                tilePosX = (x - y) * (int)(width * 0.5f);
+                tilePosY = (int)Scene.InvertPositionY((x + y) * (int)(height * 0.5f));
 
                 return (tilePosX, tilePosY);
             }

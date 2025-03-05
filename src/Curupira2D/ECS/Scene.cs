@@ -15,11 +15,11 @@ namespace Curupira2D.ECS
 {
     public class Scene : IDisposable
     {
-        readonly EntityManager _entityManager = new EntityManager();
-        readonly SystemManager _systemManager = new SystemManager();
+        readonly EntityManager _entityManager = new();
+        readonly SystemManager _systemManager = new();
         PhysicsSystem _physicsSystem;
         float _deltaTime;
-        readonly List<IGameComponent> _gameComponents = new List<IGameComponent>();
+        readonly List<IGameComponent> _gameComponents = [];
 
         public GameCore GameCore { get; private set; }
         public SpriteBatch SpriteBatch { get; private set; }
@@ -32,8 +32,9 @@ namespace Curupira2D.ECS
         public float DeltaTime { get => _deltaTime == 0 ? 1f / 60f : _deltaTime; private set => _deltaTime = value; }
         public int ScreenWidth => GameCore.GraphicsDevice.Viewport.Width;
         public int ScreenHeight => GameCore.GraphicsDevice.Viewport.Height;
-        public Vector2 ScreenSize => new Vector2(ScreenWidth, ScreenHeight);
-        public Vector2 ScreenCenter => new Vector2(ScreenWidth * 0.5f, ScreenHeight * 0.5f);
+        public Vector2 ScreenSize => new(ScreenWidth, ScreenHeight);
+        public Vector2 ScreenCenter => new(ScreenWidth * 0.5f, ScreenHeight * 0.5f);
+        public SpriteSortMode SpriteSortMode { get; set; } = SpriteSortMode.FrontToBack;
 
         public KeyboardInputManager KeyboardInputManager { get; private set; }
         public GamePadInputManager GamePadInputManager { get; private set; }
@@ -47,9 +48,9 @@ namespace Curupira2D.ECS
 
         public virtual void LoadContent()
         {
+            AddSystem<TiledMapSystem>();
             AddSystem<SpriteSystem>();
             AddSystem<SpriteAnimationSystem>();
-            AddSystem<TiledMapSystem>();
             AddSystem<TextSystem>();
 
             // Always keep this system at the end
@@ -84,7 +85,7 @@ namespace Curupira2D.ECS
         {
             #region Begin/End sprite batch to Camera
             SpriteBatch.Begin(
-                sortMode: SpriteSortMode.FrontToBack,
+                sortMode: SpriteSortMode,
                 rasterizerState: RasterizerState.CullClockwise,
                 effect: Camera2D.SpriteBatchEffect);
 
@@ -102,7 +103,7 @@ namespace Curupira2D.ECS
 
             #region Begin/End sprite batch to UI Camera
             SpriteBatch.Begin(
-                sortMode: SpriteSortMode.FrontToBack,
+                sortMode: SpriteSortMode,
                 rasterizerState: RasterizerState.CullClockwise,
                 effect: UICamera2D.SpriteBatchEffect);
 

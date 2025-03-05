@@ -18,7 +18,7 @@ namespace Curupira2D.ECS
 
     public abstract class System : ISystem
     {
-        readonly List<Type> _requiredComponents = new List<Type>();
+        readonly List<Type> _requiredComponents = [];
 
         public System()
         {

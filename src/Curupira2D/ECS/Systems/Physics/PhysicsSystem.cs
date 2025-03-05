@@ -4,6 +4,7 @@ using Microsoft.Xna.Framework;
 using nkast.Aether.Physics2D.Common;
 using nkast.Aether.Physics2D.Diagnostics;
 using nkast.Aether.Physics2D.Dynamics;
+using System;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -121,13 +122,17 @@ namespace Curupira2D.ECS.Systems.Physics
 
         internal void DrawDebugData()
         {
-            if (Scene.GameCore.DebugOptions.DebugActive && Scene.ExistsEntities(_ => MatchActiveEntitiesAndComponents(_)))
+            try
             {
-                if (Scene.GameCore.DebugOptions.DebugWithUICamera2D)
-                    _debugView.RenderDebugData(Scene.UICamera2D.Projection, Scene.UICamera2D.View);
-                else
-                    _debugView.RenderDebugData(Scene.Camera2D.Projection, Scene.Camera2D.View);
+                if (Scene.GameCore.DebugOptions.DebugActive && Scene.ExistsEntities(_ => MatchActiveEntitiesAndComponents(_)))
+                {
+                    if (Scene.GameCore.DebugOptions.DebugWithUICamera2D)
+                        _debugView.RenderDebugData(Scene.UICamera2D.Projection, Scene.UICamera2D.View);
+                    else
+                        _debugView.RenderDebugData(Scene.Camera2D.Projection, Scene.Camera2D.View);
+                }
             }
+            catch (Exception) { }
         }
     }
 }
