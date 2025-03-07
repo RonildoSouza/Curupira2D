@@ -8,9 +8,9 @@ namespace Curupira2D.ECS
 {
     internal sealed class SystemManager : IDisposable
     {
-        readonly List<ILoadable> _loadableSystems = new List<ILoadable>();
-        readonly List<IUpdatable> _updatableSystems = new List<IUpdatable>();
-        readonly List<IRenderable> _renderableSystems = new List<IRenderable>();
+        readonly List<ILoadable> _loadableSystems = [];
+        readonly List<IUpdatable> _updatableSystems = [];
+        readonly List<IRenderable> _renderableSystems = [];
 
         public void LoadableSystemsIteration()
         {

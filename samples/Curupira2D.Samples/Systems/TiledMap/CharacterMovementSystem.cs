@@ -10,7 +10,7 @@ using Microsoft.Xna.Framework.Input;
 
 namespace Curupira2D.Samples.Systems.TiledMap
 {
-    [RequiredComponent(typeof(CharacterMovementSystem), typeof(BodyComponent))]
+    [RequiredComponent(typeof(CharacterMovementSystem), [typeof(SpriteComponent), typeof(BodyComponent)])]
     class CharacterMovementSystem : ECS.System, ILoadable, IUpdatable
     {
         Entity _characterEntity;

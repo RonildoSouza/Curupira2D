@@ -11,7 +11,6 @@ namespace Curupira2D.Samples
         protected override void LoadContent()
         {
             SetScene<MenuScene>();
-
             base.LoadContent();
         }
 
@@ -19,10 +18,8 @@ namespace Curupira2D.Samples
         {
             var keyState = Keyboard.GetState();
 
-            if (keyState.IsKeyDown(Keys.Q) && !CurrentSceneIs<MenuScene>())
-            {
+            if ((keyState.IsKeyDown(Keys.Q) || keyState.IsKeyDown(Keys.Back)) && !CurrentSceneIs<MenuScene>())
                 SetScene<MenuScene>();
-            }
 
             base.Update(gameTime);
         }

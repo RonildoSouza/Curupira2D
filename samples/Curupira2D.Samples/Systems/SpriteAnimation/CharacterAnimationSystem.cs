@@ -10,52 +10,42 @@ namespace Curupira2D.Samples.Systems.SpriteAnimation
     [RequiredComponent(typeof(CharacterAnimationSystem), typeof(SpriteAnimationComponent))]
     class CharacterAnimationSystem : ECS.System, ILoadable, IUpdatable
     {
-        Entity _characterEntity;
+        SpriteAnimationComponent _spriteAnimationComponent;
 
         public void LoadContent()
         {
             // Create entity character in scene
             var characterTexture = Scene.GameCore.Content.Load<Texture2D>("SpriteAnimation/character");
 
-            _characterEntity = Scene.CreateEntity("character", Scene.ScreenWidth * 0.3f, Scene.ScreenCenter.Y)
-                .AddComponent(new SpriteAnimationComponent(characterTexture, 4, 4, 100, AnimateType.PerRow));
+            _spriteAnimationComponent = new SpriteAnimationComponent(characterTexture, 4, 4, 100, AnimateType.PerRow);
+            Scene.CreateEntity("character", Scene.ScreenWidth * 0.3f, Scene.ScreenCenter.Y)
+                .AddComponent(_spriteAnimationComponent);
         }
 
         public void Update()
         {
+            _spriteAnimationComponent.IsPlaying = false;
+
             if (Scene.KeyboardInputManager.IsKeyDown(Keys.Left) || Scene.KeyboardInputManager.IsKeyDown(Keys.A))
-                HorizontalAnimation(ref _characterEntity, 180);
+                ApplyWalkAnimation(WalkDirection.Left);
 
             if (Scene.KeyboardInputManager.IsKeyDown(Keys.Up) || Scene.KeyboardInputManager.IsKeyDown(Keys.W))
-                VerticalAnimation(ref _characterEntity, 90);
+                ApplyWalkAnimation(WalkDirection.Up);
 
             if (Scene.KeyboardInputManager.IsKeyDown(Keys.Right) || Scene.KeyboardInputManager.IsKeyDown(Keys.D))
-                HorizontalAnimation(ref _characterEntity, 270);
+                ApplyWalkAnimation(WalkDirection.Right);
 
             if (Scene.KeyboardInputManager.IsKeyDown(Keys.Down) || Scene.KeyboardInputManager.IsKeyDown(Keys.S))
-                VerticalAnimation(ref _characterEntity, 0);
+                ApplyWalkAnimation(WalkDirection.Down);
         }
 
-        void HorizontalAnimation(ref Entity characterEntity, int sourcePosY)
+        void ApplyWalkAnimation(WalkDirection walkDirection)
         {
-            var spriteAnimationComponent = characterEntity.GetComponent<SpriteAnimationComponent>();
+            var sourceRectangle = _spriteAnimationComponent.SourceRectangle.Value;
+            sourceRectangle.Y = (int)walkDirection;
 
-            var sourceRectangle = spriteAnimationComponent.SourceRectangle.Value;
-            sourceRectangle.Y = sourcePosY;
-
-            spriteAnimationComponent.IsPlaying = true;
-            spriteAnimationComponent.SourceRectangle = sourceRectangle;
-        }
-
-        void VerticalAnimation(ref Entity characterEntity, int sourcePosY)
-        {
-            var spriteAnimationComponent = characterEntity.GetComponent<SpriteAnimationComponent>();
-
-            var sourceRectangle = spriteAnimationComponent.SourceRectangle.Value;
-            sourceRectangle.Y = sourcePosY;
-
-            spriteAnimationComponent.IsPlaying = true;
-            spriteAnimationComponent.SourceRectangle = sourceRectangle;
+            _spriteAnimationComponent.IsPlaying = true;
+            _spriteAnimationComponent.SourceRectangle = sourceRectangle;
         }
     }
 }

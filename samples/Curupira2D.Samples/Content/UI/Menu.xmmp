@@ -1,0 +1,89 @@
+﻿<Project>
+	<VerticalStackPanel Spacing="8" Margin="20">
+		<Label Text="MENU" HorizontalAlignment="Center" VerticalAlignment="Center" TextColor="black" />
+		<HorizontalSeparator />
+
+		<ScrollViewer ShowHorizontalScrollBar="False" ShowVerticalScrollBar="False" HorizontalAlignment="Center">
+			<Grid RowSpacing="8" ColumnSpacing="8">
+				<Button Id="SpriteAnimationButton" Grid.Row="0" Grid.Column="0" Width="370" Height="100" VerticalAlignment="Center">
+					<HorizontalStackPanel Spacing="10" HorizontalAlignment="Left" Padding="4">
+						<Image Renderable="Images/SpriteAnimationScene.png" Width="100" Height="100"/>
+						<Label Text="Sprite Animation" HorizontalAlignment="Center" VerticalAlignment="Center" Wrap="True" />
+					</HorizontalStackPanel>
+				</Button>
+
+				<Button Id="SceneGraphButton" Grid.Row="0" Grid.Column="1" Width="370" Height="100" VerticalAlignment="Center">
+					<HorizontalStackPanel Spacing="10" HorizontalAlignment="Left" Padding="4">
+						<Image Renderable="Images/SceneGraphScene.png" Width="100" Height="100"/>
+						<Label Text="Scene Graph" HorizontalAlignment="Center" VerticalAlignment="Center" Wrap="True" />
+					</HorizontalStackPanel>
+				</Button>
+
+				<Button Id="CameraButton" Grid.Row="1" Grid.Column="0" Width="370" Height="100" VerticalAlignment="Center">
+					<HorizontalStackPanel Spacing="10" HorizontalAlignment="Left" Padding="4">
+						<Image Renderable="Images/CameraScene.png" Width="100" Height="100"/>
+						<Label Text="Camera" HorizontalAlignment="Center" VerticalAlignment="Center" Wrap="True" />
+					</HorizontalStackPanel>
+				</Button>
+
+				<Button Id="PhysicButton" Grid.Row="1" Grid.Column="1" Width="370" Height="100" VerticalAlignment="Center">
+					<HorizontalStackPanel Spacing="10" HorizontalAlignment="Left" Padding="4">
+						<Image Renderable="Images/PhysicScene.png" Width="100" Height="100"/>
+						<Label Text="Physic" HorizontalAlignment="Center" VerticalAlignment="Center" Wrap="True" />
+					</HorizontalStackPanel>
+				</Button>
+
+				<Button Id="PlatformerTiledMapButton" Grid.Row="2" Grid.Column="0" Width="370" Height="100" VerticalAlignment="Center">
+					<HorizontalStackPanel Spacing="10" HorizontalAlignment="Left" Padding="4">
+						<Image Renderable="Images/PlatformerTiledMapScene.png" Width="100" Height="100"/>
+						<Label Text="Platformer Tiled Map" HorizontalAlignment="Center" VerticalAlignment="Center" Wrap="True" />
+					</HorizontalStackPanel>
+				</Button>
+
+				<Button Id="AetherPhysics2DHelloWorldButton" Grid.Row="2" Grid.Column="1" Width="370" Height="100" VerticalAlignment="Center">
+					<HorizontalStackPanel Spacing="10" HorizontalAlignment="Left" Padding="4">
+						<Image Renderable="Images/AetherPhysics2DHelloWorldScene.png" Width="100" Height="100"/>
+						<Label Text="Aether Physics2D - HelloWorld" HorizontalAlignment="Center" VerticalAlignment="Center" Wrap="True" />
+					</HorizontalStackPanel>
+				</Button>
+
+				<Button Id="QuadtreeCheckCollisionButton" Grid.Row="3" Grid.Column="0" Width="370" Height="100" VerticalAlignment="Center">
+					<HorizontalStackPanel Spacing="10" HorizontalAlignment="Left" Padding="4">
+						<Image Renderable="Images/QuadtreeCheckCollisionScene.png" Width="100" Height="100"/>
+						<Label Text="Quadtree Check Collision" HorizontalAlignment="Center" VerticalAlignment="Center" Wrap="True" />
+					</HorizontalStackPanel>
+				</Button>
+
+				<Button Id="MassivelyMultiplayerOnlineButton" Grid.Row="3" Grid.Column="1" Width="370" Height="100" VerticalAlignment="Center">
+					<HorizontalStackPanel Spacing="10" HorizontalAlignment="Left" Padding="4">
+						<Image Renderable="Images/MassivelyMultiplayerOnlineScene.png" Width="100" Height="100"/>
+						<Label Text="Massively Multiplayer Online (MMO)" HorizontalAlignment="Center" VerticalAlignment="Center" Wrap="True" />
+					</HorizontalStackPanel>
+				</Button>
+
+				<HorizontalStackPanel Spacing="8" Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="2">
+					<Button Id="TiledMapWithManyLayersButton" Width="245" Height="100" VerticalAlignment="Center">
+						<HorizontalStackPanel Spacing="10" HorizontalAlignment="Left" Padding="4">
+							<Image Renderable="Images/TiledMapWithManyLayersScene.png" Width="100" Height="100"/>
+							<Label Text="Tiled Map With Many Layers" HorizontalAlignment="Center" VerticalAlignment="Center" Wrap="True" />
+						</HorizontalStackPanel>
+					</Button>
+
+					<Button Id="IsometricTiledMapButton" Width="245" Height="100" VerticalAlignment="Center">
+						<HorizontalStackPanel Spacing="10" HorizontalAlignment="Left" Padding="4">
+							<Image Renderable="Images/IsometricTiledMapScene.png" Width="100" Height="100"/>
+							<Label Text="Isometric Tiled Map And Sprite Animation" HorizontalAlignment="Center" VerticalAlignment="Center" Wrap="True" />
+						</HorizontalStackPanel>
+					</Button>
+
+					<Button Id="IsometricGravityTiledMapButton" Width="245" Height="100" VerticalAlignment="Center">
+						<HorizontalStackPanel Spacing="10" HorizontalAlignment="Left" Padding="4">
+							<Image Renderable="Images/IsometricGravityTiledMapScene.png" Width="100" Height="100"/>
+							<Label Text="Isometric Gravity" HorizontalAlignment="Center" VerticalAlignment="Center" Wrap="True" />
+						</HorizontalStackPanel>
+					</Button>
+				</HorizontalStackPanel>
+			</Grid>
+		</ScrollViewer>
+	</VerticalStackPanel>
+</Project>

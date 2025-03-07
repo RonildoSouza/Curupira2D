@@ -1,12 +1,12 @@
 ﻿using Curupira2D.ECS.Components.Physics;
 using Curupira2D.ECS.Systems.Attributes;
-using Curupira2D.Extensions;
 using Microsoft.Xna.Framework;
-using System.Linq;
-using System.Threading.Tasks;
 using nkast.Aether.Physics2D.Common;
 using nkast.Aether.Physics2D.Diagnostics;
 using nkast.Aether.Physics2D.Dynamics;
+using System;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace Curupira2D.ECS.Systems.Physics
 {
@@ -47,8 +47,10 @@ namespace Curupira2D.ECS.Systems.Physics
                         fixture = bodyComponent.CreateRectangle(bodyComponent.Size.X, bodyComponent.Size.Y, bodyComponent.Density, bodyComponent.Offset);
                         break;
                     case EntityShape.Polygon:
-                        var vertices = new Vertices(bodyComponent.Vertices);
-                        fixture = bodyComponent.CreatePolygon(vertices, bodyComponent.Density);
+                        fixture = bodyComponent.CreatePolygon(new Vertices(bodyComponent.Vertices), bodyComponent.Density);
+                        break;
+                    case EntityShape.PolyLine:
+                        fixture = bodyComponent.CreateChainShape(new Vertices(bodyComponent.Vertices));
                         break;
                 }
 
@@ -120,13 +122,17 @@ namespace Curupira2D.ECS.Systems.Physics
 
         internal void DrawDebugData()
         {
-            if (Scene.GameCore.DebugOptions.DebugActive && Scene.ExistsEntities(_ => MatchActiveEntitiesAndComponents(_)))
+            try
             {
-                if (Scene.GameCore.DebugOptions.DebugWithUICamera2D)
-                    _debugView.RenderDebugData(Scene.UICamera2D.Projection, Scene.UICamera2D.View);
-                else
-                    _debugView.RenderDebugData(Scene.Camera2D.Projection, Scene.Camera2D.View);
+                if (Scene.GameCore.DebugOptions.DebugActive && Scene.ExistsEntities(_ => MatchActiveEntitiesAndComponents(_)))
+                {
+                    if (Scene.GameCore.DebugOptions.DebugWithUICamera2D)
+                        _debugView.RenderDebugData(Scene.UICamera2D.Projection, Scene.UICamera2D.View);
+                    else
+                        _debugView.RenderDebugData(Scene.Camera2D.Projection, Scene.Camera2D.View);
+                }
             }
+            catch (Exception) { }
         }
     }
 }

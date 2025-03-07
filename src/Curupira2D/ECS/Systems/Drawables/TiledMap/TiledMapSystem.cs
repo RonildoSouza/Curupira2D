@@ -3,6 +3,7 @@ using Curupira2D.ECS.Components.Physics;
 using Curupira2D.ECS.Systems.Attributes;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using TiledLib;
@@ -25,9 +26,9 @@ namespace Curupira2D.ECS.Systems.Drawables
 
                 foreach (var objectLayer in tiledMapComponent.Map.Layers.OfType<ObjectLayer>().Where(_ => _.Visible))
                 {
-                    CreateCollisionEntities(objectLayer);
+                    CreateCollisionEntities(objectLayer, tiledMapComponent.Map);
 
-                    // Gets entity with the same name as the point object and sets the position
+                    // Gets entity with the same name as the point object (spawn) and sets the position
                     foreach (var pointObject in objectLayer.Objects.OfType<PointObject>())
                     {
                         var entity = Scene
@@ -35,7 +36,18 @@ namespace Curupira2D.ECS.Systems.Drawables
                             .FirstOrDefault();
 
                         if (entity != null && entity.Position == default)
+                        {
+                            if (tiledMapComponent.Map.Orientation == Orientation.isometric)
+                            {
+                                var positionOffset = GetIsometricOffsetPositionY(pointObject, tiledMapComponent.Map);
+                                var position = new Vector2((float)(pointObject.X - pointObject.Y), Scene.InvertPositionY((float)(pointObject.X + pointObject.Y)) + positionOffset);
+
+                                entity.SetPosition(position);
+                                continue;
+                            }
+
                             entity.SetPosition((float)pointObject.X, Scene.InvertPositionY((float)pointObject.Y));
+                        }
                     }
                 }
             }
@@ -53,10 +65,9 @@ namespace Curupira2D.ECS.Systems.Drawables
                     {
                         var propertyValueOrder = _.Properties.GetValue(TiledMapSystemConstants.Properties.Order);
                         return string.IsNullOrEmpty(propertyValueOrder) ? _.Id : int.Parse(propertyValueOrder);
-                    })
-                    .Where(_ => _.Visible);
+                    });
 
-                foreach (var layer in layers)
+                foreach (var layer in layers.Where(_ => _.Visible))
                 {
                     var propertyValueOrder = layer.Properties.GetValue(TiledMapSystemConstants.Properties.Order);
                     var valueOrder = string.IsNullOrEmpty(propertyValueOrder) ? layer.Id : int.Parse(propertyValueOrder);
@@ -73,10 +84,8 @@ namespace Curupira2D.ECS.Systems.Drawables
                             var tileset = tiledMapComponent.Map.Tilesets.Single(_ => id >= _.FirstGid && _.FirstGid + _.TileCount > id);
                             var tile = tileset[gid];
 
-                            GetTileOrientation(tile, out var tileSpriteEffect, out var tileRotation);
-
-                            var tilePosX = x * tile.Width + (int)(tile.Width * 0.5f);
-                            var tilePosY = (int)Scene.InvertPositionY(y * tile.Height + (int)(tile.Height * 0.5f));
+                            var (tileSpriteEffect, tileRotation) = GetTileOrientation(tile);
+                            var (tilePosX, tilePosY) = GetTilePositionsToScreen(x, y, tile, tiledMapComponent.Map);
 
                             Scene.SpriteBatch.Draw(
                                 tiledMapComponent.Texture,
@@ -93,9 +102,20 @@ namespace Curupira2D.ECS.Systems.Drawables
             }
         }
 
-        void CreateCollisionEntities(ObjectLayer objectLayer)
+        void CreateCollisionEntities(ObjectLayer objectLayer, Map map)
         {
-            foreach (var baseObject in objectLayer.Objects.Where(_ => _.GetType() != typeof(PointObject)))
+            var baseObjects = objectLayer.Objects
+                .Where(_ => _.GetType() != typeof(PointObject))
+                // Visible property not set in ReadObject method of TiledLib
+                .Where(_ => _.Properties.GetValue(TiledMapSystemConstants.Properties.Visible) is null
+                    || bool.Parse(_.Properties.GetValue(TiledMapSystemConstants.Properties.Visible)))
+                .OrderBy(_ =>
+                {
+                    var propertyValueOrder = _.Properties.GetValue(TiledMapSystemConstants.Properties.Order);
+                    return string.IsNullOrEmpty(propertyValueOrder) ? _.Id : int.Parse(propertyValueOrder);
+                });
+
+            foreach (var baseObject in baseObjects)
             {
                 var entityUniqueId = baseObject.Properties.GetValue(TiledMapSystemConstants.Properties.EntityUniqueId);
                 var entityGroup = baseObject.Properties.GetValue(TiledMapSystemConstants.Properties.EntityGroup);
@@ -129,25 +149,36 @@ namespace Curupira2D.ECS.Systems.Drawables
                 // Creates polygon type collision entity
                 if (baseObject is PolygonObject polygonObject)
                 {
-                    var posX = (float)polygonObject.X;
-                    var posY = Scene.InvertPositionY((float)polygonObject.Y);
+                    var (position, vertices) = GetPositionAndVerticesOfPolyObjects(polygonObject, map);
                     var polygonBodyComponent = new BodyComponent((float)polygonObject.Width, (float)polygonObject.Height, EntityType.Static, EntityShape.Polygon)
                     {
-                        Vertices = polygonObject.Polygon.Select(_ => new Vector2((float)_.X, (float)polygonObject.Height - (float)_.Y))
+                        Vertices = vertices
                     };
 
                     SetPhysicsProperties(polygonObject, objectLayer, ref polygonBodyComponent);
 
-                    Scene.CreateEntity(entityUniqueId ?? $"{nameof(PolygonObject)}_{polygonObject.Id}", posX, posY, entityGroup)
+                    Scene.CreateEntity(entityUniqueId ?? $"{nameof(PolygonObject)}_{polygonObject.Id}", position, entityGroup)
                         .AddComponent(polygonBodyComponent);
+                }
+
+                // Creates poly line type collision entity
+                if (baseObject is PolyLineObject polyLineObject)
+                {
+                    var (position, vertices) = GetPositionAndVerticesOfPolyObjects(polyLineObject, map);
+                    var polyLineBodyComponent = new BodyComponent(vertices, EntityType.Static, EntityShape.PolyLine);
+
+                    SetPhysicsProperties(polyLineObject, objectLayer, ref polyLineBodyComponent);
+
+                    Scene.CreateEntity(entityUniqueId ?? $"{nameof(PolyLineObject)}_{polyLineObject.Id}", position, entityGroup)
+                        .AddComponent(polyLineBodyComponent);
                 }
             }
         }
 
-        void GetTileOrientation(Tile tile, out SpriteEffects tileSpriteEffect, out float tileRotation)
+        static (SpriteEffects TileSpriteEffect, float TileRotation) GetTileOrientation(Tile tile)
         {
-            tileSpriteEffect = SpriteEffects.None;
-            tileRotation = 0f;
+            var tileSpriteEffect = SpriteEffects.None;
+            var tileRotation = 0f;
 
             switch (tile.Orientation)
             {
@@ -171,9 +202,11 @@ namespace Curupira2D.ECS.Systems.Drawables
                     tileRotation = 270f;
                     break;
             }
+
+            return (tileSpriteEffect, tileRotation);
         }
 
-        void SetPhysicsProperties(BaseObject baseObject, ObjectLayer objectLayer, ref BodyComponent bodyComponent)
+        static void SetPhysicsProperties(BaseObject baseObject, ObjectLayer objectLayer, ref BodyComponent bodyComponent)
         {
             var restitution = baseObject.Properties.GetValue(TiledMapSystemConstants.Properties.Physics.Restitution)
                 ?? objectLayer.Properties.GetValue(TiledMapSystemConstants.Properties.Physics.Restitution);
@@ -182,7 +215,66 @@ namespace Curupira2D.ECS.Systems.Drawables
                 ?? objectLayer.Properties.GetValue(TiledMapSystemConstants.Properties.Physics.Friction);
 
             bodyComponent.Restitution = float.TryParse(restitution, out float restitutionValue) ? restitutionValue : bodyComponent.Restitution;
-            bodyComponent.Friction = float.TryParse(friction, out float frictionValue) ? frictionValue : bodyComponent.Restitution;
+            bodyComponent.Friction = float.TryParse(friction, out float frictionValue) ? frictionValue : bodyComponent.Friction;
+        }
+
+        (int TilePosX, int TilePosY) GetTilePositionsToScreen(int x, int y, Tile tile, Map map)
+        {
+            int tilePosX;
+            int tilePosY;
+
+            if (map.Orientation == Orientation.isometric)
+            {
+                var width = tile.Width != map.CellWidth ? map.CellWidth : tile.Width;
+                var height = tile.Height != map.CellHeight ? map.CellHeight : tile.Height;
+
+                tilePosX = (x - y) * (int)(width * 0.5f);
+                tilePosY = (int)Scene.InvertPositionY((x + y) * (int)(height * 0.5f));
+
+                return (tilePosX, tilePosY);
+            }
+
+            tilePosX = x * tile.Width + (int)(tile.Width * 0.5f);
+            tilePosY = (int)Scene.InvertPositionY(y * tile.Height + (int)(tile.Height * 0.5f));
+
+            return (tilePosX, tilePosY);
+        }
+
+        (Vector2 Position, IEnumerable<Vector2> Vertices) GetPositionAndVerticesOfPolyObjects(BaseObject baseObject, Map map)
+        {
+            Vector2 position;
+            IEnumerable<Vector2> vertices = [];
+            IEnumerable<Position> positions = [];
+
+            if (baseObject is PolygonObject polygonObject)
+                positions = polygonObject.Polygon;
+
+            if (baseObject is PolyLineObject polyLineObject)
+                positions = polyLineObject.Polyline;
+
+            if (map.Orientation == Orientation.isometric)
+            {
+                var positionOffset = GetIsometricOffsetPositionY(baseObject, map);
+
+                position = new Vector2((float)baseObject.X - (float)baseObject.Y, Scene.InvertPositionY((float)baseObject.X + (float)baseObject.Y) + positionOffset);
+                vertices = positions.Select(_ => CartesianToIsometricOfPolyObjects(_.X, _.Y));
+
+                return (position, vertices);
+            }
+
+            position = new Vector2((float)baseObject.X, Scene.InvertPositionY((float)baseObject.Y));
+            vertices = positions.Select(_ => new Vector2((float)_.X, (float)baseObject.Height - (float)_.Y));
+
+            return (position, vertices);
+
+            static Vector2 CartesianToIsometricOfPolyObjects(double x, double y)
+                => new() { X = (float)(x - y), Y = (float)(-(x + y) * 0.5f) };
+        }
+
+        static float GetIsometricOffsetPositionY(BaseObject baseObject, Map map)
+        {
+            var totalTilesAbovePosition = (float)(baseObject.X + baseObject.Y) / map.CellWidth;
+            return (totalTilesAbovePosition * map.CellHeight) + (map.CellHeight * 0.5f);
         }
     }
 }
