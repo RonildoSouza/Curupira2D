@@ -23,6 +23,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "WebSocketServer", "WebSocke
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Curupira2D.Samples", "..\samples\Curupira2D.Samples\Curupira2D.Samples.csproj", "{7C25C98A-1C09-4843-A606-C76B57B63DBA}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Curupira2D.AI", "Curupira2D.AI\Curupira2D.AI.csproj", "{851F92E6-5C57-4FFB-8CFC-B02C75FBD5D5}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
