@@ -25,6 +25,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Curupira2D.Samples", "..\sa
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Curupira2D.AI", "Curupira2D.AI\Curupira2D.AI.csproj", "{851F92E6-5C57-4FFB-8CFC-B02C75FBD5D5}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Curupira2D.AI.Samples", "..\samples\Curupira2D.AI.Samples\Curupira2D.AI.Samples.csproj", "{9E9BC95F-6248-47DA-99D3-69D1A171BEE2}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
