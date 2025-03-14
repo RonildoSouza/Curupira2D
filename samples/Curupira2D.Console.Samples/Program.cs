@@ -3,6 +3,7 @@ using Curupira2D.AI.Pathfinding.AStar;
 using Curupira2D.AI.Pathfinding.BreadthFirst;
 using Curupira2D.AI.Pathfinding.Dijkstra;
 using Curupira2D.AI.Pathfinding.Graphs;
+using System.Diagnostics;
 using System.Drawing;
 
 var _width = 30;
@@ -59,8 +60,6 @@ AStarSearchGridGraphTest(_width, _height, _allowDiagonalSearch, _walls, _start, 
 
 AStarSearchEdgesGraphTest();
 
-
-
 static void BreadthFirstSearchGridGraphTest(int width, int height, bool allowDiagonalSearch, HashSet<Point> walls, Point start, Point goal)
 {
     Console.WriteLine("\n*** BREADTH FIRST SEARCH - GRID GRAPH ***");
@@ -70,7 +69,7 @@ static void BreadthFirstSearchGridGraphTest(int width, int height, bool allowDia
         Walls = walls
     };
 
-    var path = BreadthFirstPathfinder.FindPath(gridGraph, start, goal);
+    var path = ElapsedTime(() => BreadthFirstPathfinder.FindPath(gridGraph, start, goal));
 
     gridGraph.WriteLine(start, goal, path);
     gridGraph.WriteLine(start, goal, path, showPath: true, showCostSoFar: false);
@@ -89,7 +88,7 @@ static void BreadthFirstSearchEdgesGraphTest()
     var start = "B";
     var goal = "E";
 
-    var path = BreadthFirstPathfinder.FindPath(edgesGraph, start, goal);
+    var path = ElapsedTime(() => BreadthFirstPathfinder.FindPath(edgesGraph, start, goal));
     edgesGraph.WriteLine(start, goal, path);
 }
 
@@ -102,7 +101,7 @@ static void DijkstraSearchTest(int width, int height, bool allowDiagonalSearch, 
         Walls = walls
     };
 
-    var path = DijkstraPathfinder.FindPath(gridGraph, start, goal);
+    var path = ElapsedTime(() => DijkstraPathfinder.FindPath(gridGraph, start, goal));
 
     gridGraph.WriteLine(start, goal, path);
     gridGraph.WriteLine(start, goal, path, showPath: true, showCostSoFar: false);
@@ -118,7 +117,7 @@ static void AStarSearchGridGraphTest(int width, int height, bool allowDiagonalSe
         //DefaultWeight = 2,
     };
 
-    var path = AStarPathfinder.FindPath(gridGraph, start, goal);
+    var path = ElapsedTime(() => AStarPathfinder.FindPath(gridGraph, start, goal));
 
     gridGraph.WriteLine(start, goal, path);
     gridGraph.WriteLine(start, goal, path, showPath: true, showCostSoFar: false);
@@ -136,7 +135,19 @@ static void AStarSearchEdgesGraphTest()
     var start = new Point(10, 10);
     var goal = new Point(10, 40);
 
-    var path = AStarPathfinder.FindPath(edgesGraph, start, goal);
+    var path = ElapsedTime(() => AStarPathfinder.FindPath(edgesGraph, start, goal));
 
     edgesGraph.WriteLine(start, goal, path);
+}
+
+static T ElapsedTime<T>(Func<T> func)
+{
+    var stopwatch = new Stopwatch();
+    stopwatch.Start();
+    var result = func();
+    Console.WriteLine("___________________________");
+    Console.WriteLine($"* ELAPSED TIME: {stopwatch.ElapsedMilliseconds}ms");
+    stopwatch.Stop();
+
+    return result;
 }
