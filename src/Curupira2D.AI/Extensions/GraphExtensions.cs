@@ -12,10 +12,7 @@ namespace Curupira2D.AI.Extensions
             Console.OutputEncoding = System.Text.Encoding.UTF8;
 
             if (!showPath)
-            {
-                Console.WriteLine("___________________________");
                 Console.WriteLine($"* FOUND PATH: {path.FoundPath}");
-            }
 
             Console.WriteLine(new string('_', fieldWidth * graph.Width));
 
@@ -61,7 +58,6 @@ namespace Curupira2D.AI.Extensions
         public static void WriteLine<T>(this EdgesGraph<T> graph, T start, T goal, Path<T> path)
         {
             Console.OutputEncoding = System.Text.Encoding.UTF8;
-            Console.WriteLine("___________________________");
             Console.WriteLine($"* FROM: {start} TO: {goal}");
             Console.WriteLine($"* FOUND PATH: {path.FoundPath}");
             Console.WriteLine($"* CAME FROM: {string.Join(" → ", path.CameFrom.Keys)}");
