@@ -1,6 +1,7 @@
 ﻿using Curupira2D.ECS.Components.Drawables;
 using Curupira2D.ECS.Components.Physics;
 using Curupira2D.ECS.Systems.Attributes;
+using Curupira2D.Extensions;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -72,14 +73,14 @@ namespace Curupira2D.ECS.Systems.Drawables
                     var propertyValueOrder = layer.Properties.GetValue(TiledMapSystemConstants.Properties.Order);
                     var valueOrder = string.IsNullOrEmpty(propertyValueOrder) ? layer.Id : int.Parse(propertyValueOrder);
 
-                    for (int y = 0, j = 0; y < layer.Height; y++)
+                    for (int y = 0; y < layer.Height; y++)
                     {
-                        for (int x = 0; x < layer.Width; x++, j++)
+                        for (int x = 0; x < layer.Width; x++)
                         {
-                            var gid = layer.Data[j];
-                            if (gid == 0)
+                            if (!layer.HasTile(x, y))
                                 continue;
 
+                            var gid = layer.GetGlobalTileId(x, y);
                             var id = Utils.GetId(gid);
                             var tileset = tiledMapComponent.Map.Tilesets.Single(_ => id >= _.FirstGid && _.FirstGid + _.TileCount > id);
                             var tile = tileset[gid];
@@ -186,20 +187,23 @@ namespace Curupira2D.ECS.Systems.Drawables
                     tileSpriteEffect = SpriteEffects.FlipHorizontally;
                     break;
                 case TileOrientation.FlippedV:
-                    tileSpriteEffect = SpriteEffects.FlipVertically;
+                    tileSpriteEffect = SpriteEffects.FlipHorizontally;
+                    tileRotation = 180f;
                     break;
                 case TileOrientation.FlippedAD:
-                    tileSpriteEffect = SpriteEffects.FlipVertically;
+                    tileSpriteEffect = SpriteEffects.FlipHorizontally;
                     tileRotation = 90f;
                     break;
                 case TileOrientation.Rotate90CW:
-                    tileRotation = 90f;
+                    tileRotation = -90f;
                     break;
                 case TileOrientation.Rotate180CCW:
-                    tileRotation = 180f;
+                    tileSpriteEffect = SpriteEffects.FlipHorizontally;
+                    tileRotation = 270f;
                     break;
                 case TileOrientation.Rotate270CCW:
-                    tileRotation = 270f;
+                    tileSpriteEffect = SpriteEffects.FlipVertically;
+                    tileRotation = -270f;
                     break;
             }
 
