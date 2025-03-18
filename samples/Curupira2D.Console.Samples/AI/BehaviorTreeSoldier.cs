@@ -1,6 +1,4 @@
 ﻿using Curupira2D.AI.BehaviorTree;
-using Curupira2D.AI.BehaviorTree.Composites;
-using Curupira2D.AI.BehaviorTree.Decorators;
 using Curupira2D.AI.BehaviorTree.Leafs;
 
 namespace Curupira2D.Console.Samples.AI
@@ -31,18 +29,21 @@ namespace Curupira2D.Console.Samples.AI
                                         LEAF (attack enemy)
             ");
 
-            var _blackboard = new Blackboard();
+            var blackboard = new Blackboard();
+            var behaviorTreeBuilder = BehaviorTreeBuilder.GetInstance();
 
             // Define behavior tree structure
-            var sequenceComposite = new Sequence()
-                .AddChild(new CheckForEnemyAction())
-                .AddChild(new Repeater(new AttackEnemyAction(), 2));
+            behaviorTreeBuilder
+            .Selector()
+                    .Sequence()
+                    .Leaf<CheckForEnemyAction>()
+                    .Repeater(2)
+                    .Leaf<AttackEnemyAction>()
+                    .Close()
+                .Leaf<PatrolAction>()
+            .Close();
 
-            var root = new Selector()
-                .AddChild(sequenceComposite)
-                .AddChild(new PatrolAction());
-
-            var behaviorTree = new BehaviorTree(_blackboard, root, updateIntervalInMilliseconds: 10);
+            var behaviorTree = behaviorTreeBuilder.Build(blackboard, updateIntervalInMilliseconds: 10);
 
             // Simulating AI Tick Loop
             for (int i = 0; i < 10; i++)

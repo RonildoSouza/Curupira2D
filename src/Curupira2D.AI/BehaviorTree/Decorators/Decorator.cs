@@ -5,15 +5,15 @@
     /// </summary>
     public abstract class Decorator(Node child) : Node
     {
-        protected Node _runningChild = null!;
-        protected Node _child = child;
+        protected internal Node Child { get; set; } = child;
+        protected Node? RunningChild { get; set; }
 
         public override void Interrupt(IBlackboard blackboard)
         {
-            _child.Interrupt(blackboard);
+            Child.Interrupt(blackboard);
             base.Interrupt(blackboard);
         }
 
-        public override void OnAfterRun(IBlackboard blackboard) => _runningChild = null!;
+        public override void OnAfterRun(IBlackboard blackboard) => RunningChild = null!;
     }
 }

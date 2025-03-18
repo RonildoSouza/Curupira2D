@@ -5,6 +5,6 @@
     /// </summary>
     public class RandomSequence : Sequence
     {
-        public override void OnBeforeRun(IBlackboard blackboard) => Random.Shared.Shuffle(_children.ToArray());
+        public override void OnBeforeRun(IBlackboard blackboard) => Random.Shared.Shuffle(Children.ToArray());
     }
 }

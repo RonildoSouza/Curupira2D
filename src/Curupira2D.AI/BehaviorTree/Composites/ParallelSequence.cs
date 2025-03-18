@@ -6,17 +6,13 @@
 	/// </summary>
     public class ParallelSequence : Composite
     {
-        public ParallelSequence() { }
-
-        public ParallelSequence(IList<Node> children) => _children = children;
-
         public override State Tick(IBlackboard blackboard)
         {
             var didAllSucceed = true;
 
-            foreach (var child in _children)
+            foreach (var child in Children)
             {
-                if (child != _runningChild)
+                if (child != RunningChild)
                     child.OnBeforeRun(blackboard);
 
                 var childState = child.Tick(blackboard);
@@ -38,7 +34,7 @@
 
             if (didAllSucceed)
             {
-                foreach (var child in _children)
+                foreach (var child in Children)
                     child.OnAfterRun(blackboard);
 
                 return State.Success;

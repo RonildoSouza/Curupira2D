@@ -3,28 +3,31 @@
     /// <summary>
     /// <see cref="Inverter"/> will return <see cref="State.Success"/> if its child returns <see cref="State.Failure"/> and vice versa.
     /// </summary>
-    public class Inverter(Node child) : Decorator(child)
+    public class Inverter : Decorator
     {
+        public Inverter(Node child) : base(child) { }
+        internal Inverter() : base(null!) { }
+
         public override State Tick(IBlackboard blackboard)
         {
-            if (_child != _runningChild)
-                _child.OnBeforeRun(blackboard);
+            if (Child != RunningChild)
+                Child.OnBeforeRun(blackboard);
 
-            var childState = _child.Tick(blackboard);
+            var childState = Child.Tick(blackboard);
 
             if (childState == State.Success)
             {
-                _child.OnAfterRun(blackboard);
+                Child.OnAfterRun(blackboard);
                 return State.Failure;
             }
 
             if (childState == State.Failure)
             {
-                _child.OnAfterRun(blackboard);
+                Child.OnAfterRun(blackboard);
                 return State.Success;
             }
 
-            _runningChild = _child;
+            RunningChild = Child;
 
             return State.Running;
         }

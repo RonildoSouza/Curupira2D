@@ -7,14 +7,11 @@
     /// </summary>
     public class Selector : Composite
     {
-        public Selector() { }
-        public Selector(IList<Node> children) => _children = children;
-
         public override State Tick(IBlackboard blackboard)
         {
-            foreach (var child in _children)
+            foreach (var child in Children)
             {
-                if (child != _runningChild)
+                if (child != RunningChild)
                     child.OnBeforeRun(blackboard);
 
                 var childState = child.Tick(blackboard);
@@ -27,7 +24,7 @@
 
                 if (childState == State.Running)
                 {
-                    _runningChild = child;
+                    RunningChild = child;
                     return State.Running;
                 }
 

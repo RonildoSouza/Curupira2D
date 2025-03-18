@@ -1,4 +1,5 @@
 ﻿using Curupira2D.AI.BehaviorTree.Composites;
+using Curupira2D.AI.BehaviorTree.Decorators;
 using System.Diagnostics;
 
 namespace Curupira2D.AI.BehaviorTree
@@ -8,15 +9,21 @@ namespace Curupira2D.AI.BehaviorTree
     /// </summary>
     public class BehaviorTree
     {
-        private readonly IBlackboard _blackboard;
-        private readonly Node _root;
-        private readonly Stopwatch _stopwatch = new();
-        private float _updateIntervalInMilliseconds;
+        private static IBlackboard _blackboard;
+        private static Node _root;
+        private static readonly Stopwatch _stopwatch = new();
+        private static float _updateIntervalInMilliseconds;
         private State _state = State.Running;
 
-        public BehaviorTree(IBlackboard blackboard, Composite root, int updateIntervalInMilliseconds = 1000)
+        private BehaviorTree() { }
+
+        public BehaviorTree(IBlackboard blackboard, Node root, int updateIntervalInMilliseconds = 1000)
         {
-            ArgumentNullException.ThrowIfNull(root);
+            ArgumentNullException.ThrowIfNull(blackboard, nameof(blackboard));
+            ArgumentNullException.ThrowIfNull(root, nameof(root));
+
+            if (root is not Composite && root is not Decorator)
+                throw new ArgumentException("Root node must be a Composite or Decorator");
 
             _blackboard = blackboard;
             _root = root;

@@ -6,16 +6,13 @@
 	/// </summary>
     public class ParallelSelector : Composite
     {
-        public ParallelSelector() { }
-        public ParallelSelector(IList<Node> children) => _children = children;
-
         public override State Tick(IBlackboard blackboard)
         {
             var didAllFail = true;
 
-            foreach (var child in _children)
+            foreach (var child in Children)
             {
-                if (child != _runningChild)
+                if (child != RunningChild)
                     child.OnBeforeRun(blackboard);
 
                 var childState = child.Tick(blackboard);
@@ -34,7 +31,7 @@
 
             if (didAllFail)
             {
-                foreach (var child in _children)
+                foreach (var child in Children)
                     child.OnAfterRun(blackboard);
 
                 return State.Failure;

@@ -3,22 +3,25 @@
     /// <summary>
 	/// Will always return <see cref="State.Success"/> except when the child node is <see cref="State.Running"/>
 	/// </summary>
-    public class AlwaysSuccess(Node child) : Decorator(child)
+    public class AlwaysSuccess : Decorator
     {
+        public AlwaysSuccess(Node child) : base(child) { }
+        internal AlwaysSuccess() : base(null!) { }
+
         public override State Tick(IBlackboard blackboard)
         {
-            if (_child != _runningChild)
-                _child.OnBeforeRun(blackboard);
+            if (Child != RunningChild)
+                Child.OnBeforeRun(blackboard);
 
-            var state = _child.Tick(blackboard);
+            var state = Child.Tick(blackboard);
 
             if (state == State.Running)
             {
-                _runningChild = _child;
+                RunningChild = Child;
                 return State.Running;
             }
 
-            _child.OnAfterRun(blackboard);
+            Child.OnAfterRun(blackboard);
 
             return State.Success;
         }

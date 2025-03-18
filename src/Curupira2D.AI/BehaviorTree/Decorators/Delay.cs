@@ -7,25 +7,36 @@ namespace Curupira2D.AI.BehaviorTree.Decorators
     /// The <see cref="Delay"/> will return <see cref="State.Running"/> for a set amount of time before executing its child.
     /// The timer resets when both it and its child are not <see cref="State.Running"/>
     /// </summary>
-    public class Delay(Node child, int milliseconds) : Decorator(child)
+    public class Delay : Decorator
     {
+        private readonly int _milliseconds;
         private readonly Stopwatch _stopwatch = new();
+
+        public Delay(Node child, int milliseconds) : base(child)
+        {
+            if (milliseconds < 100)
+                throw new ArgumentException("Milliseconds must be greater than 100");
+
+            _milliseconds = milliseconds;
+        }
+
+        internal Delay(int milliseconds) : this(null!, milliseconds) { }
 
         public override State Tick(IBlackboard blackboard)
         {
-            if (_child != _runningChild)
-                _child.OnBeforeRun(blackboard);
+            if (Child != RunningChild)
+                Child.OnBeforeRun(blackboard);
 
             if (!_stopwatch.IsRunning)
                 _stopwatch.Start();
 
-            if (_stopwatch.Elapsed.TotalMilliseconds >= milliseconds)
+            if (_stopwatch.Elapsed.TotalMilliseconds >= _milliseconds)
             {
                 _stopwatch.Reset();
-                var childState = _child.Tick(blackboard);
+                var childState = Child.Tick(blackboard);
 
-                if (childState == State.Running && _child is ActionLeaf)
-                    _runningChild = _child;
+                if (childState == State.Running && Child is ActionLeaf)
+                    RunningChild = Child;
 
                 return childState;
             }

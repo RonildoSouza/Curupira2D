@@ -5,26 +5,26 @@
     /// </summary>
     public abstract class Composite : Node
     {
-        protected Node _runningChild = null!;
-        protected IList<Node> _children = [];
+        protected internal IList<Node> Children { get; set; } = [];
+        protected Node? RunningChild { get; set; }
 
         public Composite AddChild(Node child)
         {
-            _children.Add(child);
+            Children.Add(child);
             return this;
         }
 
         public override void Interrupt(IBlackboard blackboard)
         {
-            if (_runningChild != null)
+            if (RunningChild != null)
             {
-                _runningChild.Interrupt(blackboard);
-                _runningChild = null!;
+                RunningChild.Interrupt(blackboard);
+                RunningChild = null!;
             }
 
             base.Interrupt(blackboard);
         }
 
-        public override void OnAfterRun(IBlackboard blackboard) => _runningChild = null!;
+        public override void OnAfterRun(IBlackboard blackboard) => RunningChild = null!;
     }
 }

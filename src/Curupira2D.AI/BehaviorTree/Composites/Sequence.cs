@@ -7,14 +7,11 @@
     /// </summary>
     public class Sequence : Composite
     {
-        public Sequence() { }
-        public Sequence(IList<Node> children) => _children = children;
-
         public override State Tick(IBlackboard blackboard)
         {
-            foreach (var child in _children)
+            foreach (var child in Children)
             {
-                if (child != _runningChild)
+                if (child != RunningChild)
                     child.OnBeforeRun(blackboard);
 
                 var childState = child.Tick(blackboard);
@@ -30,10 +27,10 @@
 
                 if (childState == State.Running)
                 {
-                    if (child != _runningChild)
+                    if (child != RunningChild)
                     {
-                        _runningChild?.Interrupt(blackboard);
-                        _runningChild = child;
+                        RunningChild?.Interrupt(blackboard);
+                        RunningChild = child;
                     }
 
                     return State.Running;

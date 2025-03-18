@@ -9,26 +9,28 @@
     {
         private int _currentCount = 0;
 
+        internal Repeater(int repeatCount) : this(null!, repeatCount) { }
+
         public override State Tick(IBlackboard blackboard)
         {
             if (_currentCount < repeatCount)
             {
-                if (_runningChild == null)
-                    _child.OnBeforeRun(blackboard);
+                if (RunningChild == null)
+                    Child.OnBeforeRun(blackboard);
 
-                var childState = _child.Tick(blackboard);
+                var childState = Child.Tick(blackboard);
 
                 if (childState == State.Running)
                 {
-                    _runningChild = _child;
+                    RunningChild = Child;
                     return State.Running;
                 }
 
                 _currentCount++;
-                _child.OnAfterRun(blackboard);
+                Child.OnAfterRun(blackboard);
 
-                if (_runningChild != null)
-                    _runningChild = null!;
+                if (RunningChild != null)
+                    RunningChild = null!;
 
                 if (childState == State.Failure)
                     return State.Failure;
