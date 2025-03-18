@@ -1,4 +1,6 @@
-﻿namespace Curupira2D.AI.BehaviorTree.Decorators
+﻿using System.Text;
+
+namespace Curupira2D.AI.BehaviorTree.Decorators
 {
     /// <summary>
     /// Decorator nodes are used to transform the result received by its child
@@ -15,5 +17,13 @@
         }
 
         public override void OnAfterRun(IBlackboard blackboard) => RunningChild = null!;
+
+        internal override string BuildStringTree(string prefix = "", bool isLast = true)
+        {
+            var sb = new StringBuilder($"{prefix}{(isLast ? "└── " : "├── ")}{GetType().Name}\n");
+            sb.AppendLine(Child.BuildStringTree($"{prefix}{(isLast ? "    " : "│   ")}"));
+
+            return sb.ToString();
+        }
     }
 }

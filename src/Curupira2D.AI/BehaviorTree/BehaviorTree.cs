@@ -9,10 +9,10 @@ namespace Curupira2D.AI.BehaviorTree
     /// </summary>
     public class BehaviorTree
     {
-        private static IBlackboard _blackboard;
-        private static Node _root;
-        private static readonly Stopwatch _stopwatch = new();
-        private static float _updateIntervalInMilliseconds;
+        private readonly IBlackboard _blackboard;
+        private readonly Node _root;
+        private readonly Stopwatch _stopwatch = new();
+        private float _updateIntervalInMilliseconds;
         private State _state = State.Running;
 
         private BehaviorTree() { }
@@ -69,5 +69,7 @@ namespace Curupira2D.AI.BehaviorTree
             _root.Interrupt(_blackboard);
             _state = State.Running;
         }
+
+        public string GetStringTree() => _root.BuildStringTree();
     }
 }

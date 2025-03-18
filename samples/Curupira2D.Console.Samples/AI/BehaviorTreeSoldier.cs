@@ -8,26 +8,6 @@ namespace Curupira2D.Console.Samples.AI
         public static void Main()
         {
             System.Console.OutputEncoding = System.Text.Encoding.UTF8;
-            System.Console.WriteLine(@"
-                ROOT (selector)
-                |
-                O-------------------------------------------------------O
-                |                                                       |
-                V                                                       |
-                COMPOSITE (sequence)                                    |
-                |                                                       |
-                O-----------------------O                               |
-                |                       |                               |
-                |                       |                               |
-                |                       |                               |
-                V                       V                               V
-                LEAF (check enemy)      DECORATOR (repeat attack)       LEAF (patrol area)
-                                        |
-                                        |
-                                        |
-                                        V
-                                        LEAF (attack enemy)
-            ");
 
             var blackboard = new Blackboard();
             var behaviorTreeBuilder = BehaviorTreeBuilder.GetInstance();
@@ -35,15 +15,23 @@ namespace Curupira2D.Console.Samples.AI
             // Define behavior tree structure
             behaviorTreeBuilder
             .Selector()
-                    .Sequence()
+                .Sequence()
                     .Leaf<CheckForEnemyAction>()
-                    .Repeater(2)
-                    .Leaf<AttackEnemyAction>()
+                    .RandomSequence()
+                        .Leaf<AttackEnemyAction>()
+                        .ExecuteAction((bb) =>
+                        {
+                            System.Console.WriteLine("🛡️ BLOCKING THE ENEMY ATTACK");
+                            return State.Success;
+                        })
                     .Close()
+                .Close()
                 .Leaf<PatrolAction>()
             .Close();
 
-            var behaviorTree = behaviorTreeBuilder.Build(blackboard, updateIntervalInMilliseconds: 10);
+            var behaviorTree = behaviorTreeBuilder.Build(blackboard, updateIntervalInMilliseconds: 0);
+
+            System.Console.WriteLine($"BEHAVIOR TREE STRUCTURE\n{behaviorTree.GetStringTree()}\n");
 
             // Simulating AI Tick Loop
             for (int i = 0; i < 10; i++)
@@ -75,7 +63,7 @@ namespace Curupira2D.Console.Samples.AI
         {
             if (blackboard.Get<bool>("EnemyDetected"))
             {
-                System.Console.WriteLine("⚔️ ATTACKING THE ENEMY!");
+                System.Console.WriteLine("🗡️ ATTACKING THE ENEMY!");
                 return State.Success;
             }
 

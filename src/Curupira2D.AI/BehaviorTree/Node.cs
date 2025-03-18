@@ -24,5 +24,8 @@
         /// Called after the last time this node is ticked and returns <see cref="State.Failure"/> or <see cref="State.Success"/>
         /// </summary>
         public virtual void OnAfterRun(IBlackboard blackboard) { }
+
+        internal virtual string BuildStringTree(string prefix = "", bool isLast = true)
+            => $"{prefix}{(isLast ? "└── " : "├── ")}{GetType().Name}\n";
     }
 }
