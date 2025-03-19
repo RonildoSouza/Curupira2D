@@ -1,35 +1,24 @@
 ﻿namespace Curupira2D.AI.BehaviorTree.Decorators
 {
     /// <summary>
-    /// <see cref="Inverter"/> will return <see cref="State.Success"/> if its child returns <see cref="State.Failure"/> and vice versa.
+    /// <see cref="Inverter"/> will return <see cref="NodeState.Success"/> if its child returns <see cref="NodeState.Failure"/> and vice versa.
     /// </summary>
     public class Inverter : Decorator
     {
         public Inverter(Node child) : base(child) { }
         internal Inverter() : base(null!) { }
 
-        public override State Tick(IBlackboard blackboard)
+        public override NodeState Update(IBlackboard blackboard)
         {
-            if (Child != RunningChild)
-                Child.OnBeforeRun(blackboard);
-
             var childState = Child.Tick(blackboard);
 
-            if (childState == State.Success)
-            {
-                Child.OnAfterRun(blackboard);
-                return State.Failure;
-            }
+            if (childState == NodeState.Success)
+                return NodeState.Failure;
 
-            if (childState == State.Failure)
-            {
-                Child.OnAfterRun(blackboard);
-                return State.Success;
-            }
+            if (childState == NodeState.Failure)
+                return NodeState.Success;
 
-            RunningChild = Child;
-
-            return State.Running;
+            return NodeState.Running;
         }
     }
 }

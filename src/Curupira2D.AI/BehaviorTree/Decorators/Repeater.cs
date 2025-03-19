@@ -1,47 +1,38 @@
 ﻿namespace Curupira2D.AI.BehaviorTree.Decorators
 {
     /// <summary>
-    /// The <see cref="Repeater"/> will execute its child until it returns <see cref="State.Success"/> a certain amount of times.
-    /// When the number of maximum ticks is reached, it will return a <see cref="State.Success"/>.
-    /// If the child returns <see cref="State.Failure"/>, the repeater will return <see cref="State.Failure"/> immediately.
+    /// Will repeat execution of its child task until the child task has been run a specified number of times. 
+    /// It has the option of continuing to execute the child task even if the child task returns a <see cref="NodeState.Failure"/>. 
     /// </summary>
-    public class Repeater(Node child, int repeatCount) : Decorator(child)
+    /// <param name="child"></param>
+    /// <param name="repeatCount">The number of times to repeat the execution of its child</param>
+    /// <param name="repeatForever">Allows the repeater to repeat forever</param>
+    /// <param name="endOnFailure">Should the task return if the child task returns a <see cref="NodeState.Failure"/></param>
+    public class Repeater(Node child, int repeatCount, bool repeatForever = false, bool endOnFailure = false) : Decorator(child)
     {
-        private int _currentCount = 0;
+        int _currentCount;
 
-        internal Repeater(int repeatCount) : this(null!, repeatCount) { }
+        internal Repeater(int repeatCount, bool repeatForever = false, bool endOnFailure = false)
+            : this(null!, repeatCount, repeatForever, endOnFailure) { }
 
-        public override State Tick(IBlackboard blackboard)
+        public override void OnStart(IBlackboard blackboard) => _currentCount = 0;
+
+        public override NodeState Update(IBlackboard blackboard)
         {
-            if (_currentCount < repeatCount)
-            {
-                if (RunningChild == null)
-                    Child.OnBeforeRun(blackboard);
+            // early out if we are done. we check here and after running just in case the count is 0
+            if (!repeatForever && _currentCount == repeatCount)
+                return NodeState.Success;
 
-                var childState = Child.Tick(blackboard);
+            var childState = Child.Tick(blackboard);
+            _currentCount++;
 
-                if (childState == State.Running)
-                {
-                    RunningChild = Child;
-                    return State.Running;
-                }
+            if (endOnFailure && childState == NodeState.Failure)
+                return NodeState.Success;
 
-                _currentCount++;
-                Child.OnAfterRun(blackboard);
+            if (!repeatForever && _currentCount == repeatCount)
+                return NodeState.Success;
 
-                if (RunningChild != null)
-                    RunningChild = null!;
-
-                if (childState == State.Failure)
-                    return State.Failure;
-
-                if (_currentCount >= repeatCount)
-                    return State.Success;
-
-                return State.Running;
-            }
-
-            return State.Success;
+            return NodeState.Running;
         }
     }
 }

@@ -1,4 +1,6 @@
-﻿using TiledLib.Layer;
+﻿using System.Collections.Generic;
+using System.Linq;
+using TiledLib.Layer;
 
 namespace Curupira2D.Extensions
 {
@@ -19,5 +21,9 @@ namespace Curupira2D.Extensions
         /// <param name="x">Index of layer width iteration</param>
         /// <param name="y">Index of layer height iteration</param>
         public static bool HasTile(this TileLayer layer, int x, int y) => GetGlobalTileId(layer, x, y) != 0;
+
+        public static TileLayer Get(this IEnumerable<TileLayer> layers, string name) => layers.FirstOrDefault(_ => _.Name == name);
+
+        public static TileLayer Get(this IEnumerable<TileLayer> layers, int id) => layers.FirstOrDefault(_ => _.Id == id);
     }
 }

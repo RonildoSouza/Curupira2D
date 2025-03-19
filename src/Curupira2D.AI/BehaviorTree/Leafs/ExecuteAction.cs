@@ -5,14 +5,14 @@
     /// </summary>
     public class ExecuteAction : ActionLeaf
     {
-        private readonly Func<IBlackboard, State> _action;
+        private readonly Func<IBlackboard, NodeState> _action;
 
-        public ExecuteAction(Func<IBlackboard, State> action)
+        public ExecuteAction(Func<IBlackboard, NodeState> action)
         {
             ArgumentNullException.ThrowIfNull(action, nameof(action));
             _action = action;
         }
 
-        public override State Tick(IBlackboard blackboard) => _action(blackboard);
+        public override NodeState Update(IBlackboard blackboard) => _action(blackboard);
     }
 }

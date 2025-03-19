@@ -49,6 +49,7 @@ namespace Curupira2D.AI.Pathfinding.Graphs
                     _neighbors.Add(next);
             }
 
+            // Fixes ugly paths
             if ((node.X + node.Y) % 2 == 0)
                 _neighbors.Reverse();
 

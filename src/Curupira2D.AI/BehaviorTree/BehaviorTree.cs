@@ -1,6 +1,7 @@
 ﻿using Curupira2D.AI.BehaviorTree.Composites;
 using Curupira2D.AI.BehaviorTree.Decorators;
 using System.Diagnostics;
+using System.Text;
 
 namespace Curupira2D.AI.BehaviorTree
 {
@@ -13,11 +14,8 @@ namespace Curupira2D.AI.BehaviorTree
         private readonly Node _root;
         private readonly Stopwatch _stopwatch = new();
         private float _updateIntervalInMilliseconds;
-        private State _state = State.Running;
 
-        private BehaviorTree() { }
-
-        public BehaviorTree(IBlackboard blackboard, Node root, int updateIntervalInMilliseconds = 1000)
+        public BehaviorTree(IBlackboard blackboard, Node root, int updateIntervalInMilliseconds = 200)
         {
             ArgumentNullException.ThrowIfNull(blackboard, nameof(blackboard));
             ArgumentNullException.ThrowIfNull(root, nameof(root));
@@ -38,38 +36,49 @@ namespace Curupira2D.AI.BehaviorTree
 
         public void Tick()
         {
-            if (_state != State.Running)
-                _root.OnBeforeRun(_blackboard);
-
-            if (_updateIntervalInMilliseconds == 0f)
+            // updatePeriod less than or equal to 0 will tick every frame
+            if (_updateIntervalInMilliseconds <= 0f)
             {
-                _state = _root.Tick(_blackboard);
-
-                if (_state != State.Running)
-                    _root.OnAfterRun(_blackboard);
-
+                _root.Tick(_blackboard);
                 return;
             }
 
             if (!_stopwatch.IsRunning)
                 _stopwatch.Start();
 
+            // ensure we only tick once for long frames
             if (_stopwatch.Elapsed.TotalMilliseconds >= _updateIntervalInMilliseconds)
             {
                 _stopwatch.Reset();
-                _state = _root.Tick(_blackboard);
+                _root.Tick(_blackboard);
             }
-
-            if (_state != State.Running)
-                _root.OnAfterRun(_blackboard);
         }
 
-        public void Interrupt()
+        public string GetStringTree(string prefix = "")
         {
-            _root.Interrupt(_blackboard);
-            _state = State.Running;
-        }
+            return BuildStringTree(_root, prefix);
 
-        public string GetStringTree() => _root.BuildStringTree();
+            static string BuildStringTree(Node node, string prefix = "", bool isLast = true)
+            {
+                var sb = new StringBuilder($"{prefix}{(isLast ? "└── " : "├── ")}{node.GetType().Name} ({node.State.ToString()[0]})\n");
+                var childPath = $"{prefix}{(isLast ? "    " : "│   ")}";
+
+                if (node is Composite composite)
+                {
+                    for (int i = 0; i < composite.Children.Count; i++)
+                        sb.Append(BuildStringTree(composite.Children[i], childPath, i == composite.Children.Count - 1));
+
+                    return sb.ToString();
+                }
+
+                if (node is Decorator decorator)
+                {
+                    sb.AppendLine(BuildStringTree(decorator.Child, childPath));
+                    return sb.ToString();
+                }
+
+                return sb.ToString();
+            }
+        }
     }
 }

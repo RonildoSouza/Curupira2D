@@ -27,23 +27,34 @@ namespace Curupira2D.AI.BehaviorTree
 
         public BehaviorTreeBuilder Leaf<T>() where T : Node => Leaf<T>(null!);
 
-        public BehaviorTreeBuilder ExecuteAction(Func<IBlackboard, State> action) => Leaf<ExecuteAction>([action]);
+        public BehaviorTreeBuilder ExecuteAction(Func<IBlackboard, NodeState> action) => Leaf<ExecuteAction>([action]);
 
-        public BehaviorTreeBuilder ExecuteAction(Func<IBlackboard, bool> action) => ExecuteAction(bb => action(bb) ? State.Success : State.Failure);
+        public BehaviorTreeBuilder ExecuteAction(Func<IBlackboard, bool> action) => ExecuteAction(bb => action(bb) ? NodeState.Success : NodeState.Failure);
 
         public BehaviorTreeBuilder DebugLogAction(string text) => Leaf<DebugLogAction>([text]);
+
+        public BehaviorTreeBuilder Conditional(Func<IBlackboard, NodeState> action) => PushParent(new ExecuteActionConditional(action));
+
+        public BehaviorTreeBuilder Conditional(Func<IBlackboard, bool> action) => Conditional(t => action(t) ? NodeState.Success : NodeState.Failure);
         #endregion
 
         #region Decorators
-        public BehaviorTreeBuilder AlwaysFailure() => PushParent(new AlwaysFailure());
+        public BehaviorTreeBuilder AlwaysFailure() => PushParent(new AlwaysFail());
 
         public BehaviorTreeBuilder AlwaysSuccess() => PushParent(new AlwaysSuccess());
+
+        public BehaviorTreeBuilder ConditionalDecorator(Func<IBlackboard, NodeState> action, bool shouldReevaluate = true)
+            => PushParent(new ConditionalDecorator(new ExecuteActionConditional(action), shouldReevaluate));
+
+        public BehaviorTreeBuilder ConditionalDecorator(Func<IBlackboard, bool> func, bool shouldReevaluate = true)
+            => ConditionalDecorator(t => func(t) ? NodeState.Success : NodeState.Failure, shouldReevaluate);
 
         public BehaviorTreeBuilder Delay(int milliseconds) => PushParent(new Delay(milliseconds));
 
         public BehaviorTreeBuilder Inverter() => PushParent(new Inverter());
 
-        public BehaviorTreeBuilder Repeater(int repeatCount) => PushParent(new Repeater(repeatCount));
+        public BehaviorTreeBuilder Repeater(int repeatCount, bool repeatForever = false, bool endOnFailure = false)
+            => PushParent(new Repeater(repeatCount, repeatForever, endOnFailure));
 
         public BehaviorTreeBuilder UntilFail() => PushParent(new UntilFail());
 
@@ -59,9 +70,9 @@ namespace Curupira2D.AI.BehaviorTree
 
         public BehaviorTreeBuilder RandomSequence() => PushParent(new RandomSequence());
 
-        public BehaviorTreeBuilder Selector() => PushParent(new Selector());
+        public BehaviorTreeBuilder Selector(AbortTypes abortType = AbortTypes.None) => PushParent(new Selector(abortType));
 
-        public BehaviorTreeBuilder Sequence() => PushParent(new Sequence());
+        public BehaviorTreeBuilder Sequence(AbortTypes abortType = AbortTypes.None) => PushParent(new Sequence(abortType));
 
         /// <summary>
         /// Closes a composite node. This is necessary to close the composite and return to the parent node

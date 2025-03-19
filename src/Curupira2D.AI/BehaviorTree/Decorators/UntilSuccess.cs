@@ -1,26 +1,21 @@
 ﻿namespace Curupira2D.AI.BehaviorTree.Decorators
 {
     /// <summary>
-    /// <see cref="UntilFail"/> will keep executing its child task until the child node returns <see cref="State.Success"/>
+    /// <see cref="UntilFail"/> will keep executing its child task until the child node returns <see cref="NodeState.Success"/>
     /// </summary>
     public class UntilSuccess : Decorator
     {
         public UntilSuccess(Node child) : base(child) { }
         internal UntilSuccess() : base(null!) { }
 
-        public override State Tick(IBlackboard blackboard)
+        public override NodeState Update(IBlackboard blackboard)
         {
-            if (Child != RunningChild)
-                Child.OnBeforeRun(blackboard);
+            var childState = Child.Update(blackboard);
 
-            var childState = Child.Tick(blackboard);
+            if (childState != NodeState.Success)
+                return NodeState.Running;
 
-            if (childState == State.Success)
-                return State.Success;
-
-            RunningChild = Child;
-
-            return State.Running;
+            return NodeState.Success;
         }
     }
 }

@@ -17,12 +17,12 @@ namespace Curupira2D.Console.Samples.AI
             .Selector()
                 .Sequence()
                     .Leaf<CheckForEnemyAction>()
-                    .RandomSequence()
+                    .RandomSelector()
                         .Leaf<AttackEnemyAction>()
                         .ExecuteAction((bb) =>
                         {
                             System.Console.WriteLine("🛡️ BLOCKING THE ENEMY ATTACK");
-                            return State.Success;
+                            return NodeState.Success;
                         })
                     .Close()
                 .Close()
@@ -31,12 +31,13 @@ namespace Curupira2D.Console.Samples.AI
 
             var behaviorTree = behaviorTreeBuilder.Build(blackboard, updateIntervalInMilliseconds: 0);
 
-            System.Console.WriteLine($"BEHAVIOR TREE STRUCTURE\n{behaviorTree.GetStringTree()}\n");
+            //System.Console.WriteLine($"BEHAVIOR TREE STRUCTURE\n{behaviorTree.GetStringTree()}\n");
 
             // Simulating AI Tick Loop
             for (int i = 0; i < 10; i++)
             {
                 behaviorTree.Tick();
+                System.Console.WriteLine($"BEHAVIOR TREE STRUCTURE\n{behaviorTree.GetStringTree()}\n");
 
                 System.Console.WriteLine("-------------------");
                 Thread.Sleep(1000);
@@ -46,38 +47,38 @@ namespace Curupira2D.Console.Samples.AI
 
     public class CheckForEnemyAction : ActionLeaf
     {
-        public override State Tick(IBlackboard blackboard)
+        public override NodeState Update(IBlackboard blackboard)
         {
             var enemyNearby = Random.Shared.Next(0, 2) == 1; // Simulated enemy detection
             blackboard.Set("EnemyDetected", enemyNearby);
 
             System.Console.WriteLine($"{(enemyNearby ? "⚠️ ENEMY FOUND!" : "✅ NO ENEMIES")}");
 
-            return enemyNearby ? State.Success : State.Failure;
+            return enemyNearby ? NodeState.Success : NodeState.Failure;
         }
     }
 
     public class AttackEnemyAction : ActionLeaf
     {
-        public override State Tick(IBlackboard blackboard)
+        public override NodeState Update(IBlackboard blackboard)
         {
             if (blackboard.Get<bool>("EnemyDetected"))
             {
                 System.Console.WriteLine("🗡️ ATTACKING THE ENEMY!");
-                return State.Success;
+                return NodeState.Success;
             }
 
             System.Console.WriteLine("👣 NO ENEMY TO ATTACK KEEP PATROLLING");
-            return State.Failure;
+            return NodeState.Failure;
         }
     }
 
     public class PatrolAction : ActionLeaf
     {
-        public override State Tick(IBlackboard blackboard)
+        public override NodeState Update(IBlackboard blackboard)
         {
             System.Console.WriteLine("👣 PATROLLING THE AREA");
-            return State.Running;
+            return Random.Shared.Next(0, 2) == 1 ? NodeState.Success : NodeState.Failure;
         }
     }
 }

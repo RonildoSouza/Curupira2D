@@ -10,7 +10,8 @@ namespace Curupira2D.Desktop.Samples
 
         protected override void LoadContent()
         {
-            SetScene<MenuScene>();
+            SetScene<BehaviorTreeAndPathfinderScene>();
+            //SetScene<MenuScene>();
             base.LoadContent();
         }
 

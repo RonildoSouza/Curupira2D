@@ -1,31 +1,50 @@
 ﻿namespace Curupira2D.AI.BehaviorTree
 {
     /// <summary>
-    /// Represents a node in a behavior tree. Every node must return a <see cref="State"/> value when ticked
+    /// Represents a node in a behavior tree. 
+    /// Every node must return a <see cref="NodeState"/> value when ticked
     /// </summary>
     public abstract class Node
     {
-        /// <summary>
-        /// Executes this node and returns a <see cref="State"/> value
-        /// </summary>
-        public abstract State Tick(IBlackboard blackboard);
+        public NodeState State { get; internal set; } = NodeState.Invalid;
 
         /// <summary>
-        /// Called when this node needs to be interrupted before it can return <see cref="State.Failure"/> or <see cref="State.Success"/>.
+        /// Executes this node and returns a <see cref="NodeState"/> value
         /// </summary>
-        public virtual void Interrupt(IBlackboard blackboard) { }
+        public abstract NodeState Update(IBlackboard blackboard);
 
         /// <summary>
-        /// Called before the first time this node is ticked
-        /// </summary>
-        public virtual void OnBeforeRun(IBlackboard blackboard) { }
+		/// Invalidate the status of the node. 
+        /// Composites can override this and invalidate all of their children.
+		/// </summary>
+        public virtual void Invalidate(IBlackboard blackboard) => State = NodeState.Invalid;
 
         /// <summary>
-        /// Called after the last time this node is ticked and returns <see cref="State.Failure"/> or <see cref="State.Success"/>
-        /// </summary>
-        public virtual void OnAfterRun(IBlackboard blackboard) { }
+		/// Called immediately before execution. 
+        /// It is used to setup any variables that need to be reset from the previous run.
+		/// </summary>
+        public virtual void OnStart(IBlackboard blackboard) { }
 
-        internal virtual string BuildStringTree(string prefix = "", bool isLast = true)
-            => $"{prefix}{(isLast ? "└── " : "├── ")}{GetType().Name}\n";
+        /// <summary>
+		/// Called when a task changes state to something other than <see cref="NodeState.Running"/>
+		/// </summary>
+        public virtual void OnEnd(IBlackboard blackboard) { }
+
+        /// <summary>
+		/// Tick handles calling through to update where the actual work is done. 
+        /// It exists so that it can call <see cref="OnStart(IBlackboard)"/>/<see cref="OnEnd(IBlackboard)"/> when necessary.
+		/// </summary>
+		internal NodeState Tick(IBlackboard blackboard)
+        {
+            if (State == NodeState.Invalid)
+                OnStart(blackboard);
+
+            State = Update(blackboard);
+
+            if (State != NodeState.Running)
+                OnEnd(blackboard);
+
+            return State;
+        }
     }
 }

@@ -5,7 +5,7 @@
 	/// </summary>
     public class RandomSelector : Selector
     {
-        public override void OnBeforeRun(IBlackboard blackboard)
+        public override void OnStart(IBlackboard blackboard)
         {
             var children = Children.ToArray();
             Random.Shared.Shuffle(children);
