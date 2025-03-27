@@ -12,7 +12,7 @@
 
             foreach (var child in Children)
             {
-                State = child.Tick(blackboard);
+                State = child.Update(blackboard);
 
                 // if any child fails the whole branch fails
                 if (child.State == BehaviorState.Failure)

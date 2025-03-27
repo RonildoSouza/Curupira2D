@@ -37,8 +37,11 @@ namespace Curupira2D.AI.BehaviorTree
 
             State = Update(blackboard);
 
+            if (State != BehaviorState.Invalid)
+                blackboard.Set("_LastState", State);
+
 #if DEBUG
-            blackboard.Set("BehaviorTreeStructureWithState", this.GetBehaviorTreeStructureWithState());
+            blackboard.Set("_BehaviorTreeStructureWithState", this.GetBehaviorTreeStructureWithState());
 #endif
 
             if (State != BehaviorState.Running)

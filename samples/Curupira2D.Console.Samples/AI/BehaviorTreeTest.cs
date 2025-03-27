@@ -74,7 +74,7 @@ namespace Curupira2D.Console.Samples.AI
                 System.Console.WriteLine($"==== Tick {i} ====");
                 behaviorTree.Tick();
 #if DEBUG
-                System.Console.WriteLine($"{blackboard.Get<string>("BehaviorTreeStructureWithState")}\n");
+                System.Console.WriteLine($"{blackboard.Get<string>("_BehaviorTreeStructureWithState")}\n");
 #endif
                 Thread.Sleep(500);
             }
