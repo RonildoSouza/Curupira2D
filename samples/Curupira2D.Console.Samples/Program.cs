@@ -14,11 +14,11 @@ while (true)
     {
         case "1":
             Console.Clear();
-            Pathfinding.Main();
+            PathfindingTest.Main();
             break;
         case "2":
             Console.Clear();
-            BehaviorTreeSoldier.Main();
+            BehaviorTreeTest.Main();
             break;
         case "Q" or "q": return;
         default: Console.WriteLine("Invalid option."); break;

@@ -9,45 +9,50 @@ namespace Curupira2D.AI.BehaviorTree
     /// </summary>
     public class BehaviorTreeBuilder()
     {
-        Node _currentNode = null!;
-        readonly Stack<Node> _parentNodeStack = [];
+        Behavior _currentNode = null!;
+        readonly Stack<Behavior> _parentNodeStack = [];
 
         public static BehaviorTreeBuilder GetInstance() => new();
 
         #region Leafs
-        public BehaviorTreeBuilder Leaf<T>(params object[] args) where T : Node
+        public BehaviorTreeBuilder Leaf<T>(params object[] args) where T : Behavior
         {
             var leaf = (T)Activator.CreateInstance(typeof(T), args);
 
-            if (leaf is not ActionLeaf && leaf is not ConditionLeaf)
-                throw new InvalidOperationException("Leaf nodes must be ActionLeaf or ConditionLeaf");
+            if (leaf is not Leafs.Leaf)
+                throw new InvalidOperationException("Leaf nodes must inherit Leaf class!");
 
             return AddChildOnParent(leaf);
         }
 
-        public BehaviorTreeBuilder Leaf<T>() where T : Node => Leaf<T>(null!);
+        public BehaviorTreeBuilder Leaf<T>() where T : Behavior => Leaf<T>(null!);
 
-        public BehaviorTreeBuilder ExecuteAction(Func<IBlackboard, NodeState> action) => Leaf<ExecuteAction>([action]);
+        /// <summary>
+        /// Define a task to be performed simple actions without the need for subclass.
+        /// </summary>
+        public BehaviorTreeBuilder ExecuteAction(Func<IBlackboard, BehaviorState> action) => Leaf<ExecuteAction>([action]);
 
-        public BehaviorTreeBuilder ExecuteAction(Func<IBlackboard, bool> action) => ExecuteAction(bb => action(bb) ? NodeState.Success : NodeState.Failure);
+        /// <summary>
+        ///  Conditions are leaf nodes that either return <see cref="BehaviorState.Success"/> or <see cref="BehaviorState.Failure"/> depending on a single simple condition
+        /// </summary>
+        public BehaviorTreeBuilder Conditional(Func<IBlackboard, bool> action) => ExecuteAction(bb => action(bb) ? BehaviorState.Success : BehaviorState.Failure);
 
+        /// <summary>
+        /// Output the specified text and return <see cref="BehaviorState.Success"/>
+        /// </summary>
         public BehaviorTreeBuilder DebugLogAction(string text) => Leaf<DebugLogAction>([text]);
 
-        public BehaviorTreeBuilder Conditional(Func<IBlackboard, NodeState> action) => PushParent(new ExecuteActionConditional(action));
-
-        public BehaviorTreeBuilder Conditional(Func<IBlackboard, bool> action) => Conditional(t => action(t) ? NodeState.Success : NodeState.Failure);
+        /// <summary>
+        /// Returns <see cref="BehaviorState.Success"/> when the random probability is less than or equal <paramref name="probability"/>, otherwise return <see cref="BehaviorState.Failure"/>.
+        /// <paramref name="probability"/> must be between 0 and 100.
+        /// </summary>
+        public BehaviorTreeBuilder RandomProbabilityCondition(int probability = 50) => Leaf<RandomProbabilityCondition>([probability]);
         #endregion
 
         #region Decorators
         public BehaviorTreeBuilder AlwaysFailure() => PushParent(new AlwaysFail());
 
         public BehaviorTreeBuilder AlwaysSuccess() => PushParent(new AlwaysSuccess());
-
-        public BehaviorTreeBuilder ConditionalDecorator(Func<IBlackboard, NodeState> action, bool shouldReevaluate = true)
-            => PushParent(new ConditionalDecorator(new ExecuteActionConditional(action), shouldReevaluate));
-
-        public BehaviorTreeBuilder ConditionalDecorator(Func<IBlackboard, bool> func, bool shouldReevaluate = true)
-            => ConditionalDecorator(t => func(t) ? NodeState.Success : NodeState.Failure, shouldReevaluate);
 
         public BehaviorTreeBuilder Delay(int milliseconds) => PushParent(new Delay(milliseconds));
 
@@ -70,9 +75,9 @@ namespace Curupira2D.AI.BehaviorTree
 
         public BehaviorTreeBuilder RandomSequence() => PushParent(new RandomSequence());
 
-        public BehaviorTreeBuilder Selector(AbortTypes abortType = AbortTypes.None) => PushParent(new Selector(abortType));
+        public BehaviorTreeBuilder Selector() => PushParent(new Selector());
 
-        public BehaviorTreeBuilder Sequence(AbortTypes abortType = AbortTypes.None) => PushParent(new Sequence(abortType));
+        public BehaviorTreeBuilder Sequence() => PushParent(new Sequence());
 
         /// <summary>
         /// Closes a composite node. This is necessary to close the composite and return to the parent node
@@ -88,7 +93,7 @@ namespace Curupira2D.AI.BehaviorTree
         }
         #endregion
 
-        public BehaviorTree Build(IBlackboard blackboard, int updateIntervalInMilliseconds = 1000)
+        public BehaviorTree Build(IBlackboard blackboard, int updateIntervalInMilliseconds = 20)
         {
             if (_currentNode is null)
                 throw new InvalidOperationException("Can't create a behaviour tree with zero nodes");
@@ -96,11 +101,11 @@ namespace Curupira2D.AI.BehaviorTree
             return new BehaviorTree(blackboard, _currentNode, updateIntervalInMilliseconds);
         }
 
-        BehaviorTreeBuilder AddChildOnParent(Node child)
+        BehaviorTreeBuilder AddChildOnParent(Behavior child)
         {
             ArgumentNullException.ThrowIfNull(child, nameof(child));
 
-            if (_parentNodeStack.Count == 0 && child is ILeaf)
+            if (_parentNodeStack.Count == 0 && child is Leaf)
                 throw new InvalidOperationException("Can't create a leaf node without a parent");
 
             var parent = _parentNodeStack.Peek();
@@ -121,7 +126,7 @@ namespace Curupira2D.AI.BehaviorTree
         /// <summary>
         /// Pushes a <see cref="Composite"/> or <see cref="Decorator"/> on the stack
         /// </summary>
-        BehaviorTreeBuilder PushParent(Node node)
+        BehaviorTreeBuilder PushParent(Behavior node)
         {
             if (_parentNodeStack.Count > 0)
                 AddChildOnParent(node);

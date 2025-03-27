@@ -1,6 +1,7 @@
 ﻿using Curupira2D.AI.Pathfinding;
 using Curupira2D.AI.Pathfinding.Graphs;
 using System.Drawing;
+using System.Text;
 
 namespace Curupira2D.AI.Extensions
 {
@@ -8,13 +9,25 @@ namespace Curupira2D.AI.Extensions
     {
         public static void WriteLine(this GridGraph graph, Point start, Point goal, Path<Point> path, bool showPath = false, bool showCostSoFar = false)
         {
+            Console.OutputEncoding = Encoding.UTF8;
+            Console.WriteLine(graph.GetDebugPathfinder(start, goal, path, showPath, showCostSoFar));
+        }
+
+        public static void WriteLine<T>(this EdgesGraph<T> graph, T start, T goal, Path<T> path) where T : notnull
+        {
+            Console.OutputEncoding = Encoding.UTF8;
+            Console.WriteLine(graph.GetDebugPathfinder<T>(start, goal, path));
+        }
+
+        public static string GetDebugPathfinder(this GridGraph graph, Point start, Point goal, Path<Point> path, bool showPath = false, bool showCostSoFar = false)
+        {
             const int fieldWidth = 3;
-            Console.OutputEncoding = System.Text.Encoding.UTF8;
+            var sb = new StringBuilder();
 
             if (!showPath)
-                Console.WriteLine($"* FOUND PATH: {path.FoundPath}");
+                sb.AppendLine($"* FOUND PATH: {path.FoundPath}");
 
-            Console.WriteLine(new string('_', fieldWidth * graph.Width));
+            sb.AppendLine(new string('_', fieldWidth * graph.Width));
 
             for (int y = 0; y < graph.Height; y++)
             {
@@ -23,45 +36,48 @@ namespace Curupira2D.AI.Extensions
                     var node = new Point(x, y);
 
                     if (graph.Walls.Contains(node))
-                        Console.Write(new string('#', fieldWidth)); // WALLS
+                        sb.Append(new string('#', fieldWidth)); // WALLS
                     else if (start == node)
-                        Console.Write(" S "); // START
+                        sb.Append(" S "); // START
                     else if (goal == node)
-                        Console.Write(" G "); // GOAL
+                        sb.Append(" G "); // GOAL
                     else if (showPath && path.Edges != null && path.Edges.Contains(node))
-                        Console.Write(" @ "); // PATH
+                        sb.Append(" @ "); // PATH
                     else if (!showPath && path.CameFrom != null && path.CameFrom.TryGetValue(node, out Point next))
                     {
                         if (next.X == x + 1)
-                            Console.Write(" → ");
+                            sb.Append(" → ");
                         else if (next.X == x - 1)
-                            Console.Write(" ← ");
+                            sb.Append(" ← ");
                         else if (next.Y == y + 1)
-                            Console.Write(" ↓ ");
+                            sb.Append(" ↓ ");
                         else if (next.Y == y - 1)
-                            Console.Write(" ↑ ");
+                            sb.Append(" ↑ ");
                         else
-                            Console.Write(" * ");
+                            sb.Append(" * ");
                     }
                     else if (showPath && showCostSoFar && path.CostSoFar != null && path.CostSoFar.TryGetValue(node, out int value))
-                        Console.Write($"{value} ".PadLeft(3, '0'));
+                        sb.Append($"{value} ".PadLeft(3, '0'));
                     else
-                        Console.Write(" . ");
+                        sb.Append(" . ");
                 }
 
-                Console.WriteLine();
+                sb.AppendLine();
             }
 
-            Console.WriteLine(new string('_', fieldWidth * graph.Width));
+            sb.AppendLine(new string('_', fieldWidth * graph.Width));
+
+            return sb.ToString();
         }
 
-        public static void WriteLine<T>(this EdgesGraph<T> graph, T start, T goal, Path<T> path)
+        public static string GetDebugPathfinder<T>(this EdgesGraph<T> graph, T start, T goal, Path<T> path)
         {
-            Console.OutputEncoding = System.Text.Encoding.UTF8;
-            Console.WriteLine($"* FROM: {start} TO: {goal}");
-            Console.WriteLine($"* FOUND PATH: {path.FoundPath}");
-            Console.WriteLine($"* CAME FROM: {string.Join(" → ", path.CameFrom.Keys)}");
-            Console.WriteLine();
+            var sb = new StringBuilder();
+
+            sb.AppendLine($"* FROM: {start} TO: {goal}");
+            sb.AppendLine($"* FOUND PATH: {path.FoundPath}");
+            sb.AppendLine($"* CAME FROM: {string.Join(" → ", path.CameFrom.Keys)}");
+            sb.AppendLine();
 
             foreach (var node in graph.Edges)
             {
@@ -71,8 +87,10 @@ namespace Curupira2D.AI.Extensions
                 foreach (var edge in node.Value)
                     value += $" → {edge}";
 
-                Console.WriteLine(value);
+                sb.AppendLine(value);
             }
+
+            return sb.ToString();
         }
     }
 }

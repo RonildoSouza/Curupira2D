@@ -3,14 +3,14 @@
     /// <summary>
     /// Decorator nodes are used to transform the result received by its child
     /// </summary>
-    public abstract class Decorator(Node child) : Node
+    public abstract class Decorator(Behavior child) : Behavior
     {
-        protected internal Node Child { get; set; } = child;
+        protected internal Behavior Child { get; set; } = child;
 
-        public override void Invalidate(IBlackboard blackboard)
+        public override void OnTerminate(IBlackboard blackboard)
         {
-            base.Invalidate(blackboard);
-            Child.Invalidate(blackboard);
+            base.OnTerminate(blackboard);
+            Child.State = BehaviorState.Invalid;
         }
     }
 }

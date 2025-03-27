@@ -1,21 +1,24 @@
 ﻿namespace Curupira2D.AI.BehaviorTree.Decorators
 {
     /// <summary>
-    /// Will always return <see cref="NodeState.Failure"/> except when the child node is <see cref="NodeState.Running"/>
+    /// Will always return <see cref="BehaviorState.Failure"/> except when the child node is <see cref="BehaviorState.Running"/>
     /// </summary>
     public class AlwaysFail : Decorator
     {
-        public AlwaysFail(Node child) : base(child) { }
+        public AlwaysFail(Behavior child) : base(child) { }
         internal AlwaysFail() : base(null!) { }
 
-        public override NodeState Update(IBlackboard blackboard)
+        public override BehaviorState Update(IBlackboard blackboard)
         {
-            var state = Child.Update(blackboard);
+            var childState = Child.Update(blackboard);
 
-            if (state == NodeState.Running)
-                return NodeState.Running;
+            State = childState switch
+            {
+                BehaviorState.Running => BehaviorState.Running,
+                _ => BehaviorState.Failure
+            };
 
-            return NodeState.Failure;
+            return State;
         }
     }
 }

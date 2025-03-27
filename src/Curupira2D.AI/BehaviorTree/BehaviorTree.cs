@@ -1,7 +1,7 @@
 ﻿using Curupira2D.AI.BehaviorTree.Composites;
 using Curupira2D.AI.BehaviorTree.Decorators;
+using Curupira2D.AI.Extensions;
 using System.Diagnostics;
-using System.Text;
 
 namespace Curupira2D.AI.BehaviorTree
 {
@@ -11,11 +11,11 @@ namespace Curupira2D.AI.BehaviorTree
     public class BehaviorTree
     {
         private readonly IBlackboard _blackboard;
-        private readonly Node _root;
+        private readonly Behavior _root;
         private readonly Stopwatch _stopwatch = new();
         private float _updateIntervalInMilliseconds;
 
-        public BehaviorTree(IBlackboard blackboard, Node root, int updateIntervalInMilliseconds = 200)
+        public BehaviorTree(IBlackboard blackboard, Behavior root, int updateIntervalInMilliseconds = 200)
         {
             ArgumentNullException.ThrowIfNull(blackboard, nameof(blackboard));
             ArgumentNullException.ThrowIfNull(root, nameof(root));
@@ -54,31 +54,6 @@ namespace Curupira2D.AI.BehaviorTree
             }
         }
 
-        public string GetStringTree(string prefix = "")
-        {
-            return BuildStringTree(_root, prefix);
-
-            static string BuildStringTree(Node node, string prefix = "", bool isLast = true)
-            {
-                var sb = new StringBuilder($"{prefix}{(isLast ? "└── " : "├── ")}{node.GetType().Name} ({node.State.ToString()[0]})\n");
-                var childPath = $"{prefix}{(isLast ? "    " : "│   ")}";
-
-                if (node is Composite composite)
-                {
-                    for (int i = 0; i < composite.Children.Count; i++)
-                        sb.Append(BuildStringTree(composite.Children[i], childPath, i == composite.Children.Count - 1));
-
-                    return sb.ToString();
-                }
-
-                if (node is Decorator decorator)
-                {
-                    sb.AppendLine(BuildStringTree(decorator.Child, childPath));
-                    return sb.ToString();
-                }
-
-                return sb.ToString();
-            }
-        }
+        public string GetTreeStructure() => _root.GetBehaviorTreeStructure();
     }
 }

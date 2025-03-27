@@ -8,7 +8,7 @@ using System.Drawing;
 
 namespace Curupira2D.Console.Samples.AI
 {
-    public static class Pathfinding
+    public static class PathfindingTest
     {
         public static void Main()
         {

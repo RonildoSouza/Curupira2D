@@ -35,7 +35,7 @@
                 return BehaviorState.Success;
             }
 
-            return BehaviorState.Running;
+            return State = BehaviorState.Running;
         }
 
         protected internal override void Reset()

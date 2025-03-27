@@ -3,16 +3,12 @@
     /// <summary>
     /// <see cref="ExecuteAction"/> are nodes that define a task to be performed simple actions without the need for subclass.
     /// </summary>
-    public class ExecuteAction : ActionLeaf
+    public class ExecuteAction(Func<IBlackboard, BehaviorState> action) : Leaf
     {
-        private readonly Func<IBlackboard, NodeState> _action;
-
-        public ExecuteAction(Func<IBlackboard, NodeState> action)
+        public override BehaviorState Update(IBlackboard blackboard)
         {
-            ArgumentNullException.ThrowIfNull(action, nameof(action));
-            _action = action;
+            State = action(blackboard);
+            return State;
         }
-
-        public override NodeState Update(IBlackboard blackboard) => _action(blackboard);
     }
 }

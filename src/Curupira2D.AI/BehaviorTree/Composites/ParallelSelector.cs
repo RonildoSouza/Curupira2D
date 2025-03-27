@@ -1,12 +1,12 @@
 ﻿namespace Curupira2D.AI.BehaviorTree.Composites
 {
     /// <summary>
-	/// <see cref="ParallelSelector"/> nodes will return <see cref="NodeState.Success"/> once any of its children have returned <see cref="NodeState.Success"/>.
-    /// If all children returns <see cref="NodeState.Failure"/> the <see cref="ParallelSelector"/> node will end all and return <see cref="NodeState.Failure"/>.
+	/// <see cref="ParallelSelector"/> nodes will return <see cref="BehaviorState.Success"/> once any of its children have returned <see cref="BehaviorState.Success"/>.
+    /// If all children returns <see cref="BehaviorState.Failure"/> the <see cref="ParallelSelector"/> node will end all and return <see cref="BehaviorState.Failure"/>.
 	/// </summary>
     public class ParallelSelector : Composite
     {
-        public override NodeState Update(IBlackboard blackboard)
+        public override BehaviorState Update(IBlackboard blackboard)
         {
             var didAllFail = true;
 
@@ -15,18 +15,18 @@
                 child.Tick(blackboard);
 
                 // if any child succeeds we return success
-                if (child.State == NodeState.Success)
-                    return NodeState.Success;
+                if (child.State == BehaviorState.Success)
+                    return State = BehaviorState.Success;
 
                 // if all children didn't fail, we're not done yet
-                if (child.State != NodeState.Failure)
+                if (child.State != BehaviorState.Failure)
                     didAllFail = false;
             }
 
             if (didAllFail)
-                return NodeState.Failure;
+                return State = BehaviorState.Failure;
 
-            return NodeState.Running;
+            return State = BehaviorState.Running;
         }
     }
 }
