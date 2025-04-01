@@ -64,6 +64,18 @@
 /processorParam:TextureFormat=Color
 /build:AI/BehaviorTreeAndPathfinderTileset.png
 
+#begin AI/GoblinSpritesheet.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:AI/GoblinSpritesheet.png
+
 #begin AI/GoldMineSpritesheet.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -179,6 +191,18 @@
 /processorParam:TextureFormat=Color
 /build:TiledMap/Ball.png
 
+#begin TiledMap/isometric-sandbox-sheet.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:TiledMap/isometric-sandbox-sheet.png
+
 #begin TiledMap/IsometricBicycle.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -205,18 +229,6 @@
 
 #begin TiledMap/IsometricGravityTiledMap.tmx
 /copy:TiledMap/IsometricGravityTiledMap.tmx
-
-#begin TiledMap/isometric-sandbox-sheet.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:TiledMap/isometric-sandbox-sheet.png
 
 #begin TiledMap/IsometricTiledMap.tmx
 /copy:TiledMap/IsometricTiledMap.tmx
