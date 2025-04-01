@@ -1,7 +1,7 @@
-﻿using Curupira2D.AI.BehaviorTree.Composites;
+﻿using System.Diagnostics;
+using Curupira2D.AI.BehaviorTree.Composites;
 using Curupira2D.AI.BehaviorTree.Decorators;
 using Curupira2D.AI.Extensions;
-using System.Diagnostics;
 
 namespace Curupira2D.AI.BehaviorTree
 {
@@ -15,7 +15,7 @@ namespace Curupira2D.AI.BehaviorTree
         private readonly Stopwatch _stopwatch = new();
         private float _updateIntervalInMilliseconds;
 
-        public BehaviorTree(IBlackboard blackboard, Behavior root, int updateIntervalInMilliseconds = 200)
+        public BehaviorTree(IBlackboard blackboard, Behavior root, int updateIntervalInMilliseconds = 0)
         {
             ArgumentNullException.ThrowIfNull(blackboard, nameof(blackboard));
             ArgumentNullException.ThrowIfNull(root, nameof(root));

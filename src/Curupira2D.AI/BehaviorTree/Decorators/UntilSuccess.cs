@@ -1,7 +1,7 @@
 ﻿namespace Curupira2D.AI.BehaviorTree.Decorators
 {
     /// <summary>
-    /// <see cref="UntilFail"/> will keep executing its child task until the child node returns <see cref="BehaviorState.Success"/>
+    /// <see cref="UntilFailure"/> will keep executing its child task until the child node returns <see cref="BehaviorState.Success"/>
     /// </summary>
     public class UntilSuccess : Decorator
     {

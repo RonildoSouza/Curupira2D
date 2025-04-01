@@ -50,33 +50,83 @@ namespace Curupira2D.AI.BehaviorTree
         #endregion
 
         #region Decorators
-        public BehaviorTreeBuilder AlwaysFailure() => PushParent(new AlwaysFail());
+        /// <summary>
+        /// Always return <see cref="BehaviorState.Failure"/> except when the child node is <see cref="BehaviorState.Running"/>
+        /// </summary>
+        public BehaviorTreeBuilder AlwaysFailure() => PushParent(new AlwaysFailure());
 
+        /// <summary>
+        /// Always return <see cref="BehaviorState.Success"/> except when the child node is <see cref="BehaviorState.Running"/>
+        /// </summary>
         public BehaviorTreeBuilder AlwaysSuccess() => PushParent(new AlwaysSuccess());
 
+        /// <summary>
+        /// Return <see cref="BehaviorState.Running"/> for a set amount of time before executing its child.
+        /// The timer resets when both it and its child are not <see cref="BehaviorState.Running"/>
+        /// </summary>
         public BehaviorTreeBuilder Delay(int milliseconds) => PushParent(new Delay(milliseconds));
 
+        /// <summary>
+        /// Return <see cref="BehaviorState.Success"/> if its child returns <see cref="BehaviorState.Failure"/> and vice versa.
+        /// </summary>
         public BehaviorTreeBuilder Inverter() => PushParent(new Inverter());
 
+        /// <summary>
+        /// Repeat execution of its child task until the child task has been run a specified number of times. 
+        /// It has the option of continuing to execute the child task even if the child task returns a <see cref="BehaviorState.Failure"/>. 
+        /// </summary>
+        /// <param name="repeatCount">The number of times to repeat the execution of its child</param>
+        /// <param name="repeatForever">Allows the repeater to repeat forever</param>
+        /// <param name="endOnFailure">Should the task return if the child task returns a <see cref="BehaviorState.Failure"/></param>
         public BehaviorTreeBuilder Repeater(int repeatCount, bool repeatForever = false, bool endOnFailure = false)
             => PushParent(new Repeater(repeatCount, repeatForever, endOnFailure));
 
-        public BehaviorTreeBuilder UntilFail() => PushParent(new UntilFail());
+        /// <summary>
+        /// Keep executing its child task until the child node returns <see cref="BehaviorState.Failure"/>
+        /// </summary>
+        public BehaviorTreeBuilder UntilFailure() => PushParent(new UntilFailure());
 
+        /// <summary>
+        /// Keep executing its child task until the child node returns <see cref="BehaviorState.Success"/>
+        /// </summary>
         public BehaviorTreeBuilder UntilSuccess() => PushParent(new UntilSuccess());
         #endregion
 
         #region Composites
+        /// <summary>
+        /// <Return <see cref="BehaviorState.Success"/> once any of its children have returned <see cref="BehaviorState.Success"/>.
+        /// If all children returns <see cref="BehaviorState.Failure"/> the <see cref="Composites.ParallelSelector"/> node will end all and return <see cref="BehaviorState.Failure"/>.
+        /// </summary>
         public BehaviorTreeBuilder ParallelSelector() => PushParent(new ParallelSelector());
 
+        /// <summary>
+        /// Return <see cref="BehaviorState.Success"/> once all of its children have returned <see cref="BehaviorState.Success"/>.
+        /// If one children returns <see cref="BehaviorState.Failure"/> the <see cref="Composites.ParallelSequence"/> node will end all and return <see cref="BehaviorState.Failure"/>.
+        /// </summary>
         public BehaviorTreeBuilder ParallelSequence() => PushParent(new ParallelSequence());
 
+        /// <summary>
+        /// Same as <see cref="Composites.Selector"/> except that it shuffles the children when initialized
+        /// </summary>
         public BehaviorTreeBuilder RandomSelector() => PushParent(new RandomSelector());
 
+        /// <summary>
+        /// Same as <see cref="Composites.Sequence"/> except that it shuffles the children when initialized
+        /// </summary>
         public BehaviorTreeBuilder RandomSequence() => PushParent(new RandomSequence());
 
+        /// <summary>
+        /// Attempt to execute each of its children until one of them return <see cref="BehaviorState.Success"/>. 
+        /// If all children return <see cref="BehaviorState.Failure"/>, this node will also return <see cref="BehaviorState.Failure"/>.
+        /// If a child returns <see cref="BehaviorState.Running"/> it will tick again.
+        /// </summary>
         public BehaviorTreeBuilder Selector() => PushParent(new Selector());
 
+        /// <summary>    
+        /// Attempt to execute all of its children and report <see cref="BehaviorState.Success"/> in case all of the children report a <see cref="BehaviorState.Success"/>.
+        /// If at least one child reports a <see cref="BehaviorState.Failure"/>, this node will also return <see cref="BehaviorState.Failure"/> and restart.
+        /// In case a child returns <see cref="BehaviorState.Running"/> this node will tick again.
+        /// </summary>
         public BehaviorTreeBuilder Sequence() => PushParent(new Sequence());
 
         /// <summary>
@@ -93,7 +143,10 @@ namespace Curupira2D.AI.BehaviorTree
         }
         #endregion
 
-        public BehaviorTree Build(IBlackboard blackboard, int updateIntervalInMilliseconds = 20)
+        /// <summary>
+        /// Create a <see cref="BehaviorTree"/> instance
+        /// </summary>
+        public BehaviorTree Build(IBlackboard blackboard, int updateIntervalInMilliseconds = 0)
         {
             if (_currentNode is null)
                 throw new InvalidOperationException("Can't create a behaviour tree with zero nodes");

@@ -12,7 +12,7 @@
 
             foreach (var child in Children)
             {
-                child.Tick(blackboard);
+                State = child.Update(blackboard);
 
                 // if any child succeeds we return success
                 if (child.State == BehaviorState.Success)
