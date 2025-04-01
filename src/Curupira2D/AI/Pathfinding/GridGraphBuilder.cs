@@ -10,6 +10,10 @@ namespace Curupira2D.AI.Pathfinding
     {
         public static GridGraph Build(int width, int height, bool allowDiagonalSearch = false) => new(width, height, allowDiagonalSearch);
 
+        /// <summary>
+        /// Creates <see cref="GridGraph"/> from a <see cref="TileLayer"/>
+        /// Present tile are walls and empty tiles are passable
+        /// </summary>
         public static GridGraph Build(TileLayer tileLayer, bool allowDiagonalSearch = false)
         {
             ArgumentNullException.ThrowIfNull(tileLayer, nameof(tileLayer));
