@@ -6,19 +6,11 @@ namespace Curupira2D.GameComponents
     /// <summary>
     /// Draw simple infinity scroll scene.
     /// </summary>
-    public class BackgroundComponent : DrawableGameComponent
+    public class BackgroundComponent(Game game, string assetName, float velocity) : DrawableGameComponent(game)
     {
         Texture2D _bgdTexture;
         SpriteBatch _spriteBatch;
         private float _bgdPosX;
-        readonly string _assetName;
-        readonly float _velocity;
-
-        public BackgroundComponent(Game game, string assetName, float velocity) : base(game)
-        {
-            _assetName = assetName;
-            _velocity = velocity;
-        }
 
         protected override void LoadContent()
         {
@@ -28,14 +20,14 @@ namespace Curupira2D.GameComponents
                 _spriteBatch = new SpriteBatch(GraphicsDevice);
 
             if (_bgdTexture == null)
-                _bgdTexture = Game.Content.Load<Texture2D>(_assetName);
+                _bgdTexture = Game.Content.Load<Texture2D>(assetName);
 
             base.LoadContent();
         }
 
         public override void Update(GameTime gameTime)
         {
-            _bgdPosX -= (float)(_velocity * gameTime.ElapsedGameTime.TotalSeconds);
+            _bgdPosX -= (float)(velocity * gameTime.ElapsedGameTime.TotalSeconds);
 
             if (_bgdPosX <= -(GraphicsDevice.Viewport.Width))
                 _bgdPosX = 0f;

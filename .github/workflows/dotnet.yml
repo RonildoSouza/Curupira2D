@@ -22,6 +22,9 @@ jobs:
       
     - name: Build
       run: dotnet build --no-restore src/Curupira2D-NoSamples.sln
+
+    - name: Test
+      run: dotnet test --no-build --verbosity normal src/Curupira2D-NoSamples.sln
   
   publish:
     needs: [build]
@@ -33,13 +36,22 @@ jobs:
       uses: actions/setup-dotnet@v3.0.3
       with:
         dotnet-version: 8.x
-        
+      
+    # Curupira2D
     - name: Pack - Curupira2D
       run: dotnet pack src/Curupira2D/Curupira2D.csproj -c Release
 
     - name: Publish - Curupira2D 
       run: dotnet nuget push D:\a\Curupira2D\Curupira2D\nupkgs\Curupira2D.*.nupkg --api-key ${{secrets.CURUPIRA2D_TOKEN}} --source https://api.nuget.org/v3/index.json --skip-duplicate --no-symbols
       
+    # Curupira2D.AI
+    - name: Pack - Curupira2D.AI
+      run: dotnet pack src/Curupira2D.AI/Curupira2D.AI.csproj -c Release
+
+    - name: Publish - Curupira2D.AI 
+      run: dotnet nuget push D:\a\Curupira2D\Curupira2D\nupkgs\Curupira2D.AI.*.nupkg --api-key ${{secrets.CURUPIRA2D_TOKEN}} --source https://api.nuget.org/v3/index.json --skip-duplicate --no-symbols
+
+    # Curupira2D.GameComponents
     - name: Pack - Curupira2D.GameComponents
       run: dotnet pack src/Curupira2D.GameComponents/Curupira2D.GameComponents.csproj -c Release
 

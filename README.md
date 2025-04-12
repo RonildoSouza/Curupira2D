@@ -18,14 +18,19 @@ namespace Sample
 
         protected override void LoadContent()
         {
-            var scene = new Scene();
+            SetScene<MyScene>();
+            base.LoadContent();
+        }
+    }
 
-            var characterTexture = Content.Load<Texture2D>("character");
+    public class MyScene : Scene
+    {
+        public override void LoadContent()
+        {
+            var characterTexture = GameCore.GraphicsDevice.CreateTextureCircle(10, Color.Red);
 
-            var characterEntity = scene.CreateEntity("character");
-            characterEntity.AddComponent(new SpriteComponent(characterTexture));
-
-            SetScene(scene);
+            CreateEntity("character", ScreenCenter)
+                .AddComponent(new SpriteComponent(characterTexture));
 
             base.LoadContent();
         }

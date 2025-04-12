@@ -1,6 +1,5 @@
 ﻿using Curupira2D.Diagnostics;
 using Curupira2D.ECS;
-using Curupira2D.GameComponents;
 using Curupira2D.GameComponents.Camera2D;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -13,7 +12,6 @@ namespace Curupira2D
     public abstract class GameCore : Game
     {
         readonly GraphicsDeviceManager _graphics;
-        readonly FPSCounterComponent _fpsCounterComponent;
         readonly SceneManager _sceneManager = new SceneManager();
         readonly int _width;
         readonly int _height;
@@ -33,14 +31,9 @@ namespace Curupira2D
             Content.RootDirectory = "Content";
 
             if (DebugOptions.DebugActive)
-            {
-                _fpsCounterComponent = new FPSCounterComponent(this);
-                Components.Add(_fpsCounterComponent);
                 Components.Add(new DebugComponent(this));
-            }
         }
 
-        public int FPS => (_fpsCounterComponent?.FPS).GetValueOrDefault();
         public GraphicsDeviceManager GraphicsDeviceManager => _graphics;
 
         internal DebugOptions DebugOptions { get; }
