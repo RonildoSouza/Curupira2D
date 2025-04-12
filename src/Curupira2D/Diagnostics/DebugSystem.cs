@@ -11,8 +11,8 @@ namespace Curupira2D.Diagnostics
 {
     public class DebugSystem : ECS.System, ILoadable, IRenderable
     {
-        SpriteFont _fontArial18;
-        readonly StringBuilder _stringBuilder = new StringBuilder();
+        //SpriteFont _fontArial18;
+        //readonly StringBuilder _stringBuilder = new StringBuilder();
 
         public void LoadContent()
         {
@@ -21,13 +21,13 @@ namespace Curupira2D.Diagnostics
 
         public void Draw(ref IReadOnlyList<Entity> entities)
         {
-            _stringBuilder.Clear();
+            //_stringBuilder.Clear();
 
-            //_stringBuilder.Append(DebugEntityProperties(ref entities));
-            //_stringBuilder.Append(DebugComponentProperties(ref entities));
+            ////_stringBuilder.Append(DebugEntityProperties(ref entities));
+            ////_stringBuilder.Append(DebugComponentProperties(ref entities));
 
-            Scene.SpriteBatch.DrawString(_fontArial18, _stringBuilder, Vector2.One, Color.Black,
-                0f, Vector2.Zero, .5f, SpriteEffects.None, 0f);
+            //Scene.SpriteBatch.DrawString(_fontArial18, _stringBuilder, Vector2.One, Color.Black,
+            //    0f, Vector2.Zero, .5f, SpriteEffects.None, 0f);
         }
 
         //StringBuilder DebugEntityProperties(ref List<Entity> entities)

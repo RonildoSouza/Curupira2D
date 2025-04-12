@@ -70,7 +70,7 @@ namespace Curupira2D.AI.Extensions
             return sb.ToString();
         }
 
-        public static string GetDebugPathfinder<T>(this EdgesGraph<T> graph, T start, T goal, Path<T> path)
+        public static string GetDebugPathfinder<T>(this EdgesGraph<T> graph, T start, T goal, Path<T> path) where T: notnull
         {
             var sb = new StringBuilder();
 
