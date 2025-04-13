@@ -32,7 +32,7 @@ namespace Curupira2D.Desktop.Samples.Scenes
             project.Root.FindChildById<Button>("QuadtreeCheckCollisionButton").Click += (o, e) => GameCore.SetScene<QuadtreeCheckCollisionScene>();
             project.Root.FindChildById<Button>("MassivelyMultiplayerOnlineButton").Click += (o, e) => GameCore.SetScene<MassivelyMultiplayerOnlineScene>();
             project.Root.FindChildById<Button>("TiledMapWithManyLayersButton").Click += (o, e) => GameCore.SetScene<TiledMapWithManyLayersScene>();
-            project.Root.FindChildById<Button>("IsometricTiledMapButton").Click += (o, e) => GameCore.SetScene<BehaviorTreeAndPathfinderScene>();
+            project.Root.FindChildById<Button>("IsometricTiledMapButton").Click += (o, e) => GameCore.SetScene<IsometricTiledMapScene>();
             project.Root.FindChildById<Button>("IsometricGravityTiledMapButton").Click += (o, e) => GameCore.SetScene<IsometricGravityTiledMapScene>();
 
             _desktop = new Myra.Graphics2D.UI.Desktop { Root = project.Root };
