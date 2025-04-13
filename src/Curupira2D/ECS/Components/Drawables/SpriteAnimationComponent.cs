@@ -19,7 +19,8 @@ namespace Curupira2D.ECS.Components.Drawables
             Color color = default,
             float layerDepth = 0f,
             Vector2 scale = default,
-            bool drawInUICamera = false) : base(texture, spriteEffect, color, sourceRectangle, layerDepth, scale, drawInUICamera)
+            bool drawInUICamera = false,
+            Vector2 textureSizeOffset = default) : base(texture, spriteEffect, color, sourceRectangle, layerDepth, scale, drawInUICamera)
         {
             FrameRowsCount = frameRowsCount;
             FrameColumnsCount = frameColumnsCount;
@@ -31,6 +32,10 @@ namespace Curupira2D.ECS.Components.Drawables
             if (sourceRectangle == null)
                 SourceRectangle = new Rectangle(0, 0, FrameWidth, FrameHeight);
 
+            if (textureSizeOffset == default)
+                textureSizeOffset = Vector2.Zero;
+
+            TextureSizeOffset = textureSizeOffset;
             Origin = new Vector2(FrameWidth * 0.5f, FrameHeight * 0.5f);
         }
 
@@ -47,7 +52,8 @@ namespace Curupira2D.ECS.Components.Drawables
             Color color = default,
             float layerDepth = 0f,
             Vector2 scale = default,
-            bool drawInUICamera = false) : this(
+            bool drawInUICamera = false,
+            Vector2 textureSizeOffset = default) : this(
                 texture,
                 frameRowsCount,
                 frameColumnsCount,
@@ -60,7 +66,8 @@ namespace Curupira2D.ECS.Components.Drawables
                 color,
                 layerDepth,
                 scale,
-                drawInUICamera)
+                drawInUICamera,
+                textureSizeOffset)
         { }
 
         public override Texture2D Texture
@@ -82,11 +89,12 @@ namespace Curupira2D.ECS.Components.Drawables
         public bool IsLooping { get; set; }
         public bool IsPlaying { get; set; }
         public AnimateType AnimateType { get; set; }
-        public int FrameWidth => (int)TextureSize.X / FrameColumnsCount;
-        public int FrameHeight => (int)TextureSize.Y / FrameRowsCount;
+        public int FrameWidth => (int)(TextureSize.X - TextureSizeOffset.X) / FrameColumnsCount;
+        public int FrameHeight => (int)(TextureSize.Y - TextureSizeOffset.Y) / FrameRowsCount;
         public TimeSpan ElapsedTime { get; set; } = TimeSpan.Zero;
         public int CurrentFrameColumn { get; set; }
         public int CurrentFrameRow { get; set; }
+        public Vector2 TextureSizeOffset { get; set; }
 
         public override Color[] TextureData
         {

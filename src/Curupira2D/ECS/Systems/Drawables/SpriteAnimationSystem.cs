@@ -51,7 +51,7 @@ namespace Curupira2D.ECS.Systems.Drawables
             }
         }
 
-        void AnimateAll(ref SpriteAnimationComponent spriteAnimationComponent)
+        static void AnimateAll(ref SpriteAnimationComponent spriteAnimationComponent)
         {
             spriteAnimationComponent.CurrentFrameColumn++;
 
@@ -74,7 +74,7 @@ namespace Curupira2D.ECS.Systems.Drawables
                 spriteAnimationComponent.FrameHeight);
         }
 
-        void AnimatePerRow(ref SpriteAnimationComponent spriteAnimationComponent)
+        static void AnimatePerRow(ref SpriteAnimationComponent spriteAnimationComponent)
         {
             spriteAnimationComponent.CurrentFrameColumn++;
 
@@ -91,7 +91,7 @@ namespace Curupira2D.ECS.Systems.Drawables
                     spriteAnimationComponent.SourceRectangle.Value.Height);
         }
 
-        void AnimatePerColumn(ref SpriteAnimationComponent spriteAnimationComponent)
+        static void AnimatePerColumn(ref SpriteAnimationComponent spriteAnimationComponent)
         {
             spriteAnimationComponent.CurrentFrameRow++;
 
