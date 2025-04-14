@@ -73,6 +73,10 @@ namespace Curupira2D.ECS.Systems.Drawables
                     var propertyValueOrder = layer.Properties.GetValue(TiledMapSystemConstants.Properties.Order);
                     var valueOrder = string.IsNullOrEmpty(propertyValueOrder) ? layer.Id : int.Parse(propertyValueOrder);
 
+                    if (!string.IsNullOrEmpty(propertyValueOrder) && valueOrder > layers.Count())
+                        throw new InvalidOperationException($"Tile layer \"{layer.Name}\" has an invalid {TiledMapSystemConstants.Properties.Order} value. " +
+                            $"The value must be less than or equal to the number of tile layers.");
+
                     for (int y = 0; y < layer.Height; y++)
                     {
                         for (int x = 0; x < layer.Width; x++)
