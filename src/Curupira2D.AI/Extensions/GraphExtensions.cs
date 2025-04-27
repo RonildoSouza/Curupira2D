@@ -25,7 +25,7 @@ namespace Curupira2D.AI.Extensions
             var sb = new StringBuilder();
 
             if (!showPath)
-                sb.AppendLine($"* FOUND PATH: {path.FoundPath}");
+                sb.AppendLine($"* FOUND PATH: {path?.FoundPath}");
 
             sb.AppendLine(new string('_', fieldWidth * graph.Width));
 
@@ -41,9 +41,9 @@ namespace Curupira2D.AI.Extensions
                         sb.Append(" S "); // START
                     else if (goal == node)
                         sb.Append(" G "); // GOAL
-                    else if (showPath && path.Edges != null && path.Edges.Contains(node))
+                    else if (showPath && path?.Edges != null && path.Edges.Contains(node))
                         sb.Append(" @ "); // PATH
-                    else if (!showPath && path.CameFrom != null && path.CameFrom.TryGetValue(node, out Point next))
+                    else if (!showPath && path?.CameFrom != null && path.CameFrom.TryGetValue(node, out Point next))
                     {
                         if (next.X == x + 1)
                             sb.Append(" → ");
@@ -56,7 +56,7 @@ namespace Curupira2D.AI.Extensions
                         else
                             sb.Append(" * ");
                     }
-                    else if (showPath && showCostSoFar && path.CostSoFar != null && path.CostSoFar.TryGetValue(node, out int value))
+                    else if (showPath && showCostSoFar && path?.CostSoFar != null && path.CostSoFar.TryGetValue(node, out int value))
                         sb.Append($"{value} ".PadLeft(3, '0'));
                     else
                         sb.Append(" . ");
@@ -70,7 +70,7 @@ namespace Curupira2D.AI.Extensions
             return sb.ToString();
         }
 
-        public static string GetDebugPathfinder<T>(this EdgesGraph<T> graph, T start, T goal, Path<T> path) where T: notnull
+        public static string GetDebugPathfinder<T>(this EdgesGraph<T> graph, T start, T goal, Path<T> path) where T : notnull
         {
             var sb = new StringBuilder();
 

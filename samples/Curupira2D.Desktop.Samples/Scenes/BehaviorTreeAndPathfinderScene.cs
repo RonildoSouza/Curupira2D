@@ -1,14 +1,22 @@
 ﻿using Curupira2D.AI.BehaviorTree;
+using Curupira2D.AI.Extensions;
+using Curupira2D.AI.Pathfinding;
+using Curupira2D.AI.Pathfinding.AStar;
+using Curupira2D.AI.Pathfinding.Graphs;
 using Curupira2D.Desktop.Samples.Common.Scenes;
 using Curupira2D.Desktop.Samples.Systems.TiledMap;
 using Curupira2D.ECS;
 using Curupira2D.ECS.Components.Drawables;
 using Curupira2D.ECS.Systems;
 using Curupira2D.ECS.Systems.Attributes;
+using Curupira2D.Extensions;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
+using TiledLib;
+using TiledLib.Layer;
 
 namespace Curupira2D.Desktop.Samples.Scenes
 {
@@ -16,14 +24,20 @@ namespace Curupira2D.Desktop.Samples.Scenes
     {
         IBlackboard _blackboard;
         BehaviorTree _behaviorTree;
+        MapSystem _mapSystem;
+        bool _canBuildPathfindingGridGraph = true;
+        MinerControllerSystem _minerControllerSystem;
 
         public override void LoadContent()
         {
             SetTitle(nameof(BehaviorTreeAndPathfinderScene));
 
-            AddSystem<MinerControllerSystem>();
+            _minerControllerSystem = new MinerControllerSystem();
+            _mapSystem = new MapSystem("AI/BehaviorTreeAndPathfinderTiledMap.tmx", "AI/BehaviorTreeAndPathfinderTileset");
+
+            AddSystem(_minerControllerSystem);
             AddSystem<GoldMineControllerSystem>();
-            AddSystem(new MapSystem("AI/BehaviorTreeAndPathfinderTiledMap.tmx", "AI/BehaviorTreeAndPathfinderTileset"));
+            AddSystem(_mapSystem);
 
             ShowControlTips("MOVIMENT: Keyboard Arrows", y: 120f);
 
@@ -60,6 +74,17 @@ namespace Curupira2D.Desktop.Samples.Scenes
 
             base.LoadContent();
         }
+
+        public override void Update(GameTime gameTime)
+        {
+            if (_canBuildPathfindingGridGraph)
+            {
+                _minerControllerSystem.InitializePathfindingGridGraph(_mapSystem.TiledMapComponent.Map);
+                _canBuildPathfindingGridGraph = false;
+            }
+
+            base.Update(gameTime);
+        }
     }
 
     [RequiredComponent(typeof(MinerControllerSystem), typeof(SpriteAnimationComponent))]
@@ -76,89 +101,91 @@ namespace Curupira2D.Desktop.Samples.Scenes
         readonly float _speed = 100f;
         SpriteAnimationComponent _movementSpriteAnimationComponent, _mineSpriteAnimationComponent;
 
+        GridGraph _gridGraph;
+        Map _map;
+
         public void LoadContent()
         {
             _minerTexture = Scene.GameCore.Content.Load<Texture2D>("AI/GoblinSpritesheet");
             //_pixelTexture = Scene.GameCore.GraphicsDevice.CreateTextureRectangle(10, Color.Red * 0.5f);
 
             _movementSpriteAnimationComponent = new SpriteAnimationComponent(
-                    texture: _minerTexture,
-                    frameRowsCount: 1,
-                    frameColumnsCount: 8,
-                    frameTimeMilliseconds: 100,
-                    animateType: AnimateType.PerRow,
-                    sourceRectangle: new Rectangle(128, 0, 64, 64),
-                    isLooping: true,
-                    layerDepth: 0.02f,
-                    textureSizeOffset: new Vector2(192, 0));
+                texture: Scene.GameCore.Content.Load<Texture2D>("AI/GoblinSpritesheetWalk"),
+                frameRowsCount: 1,
+                frameColumnsCount: 8,
+                frameTimeMilliseconds: 100,
+                animateType: AnimateType.PerRow,
+                sourceRectangle: new Rectangle(0, 0, 24, 24),
+                isLooping: true,
+                layerDepth: 0.02f);
+
+            //_movementSpriteAnimationComponent = new SpriteAnimationComponent(
+            //    texture: _minerTexture,
+            //    frameRowsCount: 1,
+            //    frameColumnsCount: 8,
+            //    frameTimeMilliseconds: 100,
+            //    animateType: AnimateType.PerRow,
+            //    sourceRectangle: new Rectangle(128, 0, 64, 64),
+            //    isLooping: true,
+            //    layerDepth: 0.02f,
+            //    textureSizeOffset: new Vector2(192, 0));
 
             _mineSpriteAnimationComponent = new SpriteAnimationComponent(
-                    texture: _minerTexture,
-                    frameRowsCount: 1,
-                    frameColumnsCount: 10,
-                    frameTimeMilliseconds: 100,
-                    animateType: AnimateType.PerRow,
-                    sourceRectangle: new Rectangle(0, 64, 64, 64),
-                    isLooping: true,
-                    layerDepth: 0.02f);
+                texture: _minerTexture,
+                frameRowsCount: 1,
+                frameColumnsCount: 10,
+                frameTimeMilliseconds: 100,
+                animateType: AnimateType.PerRow,
+                sourceRectangle: new Rectangle(0, 64, 64, 64),
+                isLooping: true,
+                layerDepth: 0.02f);
 
             _miner = Scene.CreateEntity("miner", default)
                 .AddComponent(_movementSpriteAnimationComponent);
-
-
-            //// PATHFINDING
-            //var baseGridGraph = 20;
-
-            //var gridGraph = GridGraphBuilder.Build(Scene.ScreenWidth / baseGridGraph, Scene.ScreenHeight / baseGridGraph, true);
-
-            //var start = new System.Drawing.Point(
-            //    (int)_miner.Position.X / baseGridGraph,
-            //    (int)Scene.InvertPositionY(_miner.Position.Y) / baseGridGraph);
-
-            //var goal = new System.Drawing.Point(
-            //    (int)_goldMine.Position.X / baseGridGraph,
-            //    (int)Scene.InvertPositionY(_goldMine.Position.Y) / baseGridGraph);
-
-
-            //var path = AStarPathfinder.FindPath(gridGraph, start, goal);
-            //_closestGoldMineEdges = path.Edges.Select(_ => Scene.PositionToScene(new Vector2(_.X * baseGridGraph, _.Y * baseGridGraph)));
-
-            //_nearestGoldMinePosition = _closestGoldMineEdges.ElementAt(_pathIndex);
-
-            //Debug.WriteLine(gridGraph.GetDebugPathfinder(start, goal, path, true));
         }
 
         public void Update()
         {
-            _movementSpriteAnimationComponent.IsPlaying = true;
+            if (_miner.Position != default && _minerPosition == Vector2.Zero)
+                _minerPosition = _miner.Position;
+
+            if (_closestGoldMineEdges == null || !_closestGoldMineEdges.Any())
+                FindingNearestGoldMine();
+
+            if (_miner.Position != default && _minerPosition != _nearestGoldMinePosition && _pathIndex < _closestGoldMineEdges.Count())
+            {
+                var direction = (_nearestGoldMinePosition - _minerPosition).GetSafeNormalize();
+
+                if (direction.Length() > 0)
+                {
+                    _minerPosition += direction * _speed * Scene.DeltaTime;
+                    _miner.SetPosition(_minerPosition);
+
+                    // Next edge position without loop (index reset to zero)
+                    if (Vector2.Distance(_minerPosition, _nearestGoldMinePosition) < 1f && _pathIndex < _closestGoldMineEdges.Count() - 1)
+                    {
+                        _pathIndex = (_pathIndex + 1) % _closestGoldMineEdges.Count();
+                        _nearestGoldMinePosition = _closestGoldMineEdges.ElementAt(_pathIndex);
+                    }
+
+                    // Finish position
+                    if (Vector2.Distance(_minerPosition, _nearestGoldMinePosition) < 1f)
+                    {
+                        _minerPosition = _nearestGoldMinePosition;
+                        //_miner.RemoveComponent<SpriteAnimationComponent>();
+                        //_miner.AddComponent(_mineSpriteAnimationComponent);
+
+                        _movementSpriteAnimationComponent.IsPlaying = false;
+                        _mineSpriteAnimationComponent.IsPlaying = true;
+                    }
+                    else
+                    {
+                        _movementSpriteAnimationComponent.IsPlaying = true;
+                        _mineSpriteAnimationComponent.IsPlaying = false;
+                    }
+                }
+            }
         }
-
-        //public override void Update(GameTime gameTime)
-        //{
-        //    if (_pathIndex < _closestGoldMineEdges.Count())
-        //    {
-        //        var direction = (_nearestGoldMinePosition - _minerPosition).GetSafeNormalize();
-
-        //        if (direction.Length() > 0)
-        //        {
-        //            _minerPosition += direction * _speed * DeltaTime;
-        //            _miner.SetPosition(_minerPosition);
-
-        //            // Next edge position without loop (index reset to zero)
-        //            if (Vector2.Distance(_minerPosition, _nearestGoldMinePosition) < 1f && _pathIndex < _closestGoldMineEdges.Count() - 1)
-        //            {
-        //                _pathIndex = (_pathIndex + 1) % _closestGoldMineEdges.Count();
-        //                _nearestGoldMinePosition = _closestGoldMineEdges.ElementAt(_pathIndex);
-        //            }
-
-        //            // Finish position
-        //            if (Vector2.Distance(_minerPosition, _nearestGoldMinePosition) < 1f)
-        //                _minerPosition = _nearestGoldMinePosition;
-        //        }
-        //    }
-
-        //    base.Update(gameTime);
-        //}
 
         //public override void Draw()
         //{
@@ -172,6 +199,41 @@ namespace Curupira2D.Desktop.Samples.Scenes
 
         //    base.Draw();
         //}
+
+        internal void InitializePathfindingGridGraph(Map map)
+        {
+            _map = map;
+            var tileLayerPathfindWalls = _map.Layers.OfType<TileLayer>().FirstOrDefault(_ => _.Name == "pathfind-walls");
+            _gridGraph = GridGraphBuilder.Build(tileLayerPathfindWalls, true);
+        }
+
+        private void FindingNearestGoldMine()
+        {
+            var goldMines = Scene.GetEntities(_ => _.Group == "goldMines" && _.Active);
+
+            if (!goldMines?.Any() ?? false)
+                return;
+
+            var goldMinePaths = new List<Path<System.Drawing.Point>>();
+
+            foreach (var goldMine in goldMines)
+            {
+                var start = _miner.Position.ToGridGraphPoint(_map.Width, _map.Height, Scene);
+                var goal = goldMine.Position.ToGridGraphPoint(_map.Width, _map.Height, Scene);
+                var path = AStarPathfinder.FindPath(_gridGraph, start, goal);
+
+                goldMinePaths.Add(path);
+                Debug.WriteLine(_gridGraph.GetDebugPathfinder(start, goal, path, true));
+            }
+
+            _closestGoldMineEdges = goldMinePaths
+                //.OrderBy(_ => _.CostSoFar.Values.Max())
+                .ElementAt(3)
+                //.First()
+                .Edges
+                .Select(_ => Scene.PositionToScene(new Vector2(_.X * (Scene.ScreenWidth / _map.Width), _.Y * (Scene.ScreenHeight / _map.Height))));
+            _nearestGoldMinePosition = _closestGoldMineEdges.ElementAt(_pathIndex);
+        }
     }
 
     [RequiredComponent(typeof(GoldMineControllerSystem), typeof(SpriteComponent))]
@@ -186,7 +248,7 @@ namespace Curupira2D.Desktop.Samples.Scenes
 
             for (int i = 0; i < 4; i++)
             {
-                _goldMinesAndAvailable.Add($"goldMine{i}", 0);
+                _goldMinesAndAvailable.Add($"goldMine{i}", 100);
 
                 Scene.CreateEntity(_goldMinesAndAvailable.Keys.ElementAt(i), default, "goldMines")
                     .AddComponent(new SpriteComponent(
@@ -202,7 +264,7 @@ namespace Curupira2D.Desktop.Samples.Scenes
 
         public void Update()
         {
-            for (int i = 0; i < _goldMinesAndAvailable.Count(); i++)
+            for (int i = 0; i < _goldMinesAndAvailable.Count; i++)
             {
                 var entityUniqueId = _goldMinesAndAvailable.Keys.ElementAt(i);
 

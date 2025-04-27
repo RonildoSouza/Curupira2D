@@ -1,7 +1,8 @@
 ﻿using Curupira2D.AI.Pathfinding.Graphs;
+using Curupira2D.ECS;
 using Curupira2D.Extensions;
+using Microsoft.Xna.Framework;
 using System;
-using System.Drawing;
 using TiledLib.Layer;
 
 namespace Curupira2D.AI.Pathfinding
@@ -23,10 +24,12 @@ namespace Curupira2D.AI.Pathfinding
             for (var y = 0; y < tileLayer.Height; y++)
                 for (var x = 0; x < tileLayer.Width; x++)
                     if (tileLayer.HasTile(x, y))
-                        gridGraph.Walls.Add(new Point(x, y));
-
+                        gridGraph.Walls.Add(new System.Drawing.Point(x, y));
 
             return gridGraph;
         }
+
+        public static System.Drawing.Point ToGridGraphPoint(this Vector2 position, int width, int height, Scene scene)
+            => new((int)position.X / (scene.ScreenWidth / width), (int)scene.InvertPositionY(position.Y) / (scene.ScreenHeight / height));
     }
 }

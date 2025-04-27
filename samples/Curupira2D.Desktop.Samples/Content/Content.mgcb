@@ -76,6 +76,18 @@
 /processorParam:TextureFormat=Color
 /build:AI/GoblinSpritesheet.png
 
+#begin AI/GoblinSpritesheetWalk.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:AI/GoblinSpritesheetWalk.png
+
 #begin AI/GoldMineSpritesheet.png
 /importer:TextureImporter
 /processor:TextureProcessor
