@@ -4,8 +4,11 @@ using System;
 
 namespace Curupira2D.ECS.Components.Drawables
 {
-    public class SpriteAnimationComponent : SpriteComponent
+    public sealed class SpriteAnimationComponent : DrawableComponent
     {
+        private Texture2D _texture;
+        private Color[] _textureData;
+
         public SpriteAnimationComponent(
             Texture2D texture,
             int frameRowsCount,
@@ -70,19 +73,6 @@ namespace Curupira2D.ECS.Components.Drawables
                 textureSizeOffset)
         { }
 
-        public override Texture2D Texture
-        {
-            get => _texture;
-            set
-            {
-                _texture = value;
-
-                if (FrameColumnsCount > 0 && FrameRowsCount > 0)
-                {
-                    Origin = new Vector2(FrameWidth * 0.5f, FrameHeight * 0.5f);
-                }
-            }
-        }
         public int FrameRowsCount { get; set; }
         public int FrameColumnsCount { get; set; }
         public TimeSpan FrameTime { get; set; }
@@ -96,6 +86,17 @@ namespace Curupira2D.ECS.Components.Drawables
         public int CurrentFrameRow { get; set; }
         public Vector2 TextureSizeOffset { get; set; }
 
+        public override Texture2D Texture
+        {
+            get => _texture;
+            set
+            {
+                _texture = value;
+
+                if (FrameColumnsCount > 0 && FrameRowsCount > 0)
+                    Origin = new Vector2(FrameWidth * 0.5f, FrameHeight * 0.5f);
+            }
+        }
         public override Color[] TextureData
         {
             get

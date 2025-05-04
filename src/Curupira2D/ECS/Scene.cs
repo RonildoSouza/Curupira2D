@@ -211,6 +211,8 @@ namespace Curupira2D.ECS
             return this;
         }
 
+        public TSystem GetSystem<TSystem>() where TSystem : System => _systemManager.Get<TSystem>();
+
         public void RemoveSystem<TSystem>() where TSystem : System => _systemManager.Remove<TSystem>();
 
         public void RemoveAllSystems() => _systemManager.RemoveAll();

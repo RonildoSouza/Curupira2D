@@ -60,6 +60,10 @@ namespace Curupira2D.ECS.Systems.Drawables
             {
                 var tiledMapEntity = entities[i];
                 var tiledMapComponent = tiledMapEntity.GetComponent<TiledMapComponent>();
+
+                if (tiledMapComponent == null)
+                    continue;
+
                 var layers = tiledMapComponent.Map.Layers
                     .OfType<TileLayer>()
                     .OrderBy(_ =>

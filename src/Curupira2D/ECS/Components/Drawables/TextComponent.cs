@@ -3,7 +3,7 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace Curupira2D.ECS.Components.Drawables
 {
-    public class TextComponent : DrawableComponent
+    public sealed class TextComponent : DrawableComponent
     {
         string _text;
         Color[] _textureData;
@@ -16,7 +16,7 @@ namespace Curupira2D.ECS.Components.Drawables
             Rectangle? sourceRectangle = null,
             float layerDepth = 0f,
             Vector2 scale = default,
-            bool drawInUICamera = true) : base(spriteEffect, color, sourceRectangle, layerDepth, scale, drawInUICamera)
+            bool drawInUICamera = true) : base(null, spriteEffect, color, sourceRectangle, layerDepth, scale, drawInUICamera)
         {
             SpriteFont = spriteFont;
             Text = text;

@@ -1,13 +1,12 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using System;
 
 namespace Curupira2D.ECS.Components.Drawables
 {
-    public class SpriteComponent : DrawableComponent
+    public sealed class SpriteComponent : DrawableComponent
     {
-        protected Texture2D _texture;
-        protected Color[] _textureData;
+        private Texture2D _texture;
+        private Color[] _textureData;
 
         public SpriteComponent(
             Texture2D texture,
@@ -16,12 +15,12 @@ namespace Curupira2D.ECS.Components.Drawables
             Rectangle? sourceRectangle = null,
             float layerDepth = 0f,
             Vector2 scale = default,
-            bool drawInUICamera = false) : base(spriteEffect, color, sourceRectangle, layerDepth, scale, drawInUICamera)
+            bool drawInUICamera = false) : base(texture, spriteEffect, color, sourceRectangle, layerDepth, scale, drawInUICamera)
         {
-            Texture = texture;
+            Origin = SourceRectangle.HasValue ? SourceRectangle.Value.Size.ToVector2() * 0.5f : TextureSize * 0.5f;
         }
 
-        public virtual Texture2D Texture
+        public override Texture2D Texture
         {
             get => _texture;
             set
@@ -30,7 +29,6 @@ namespace Curupira2D.ECS.Components.Drawables
                 Origin = SourceRectangle.HasValue ? SourceRectangle.Value.Size.ToVector2() * 0.5f : TextureSize * 0.5f;
             }
         }
-        public Vector2 TextureSize => Texture.Bounds.Size.ToVector2();
 
         public override Color[] TextureData
         {

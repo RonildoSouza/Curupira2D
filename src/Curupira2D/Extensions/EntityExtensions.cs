@@ -45,15 +45,7 @@ namespace Curupira2D.Extensions
         }
 
         public static DrawableComponent GetDrawableComponent(this Entity entity)
-        {
-            if (entity?.Components.Any(_ => _.Key == typeof(SpriteComponent) || _.Key == typeof(SpriteAnimationComponent)) ?? false)
-                return entity.GetComponent<SpriteComponent>() ?? entity.GetComponent<SpriteAnimationComponent>();
-
-            if (entity?.Components.Any(_ => _.Key == typeof(TextComponent)) ?? false)
-                return entity.GetComponent<TextComponent>();
-
-            return null;
-        }
+            => entity.GetComponent(_ => _.Value is DrawableComponent) as DrawableComponent;
 
         public static Rectangle GetHitBox(this Entity entity)
         {
@@ -62,7 +54,7 @@ namespace Curupira2D.Extensions
 
             if (entity.Components.Any(_ => _.Key == typeof(SpriteComponent) || _.Key == typeof(SpriteAnimationComponent)))
             {
-                var spriteComponent = entity.GetComponent<SpriteComponent>() ?? entity.GetComponent<SpriteAnimationComponent>();
+                var spriteComponent = entity.GetComponent(_ => _.Value is DrawableComponent) as DrawableComponent;
                 return RectangleHitBoxBuilder(spriteComponent, entity, spriteComponent.TextureSize.ToPoint());
             }
 

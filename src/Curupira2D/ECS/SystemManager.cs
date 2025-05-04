@@ -61,6 +61,20 @@ namespace Curupira2D.ECS
             Add(scene, system);
         }
 
+        public TSystem Get<TSystem>() where TSystem : System
+        {
+            if (_loadableSystems.Any(_ => _.GetType().Name == typeof(TSystem).Name))
+                return (TSystem)_loadableSystems.First(_ => _.GetType().Name == typeof(TSystem).Name);
+
+            if (_updatableSystems.Any(_ => _.GetType().Name == typeof(TSystem).Name))
+                return (TSystem)_updatableSystems.First(_ => _.GetType().Name == typeof(TSystem).Name);
+
+            if (_renderableSystems.Any(_ => _.GetType().Name == typeof(TSystem).Name))
+                return (TSystem)_renderableSystems.First(_ => _.GetType().Name == typeof(TSystem).Name);
+
+            return null;
+        }
+
         public void Remove<TSystem>() where TSystem : System
         {
             _loadableSystems.RemoveAll(Predicate);
