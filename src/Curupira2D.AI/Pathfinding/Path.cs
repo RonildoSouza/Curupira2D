@@ -6,5 +6,6 @@
         public IReadOnlyDictionary<T, T> CameFrom => cameFrom;
         public IReadOnlyList<T> Edges => edges;
         public IReadOnlyDictionary<T, int> CostSoFar => costSoFar ?? [];
+        public decimal DurationCostSoFar => CostSoFar.Values.Sum();
     }
 }

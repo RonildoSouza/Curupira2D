@@ -44,6 +44,7 @@ namespace Curupira2D.Test.Pathfinding.BreadthFirst
             Assert.NotEmpty(path.CameFrom);
             Assert.Empty(path.Edges);
             Assert.Empty(path.CostSoFar);
+            Assert.Equal(0, path.DurationCostSoFar);
         }
 
         [Theory(DisplayName = "Find path with unlocked goal and without walls on grid")]
@@ -73,6 +74,7 @@ namespace Curupira2D.Test.Pathfinding.BreadthFirst
             Assert.NotEmpty(path.CameFrom);
             Assert.NotEmpty(path.Edges);
             Assert.Empty(path.CostSoFar);
+            Assert.Equal(0, path.DurationCostSoFar);
         }
 
         [Theory(DisplayName = "Find path with unlocked goal and with walls on grid")]
@@ -105,6 +107,7 @@ namespace Curupira2D.Test.Pathfinding.BreadthFirst
             Assert.NotEmpty(path.CameFrom);
             Assert.NotEmpty(path.Edges);
             Assert.Empty(path.CostSoFar);
+            Assert.Equal(0, path.DurationCostSoFar);
         }
     }
 }

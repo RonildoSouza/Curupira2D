@@ -1,5 +1,5 @@
-﻿using System.Drawing;
-using Curupira2D.AI.Pathfinding.AStar;
+﻿using Curupira2D.AI.Pathfinding.AStar;
+using System.Drawing;
 
 namespace Curupira2D.AI.Pathfinding.Graphs
 {

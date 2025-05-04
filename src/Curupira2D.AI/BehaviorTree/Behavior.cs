@@ -6,7 +6,7 @@ namespace Curupira2D.AI.BehaviorTree
     /// Represents a node in a behavior tree. 
     /// Every node must return a <see cref="BehaviorState"/> value when ticked
     /// </summary>
-    public abstract class Behavior
+    public abstract partial class Behavior
     {
         public BehaviorState State { get; set; } = BehaviorState.Invalid;
 

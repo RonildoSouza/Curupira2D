@@ -37,6 +37,7 @@ namespace Curupira2D.Test.Pathfinding.Dijkstra
             Assert.NotEmpty(path.CameFrom);
             Assert.Empty(path.Edges);
             Assert.NotEmpty(path.CostSoFar);
+            Assert.True(path.DurationCostSoFar > 0);
         }
 
         [Theory(DisplayName = "Find path with unlocked goal and without walls on grid")]
@@ -66,6 +67,7 @@ namespace Curupira2D.Test.Pathfinding.Dijkstra
             Assert.NotEmpty(path.CameFrom);
             Assert.NotEmpty(path.Edges);
             Assert.NotEmpty(path.CostSoFar);
+            Assert.True(path.DurationCostSoFar > 0);
         }
 
         [Theory(DisplayName = "Find path with unlocked goal and with walls on grid")]
@@ -98,6 +100,7 @@ namespace Curupira2D.Test.Pathfinding.Dijkstra
             Assert.NotEmpty(path.CameFrom);
             Assert.NotEmpty(path.Edges);
             Assert.NotEmpty(path.CostSoFar);
+            Assert.True(path.DurationCostSoFar > 0);
         }
     }
 }

@@ -22,4 +22,12 @@
         /// </summary>
         Running
     }
+
+    public abstract partial class Behavior
+    {
+        public BehaviorState Invalid() => State = BehaviorState.Invalid;
+        public BehaviorState Success() => State = BehaviorState.Success;
+        public BehaviorState Failure() => State = BehaviorState.Failure;
+        public BehaviorState Running() => State = BehaviorState.Running;
+    }
 }
