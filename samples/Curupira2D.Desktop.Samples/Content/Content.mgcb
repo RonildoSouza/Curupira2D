@@ -64,7 +64,7 @@
 /processorParam:TextureFormat=Color
 /build:AI/BehaviorTreeAndPathfinderTileset.png
 
-#begin AI/GoblinSpritesheet.png
+#begin AI/GoblinSpritesheetMining.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -74,9 +74,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:AI/GoblinSpritesheet.png
+/build:AI/GoblinSpritesheetMining.png
 
-#begin AI/GoblinSpritesheetWalk.png
+#begin AI/GoblinSpritesheetWalking.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -86,7 +86,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:AI/GoblinSpritesheetWalk.png
+/build:AI/GoblinSpritesheetWalking.png
 
 #begin AI/GoldMineSpritesheet.png
 /importer:TextureImporter
