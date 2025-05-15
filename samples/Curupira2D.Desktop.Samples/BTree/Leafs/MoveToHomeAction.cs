@@ -10,9 +10,9 @@ using System.Linq;
 
 namespace Curupira2D.Desktop.Samples.BTree.Leafs
 {
-    public class MoveToGoldMineAction(Scene scene) : Leaf
+    public class MoveToHomeAction(Scene scene) : Leaf
     {
-        IEnumerable<Vector2> _nearbyGoldMinePath;
+        IEnumerable<Vector2> _nearbyGoldMineToHomePath;
         int _pathIndex = 1;
         Vector2 _minerPosition;
         Vector2 _nearbyGoldMinePosition;
@@ -25,13 +25,13 @@ namespace Curupira2D.Desktop.Samples.BTree.Leafs
             if (_miner.Position != default && _minerPosition == Vector2.Zero)
                 _minerPosition = _miner.Position;
 
-            if (blackboard.HasKey("NearbyGoldMinePath") && (_nearbyGoldMinePath == null || !_nearbyGoldMinePath.Any()))
+            if (blackboard.HasKey("NearbyGoldMinePath") && (_nearbyGoldMineToHomePath == null || !_nearbyGoldMineToHomePath.Any()))
             {
-                _nearbyGoldMinePath = blackboard.Get<IEnumerable<Vector2>>("NearbyGoldMinePath");
-                _nearbyGoldMinePosition = _nearbyGoldMinePath?.ElementAtOrDefault(_pathIndex) ?? Vector2.Zero;
+                _nearbyGoldMineToHomePath = blackboard.Get<IEnumerable<Vector2>>("NearbyGoldMinePath").Reverse();
+                _nearbyGoldMinePosition = _nearbyGoldMineToHomePath?.ElementAtOrDefault(_pathIndex) ?? Vector2.Zero;
             }
 
-            if (_nearbyGoldMinePath != null && _miner.Position != default && _pathIndex < _nearbyGoldMinePath.Count())
+            if (_nearbyGoldMineToHomePath != null && _miner.Position != default && _pathIndex < _nearbyGoldMineToHomePath.Count())
             {
                 var direction = (_nearbyGoldMinePosition - _minerPosition).GetSafeNormalize();
 
@@ -42,22 +42,22 @@ namespace Curupira2D.Desktop.Samples.BTree.Leafs
                     _miner.SetPosition(_minerPosition);
 
                     // Next edge position without loop (index reset to zero)
-                    if (Vector2.Distance(_minerPosition, _nearbyGoldMinePosition) < 1f && _pathIndex < _nearbyGoldMinePath.Count() - 1)
+                    if (Vector2.Distance(_minerPosition, _nearbyGoldMinePosition) < 1f && _pathIndex < _nearbyGoldMineToHomePath.Count() - 1)
                     {
-                        _pathIndex = (_pathIndex + 1) % _nearbyGoldMinePath.Count();
-                        _nearbyGoldMinePosition = _nearbyGoldMinePath.ElementAt(_pathIndex);
+                        _pathIndex = (_pathIndex + 1) % _nearbyGoldMineToHomePath.Count();
+                        _nearbyGoldMinePosition = _nearbyGoldMineToHomePath.ElementAt(_pathIndex);
                     }
 
                     // Finish position
                     if (Vector2.Distance(_minerPosition, _nearbyGoldMinePosition) < 1f)
                     {
-                        minerControllerSystem.MinerState.CurrentMinerAction = MinerState.MinerAction.Mine;
+                        minerControllerSystem.MinerState.CurrentMinerAction = MinerState.MinerAction.Idle;
                         Reset();
                         Success();
                     }
                     else
                     {
-                        minerControllerSystem.MinerState.CurrentMinerAction = MinerState.MinerAction.GoToMine;
+                        minerControllerSystem.MinerState.CurrentMinerAction = MinerState.MinerAction.GoHome;
                         Running();
                     }
                 }
@@ -69,7 +69,7 @@ namespace Curupira2D.Desktop.Samples.BTree.Leafs
         private void Reset()
         {
             _minerPosition = Vector2.Zero;
-            _nearbyGoldMinePath = null;
+            _nearbyGoldMineToHomePath = null;
             _nearbyGoldMinePosition = default;
             _pathIndex = 1;
         }

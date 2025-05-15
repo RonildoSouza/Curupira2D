@@ -1,4 +1,5 @@
 ﻿using Curupira2D.AI.BehaviorTree;
+using Curupira2D.Desktop.Samples.BTree.Conditions;
 using Curupira2D.Desktop.Samples.BTree.Leafs;
 using Curupira2D.ECS;
 using Curupira2D.ECS.Components;
@@ -18,21 +19,21 @@ namespace Curupira2D.Desktop.Samples.Systems.BehaviorTreeAndPathfinder
 
             _behaviorTree = BehaviorTreeBuilder.GetInstance()
                 .Selector()
-                        .Leaf<FindingNearbyGoldMineAction>(Scene)
+                    .Leaf<FindingNearbyGoldMineAction>(Scene)
                     .Sequence()
                         .Conditional(bb => minerControllerSystem.MinerState.IsFatigued)
-                        //.DebugLogAction("Go home")
+                        .Leaf<MoveToHomeAction>(Scene)
                         //.DebugLogAction("Sleep")
                     .Close()
                     .Sequence()
-                        .Conditional(bb => minerControllerSystem.MinerState.IsInventoryFull)
+                        .Inverter()
+                            .Leaf<HasSpaceInventoryCondition>(Scene)
                         .Leaf<MoveToHomeAction>(Scene)
-                        //.DebugLogAction("Go home")
-                        //.DebugLogAction("Deposit gold")
+                        .Leaf<DepositGoldAction>(Scene)
                     .Close()
                     .Sequence()
-                        .Conditional(bb => !minerControllerSystem.MinerState.IsInventoryFull)
                         //.DebugLogAction("Mine has gold available?")
+                        .Leaf<HasSpaceInventoryCondition>(Scene)
                         .Leaf<MoveToGoldMineAction>(Scene)
                         .Leaf<MineGoldAction>(Scene)
                     .Close()

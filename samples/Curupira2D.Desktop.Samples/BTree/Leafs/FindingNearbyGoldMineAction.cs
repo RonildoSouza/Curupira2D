@@ -1,5 +1,6 @@
 ﻿using Curupira2D.AI.BehaviorTree;
 using Curupira2D.AI.BehaviorTree.Leafs;
+using Curupira2D.AI.Extensions;
 using Curupira2D.AI.Pathfinding;
 using Curupira2D.AI.Pathfinding.AStar;
 using Curupira2D.AI.Pathfinding.Graphs;
@@ -8,6 +9,7 @@ using Curupira2D.ECS;
 using Curupira2D.Extensions.Pathfinding;
 using Microsoft.Xna.Framework;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using TiledLib;
 using TiledLib.Layer;
@@ -58,13 +60,23 @@ namespace Curupira2D.Desktop.Samples.BTree.Leafs
                 //Debug.WriteLine(_gridGraph.GetDebugPathfinder(start, goal, path, true));
             }
 
+            // Add the miner position to the path
+            var nearbyGoldMinePath = new List<Vector2>
+            {
+                scene.GetEntity("miner").Position
+            };
+
             // Get the nearest gold mine path
-            var nearbyGoldMinePath = goldMinePaths
+            nearbyGoldMinePath.AddRange(goldMinePaths
                 .OrderBy(_ => _.DurationCostSoFar)
                 .ElementAt(0)
                 //.FirstOrDefault(_ => _.FoundPath)
                 .Edges
-                .Select(_ => _.GridGraphPointToPositionScene(_map, scene));
+                .Select(_ => _.GridGraphPointToPositionScene(_map, scene))
+            );
+
+            // Remove the last position from the path
+            nearbyGoldMinePath = [.. nearbyGoldMinePath.Take(nearbyGoldMinePath.Count - 1)];
 
             blackboard.Set("NearbyGoldMinePath", nearbyGoldMinePath);
 

@@ -8,6 +8,7 @@ using Curupira2D.Extensions;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Curupira2D.Desktop.Samples.Systems.BehaviorTreeAndPathfinder
 {
@@ -72,6 +73,12 @@ namespace Curupira2D.Desktop.Samples.Systems.BehaviorTreeAndPathfinder
 
         private void PlayMovementAnimation()
         {
+            if (_movementSpriteAnimationComponent.IsPlaying && MinerState.CurrentMinerAction == MinerState.MinerAction.Idle)
+            {
+                _movementSpriteAnimationComponent.IsPlaying = false;
+                _mineSpriteAnimationComponent.IsPlaying = false;
+            }
+
             if (!_movementSpriteAnimationComponent.IsPlaying
                 && (MinerState.CurrentMinerAction == MinerState.MinerAction.GoToMine || MinerState.CurrentMinerAction == MinerState.MinerAction.GoHome))
             {
@@ -85,8 +92,7 @@ namespace Curupira2D.Desktop.Samples.Systems.BehaviorTreeAndPathfinder
 
         private void PlayMineAnimation()
         {
-            if (!_mineSpriteAnimationComponent.IsPlaying
-                && (MinerState.CurrentMinerAction == MinerState.MinerAction.Mine))
+            if (!_mineSpriteAnimationComponent.IsPlaying && MinerState.CurrentMinerAction == MinerState.MinerAction.Mine)
             {
                 _movementSpriteAnimationComponent.IsPlaying = false;
                 _mineSpriteAnimationComponent.IsPlaying = true;
@@ -98,6 +104,14 @@ namespace Curupira2D.Desktop.Samples.Systems.BehaviorTreeAndPathfinder
 
         private void HorizontalFlipMinerAnimation()
         {
+            // DOWN AND RIGHT
+            if (MinerState.CurrentDirection.X > 0 && MinerState.CurrentDirection.Y < 0
+                && _movementSpriteAnimationComponent.SpriteEffect == (SpriteEffects.FlipHorizontally | SpriteEffects.FlipVertically))
+            {
+                _movementSpriteAnimationComponent.SpriteEffect = SpriteEffects.FlipVertically;
+                _mineSpriteAnimationComponent.SpriteEffect = SpriteEffects.FlipVertically;
+            }
+
             // DOWN AND LEFT
             if (MinerState.CurrentDirection.X < 0 && MinerState.CurrentDirection.Y < 0
                 && _movementSpriteAnimationComponent.SpriteEffect != (SpriteEffects.FlipHorizontally | SpriteEffects.FlipVertically))
@@ -106,13 +120,29 @@ namespace Curupira2D.Desktop.Samples.Systems.BehaviorTreeAndPathfinder
                 _mineSpriteAnimationComponent.SpriteEffect = SpriteEffects.FlipHorizontally | SpriteEffects.FlipVertically;
             }
 
-            //// UP AND RIGHT
-            //if (MinerState.CurrentDirection.X < 0 && MinerState.CurrentDirection.Y > 0
-            //    && _movementSpriteAnimationComponent.SpriteEffect != SpriteEffects.None)
-            //{
-            //    _movementSpriteAnimationComponent.SpriteEffect = SpriteEffects.None;
-            //    _mineSpriteAnimationComponent.SpriteEffect = SpriteEffects.None;
-            //}
+            // UP AND RIGHT
+            if (MinerState.CurrentDirection.X > 0 && MinerState.CurrentDirection.Y > 0
+                && _movementSpriteAnimationComponent.SpriteEffect == (SpriteEffects.FlipHorizontally | SpriteEffects.FlipVertically))
+            {
+                _movementSpriteAnimationComponent.SpriteEffect = SpriteEffects.FlipVertically;
+                _mineSpriteAnimationComponent.SpriteEffect = SpriteEffects.FlipVertically;
+            }
+
+            // UP AND LEFT
+            if (MinerState.CurrentDirection.X < 0 && MinerState.CurrentDirection.Y > 0
+                && _movementSpriteAnimationComponent.SpriteEffect != (SpriteEffects.FlipHorizontally | SpriteEffects.FlipVertically))
+            {
+                _movementSpriteAnimationComponent.SpriteEffect = SpriteEffects.FlipHorizontally | SpriteEffects.FlipVertically;
+                _mineSpriteAnimationComponent.SpriteEffect = SpriteEffects.FlipHorizontally | SpriteEffects.FlipVertically;
+            }
+
+            // LEFT
+            if (MinerState.CurrentDirection.X == -1 && MinerState.CurrentDirection.Y == 0
+                && _movementSpriteAnimationComponent.SpriteEffect != (SpriteEffects.FlipHorizontally | SpriteEffects.FlipVertically))
+            {
+                _movementSpriteAnimationComponent.SpriteEffect = SpriteEffects.FlipHorizontally | SpriteEffects.FlipVertically;
+                _mineSpriteAnimationComponent.SpriteEffect = SpriteEffects.FlipHorizontally | SpriteEffects.FlipVertically;
+            }
         }
     }
 
@@ -128,7 +158,7 @@ namespace Curupira2D.Desktop.Samples.Systems.BehaviorTreeAndPathfinder
         }
 
         public static int MaxEnergy => 100;
-        public static int MaxInventoryCapacity => 10;
+        public static int MaxInventoryCapacity => 5;
         public static float MaxSpeed => 60f;
 
         public int Energy;
