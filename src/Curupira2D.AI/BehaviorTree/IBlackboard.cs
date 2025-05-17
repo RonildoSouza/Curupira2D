@@ -10,7 +10,7 @@ namespace Curupira2D.AI.BehaviorTree
         bool HasKey(string key);
         bool HasValue(object value);
         IEnumerable<string> Keys();
-        void Remove(string key);
+        void Remove(string key, bool exactly = true);
         void Set<T>(string key, T value) where T : notnull;
     }
 }
