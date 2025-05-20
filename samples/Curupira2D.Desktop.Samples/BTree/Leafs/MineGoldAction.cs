@@ -8,25 +8,42 @@ namespace Curupira2D.Desktop.Samples.BTree.Leafs
 {
     public class MineGoldAction(Scene scene) : Leaf
     {
-        readonly MinerControllerSystem minerControllerSystem = scene.GetSystem<MinerControllerSystem>();
-        float elapsedTime = 0f;
+        private readonly MinerControllerSystem _minerControllerSystem = scene.GetSystem<MinerControllerSystem>();
+        private readonly GoldMineControllerSystem _goldMineControllerSystem = scene.GetSystem<GoldMineControllerSystem>();
+        private TimeSpan _elapsedTime = TimeSpan.Zero;
 
         public override BehaviorState Update(IBlackboard blackboard)
         {
-            if (minerControllerSystem.MinerState.CurrentMinerAction != MinerState.MinerAction.Mine)
+            if (_minerControllerSystem.MinerState.CurrentMinerAction != MinerState.MinerAction.Mine)
                 return Failure();
 
-            elapsedTime += scene.DeltaTime;
-            if (elapsedTime >= 1)
+            _elapsedTime += scene.ElapsedGameTime;
+            if (_elapsedTime >= TimeSpan.FromSeconds(1))
             {
-                minerControllerSystem.MinerState.Energy = minerControllerSystem.MinerState.Energy + Random.Shared.Next(0, 4);
-                minerControllerSystem.MinerState.InventoryCapacity++;
-                elapsedTime = 0f;
+                _minerControllerSystem.MinerState.Energy = _minerControllerSystem.MinerState.Energy + Random.Shared.Next(1, 5);
+                _minerControllerSystem.MinerState.Energy = _minerControllerSystem.MinerState.Energy > MinerState.MaxEnergy ? MinerState.MaxEnergy : _minerControllerSystem.MinerState.Energy;
+                _minerControllerSystem.MinerState.InventoryCapacity++;
+                _elapsedTime = TimeSpan.Zero;
+
+                _goldMineControllerSystem.DecreaseAvailableGold(blackboard.Get<string>("NearbyGoldMineEntityUniqueId"));
             }
 
-            if (minerControllerSystem.MinerState.IsInventoryFull)
+            if (_minerControllerSystem.MinerState.IsInventoryFull)
             {
-                minerControllerSystem.MinerState.CurrentMinerAction = MinerState.MinerAction.GoHome;
+                _minerControllerSystem.MinerState.CurrentMinerAction = MinerState.MinerAction.GoToDeposit;
+                return Success();
+            }
+
+            if (_minerControllerSystem.MinerState.IsFatigued)
+            {
+                _minerControllerSystem.MinerState.CurrentMinerAction = MinerState.MinerAction.GoHome;
+                return Success();
+            }
+
+            if (!_goldMineControllerSystem.ThereIsGoldAvailable(blackboard.Get<string>("NearbyGoldMineEntityUniqueId")))
+            {
+                _minerControllerSystem.MinerState.CurrentMinerAction = MinerState.MinerAction.Idle;
+                blackboard.Remove("NearbyGoldMine", false);
                 return Success();
             }
 

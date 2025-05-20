@@ -1,7 +1,7 @@
 ﻿using Curupira2D.ECS.Components.Drawables;
 using Curupira2D.ECS.Components.Physics;
 using Curupira2D.ECS.Systems.Attributes;
-using Curupira2D.Extensions;
+using Curupira2D.Extensions.TiledMap;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -25,30 +25,19 @@ namespace Curupira2D.ECS.Systems.Drawables
                 var tiledMapEntity = entities[i];
                 var tiledMapComponent = tiledMapEntity.GetComponent<TiledMapComponent>();
 
-                foreach (var objectLayer in tiledMapComponent.Map.Layers.OfType<ObjectLayer>().Where(_ => _.Visible))
+                foreach (var objectLayer in tiledMapComponent.Map.GetAll<ObjectLayer>(_ => _.Visible))
                 {
                     CreateCollisionEntities(objectLayer, tiledMapComponent.Map);
 
                     // Gets entity with the same name as the point object (spawn) and sets the position
-                    foreach (var pointObject in objectLayer.Objects.OfType<PointObject>())
+                    foreach (var pointObject in objectLayer.GetAll<PointObject>())
                     {
                         var entity = Scene
                             .GetEntities(_ => _.UniqueId == pointObject.Name || _.UniqueId == pointObject.Properties.GetValue(TiledMapSystemConstants.Properties.EntityUniqueId))
                             .FirstOrDefault();
 
                         if (entity != null && entity.Position == default)
-                        {
-                            if (tiledMapComponent.Map.Orientation == Orientation.isometric)
-                            {
-                                var positionOffset = GetIsometricOffsetPositionY(pointObject, tiledMapComponent.Map);
-                                var position = new Vector2((float)(pointObject.X - pointObject.Y), Scene.InvertPositionY((float)(pointObject.X + pointObject.Y)) + positionOffset);
-
-                                entity.SetPosition(position);
-                                continue;
-                            }
-
-                            entity.SetPosition((float)pointObject.X, Scene.InvertPositionY((float)pointObject.Y));
-                        }
+                            entity.SetPosition(pointObject.ToVector2(tiledMapComponent.Map, Scene));
                     }
                 }
             }
@@ -266,7 +255,7 @@ namespace Curupira2D.ECS.Systems.Drawables
 
             if (map.Orientation == Orientation.isometric)
             {
-                var positionOffset = GetIsometricOffsetPositionY(baseObject, map);
+                var positionOffset = baseObject.GetIsometricOffsetPositionY(map);
 
                 position = new Vector2((float)baseObject.X - (float)baseObject.Y, Scene.InvertPositionY((float)baseObject.X + (float)baseObject.Y) + positionOffset);
                 vertices = positions.Select(_ => CartesianToIsometricOfPolyObjects(_.X, _.Y));
@@ -281,12 +270,6 @@ namespace Curupira2D.ECS.Systems.Drawables
 
             static Vector2 CartesianToIsometricOfPolyObjects(double x, double y)
                 => new() { X = (float)(x - y), Y = (float)(-(x + y) * 0.5f) };
-        }
-
-        static float GetIsometricOffsetPositionY(BaseObject baseObject, Map map)
-        {
-            var totalTilesAbovePosition = (float)(baseObject.X + baseObject.Y) / map.CellWidth;
-            return (totalTilesAbovePosition * map.CellHeight) + (map.CellHeight * 0.5f);
         }
     }
 }

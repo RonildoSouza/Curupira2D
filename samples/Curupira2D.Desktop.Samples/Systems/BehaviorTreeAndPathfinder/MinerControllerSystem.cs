@@ -58,29 +58,41 @@ namespace Curupira2D.Desktop.Samples.Systems.BehaviorTreeAndPathfinder
         {
             PlayMovementAnimation();
             PlayMineAnimation();
+            PlaySleepAnimation();
             HorizontalFlipMinerAnimation();
 
             _textComponent.Text = $"Energy: {MinerState.Energy.ToString().PadLeft(3, '0')}" +
-                $"\nInventory Capacity: {MinerState.InventoryCapacity.ToString().PadLeft(2, '0')}";
+                    $"\nInventory Capacity: {MinerState.InventoryCapacity.ToString().PadLeft(2, '0')}";
         }
 
         public void Draw(ref IReadOnlyList<Entity> entities)
         {
-            //// DRAW EDGES FOR DEBUG
-            //for (int i = 0; i < blackboard.Get<IEnumerable<Vector2>>("NearbyGoldMinePath")?.Count(); i++)
-            //    Scene.SpriteBatch.Draw(_pixelTexture, blackboard.Get<IEnumerable<Vector2>>("NearbyGoldMinePath").ElementAt(i), null, Color.White, 0f, new Vector2(8f), 1f, SpriteEffects.None, 0.02f);
+            // DRAW EDGES FOR DEBUG
+            var path = MinerState.CurrentMinerAction switch
+            {
+                MinerState.MinerAction.GoToMine => blackboard.Get<IEnumerable<Vector2>>("NearbyGoldMinePath"),
+                MinerState.MinerAction.GoToDeposit => blackboard.Get<IEnumerable<Vector2>>("NearbyGoldMinePathToDeposit"),
+                MinerState.MinerAction.GoHome => blackboard.Get<IEnumerable<Vector2>>("NearbyGoldMinePathToHome"),
+                _ => null
+            };
+
+            for (int i = 0; i < path?.Count(); i++)
+                Scene.SpriteBatch.Draw(_pixelTexture, path.ElementAt(i), null, Color.White, 0f, new Vector2(8f), 1f, SpriteEffects.None, 0.02f);
         }
 
         private void PlayMovementAnimation()
         {
-            if (_movementSpriteAnimationComponent.IsPlaying && MinerState.CurrentMinerAction == MinerState.MinerAction.Idle)
+            if (_movementSpriteAnimationComponent.IsPlaying
+                && (MinerState.CurrentMinerAction == MinerState.MinerAction.Idle || MinerState.CurrentMinerAction == MinerState.MinerAction.Sleep))
             {
                 _movementSpriteAnimationComponent.IsPlaying = false;
                 _mineSpriteAnimationComponent.IsPlaying = false;
             }
 
             if (!_movementSpriteAnimationComponent.IsPlaying
-                && (MinerState.CurrentMinerAction == MinerState.MinerAction.GoToMine || MinerState.CurrentMinerAction == MinerState.MinerAction.GoHome))
+                && (MinerState.CurrentMinerAction == MinerState.MinerAction.GoToMine
+                    || MinerState.CurrentMinerAction == MinerState.MinerAction.GoHome
+                    || MinerState.CurrentMinerAction == MinerState.MinerAction.GoToDeposit))
             {
                 _movementSpriteAnimationComponent.IsPlaying = true;
                 _mineSpriteAnimationComponent.IsPlaying = false;
@@ -100,6 +112,17 @@ namespace Curupira2D.Desktop.Samples.Systems.BehaviorTreeAndPathfinder
                 _miner.RemoveComponent<SpriteAnimationComponent>();
                 _miner.AddComponent(_mineSpriteAnimationComponent);
             }
+        }
+
+        private void PlaySleepAnimation()
+        {
+            if (MinerState.CurrentMinerAction == MinerState.MinerAction.Sleep)
+            {
+                _movementSpriteAnimationComponent.CurrentFrameColumn = 0;
+                _miner.SetActive(false);
+            }
+            else
+                _miner.SetActive(true);
         }
 
         private void HorizontalFlipMinerAnimation()
@@ -153,12 +176,13 @@ namespace Curupira2D.Desktop.Samples.Systems.BehaviorTreeAndPathfinder
             Idle,
             GoToMine,
             Mine,
+            GoToDeposit,
             GoHome,
             Sleep
         }
 
         public static int MaxEnergy => 100;
-        public static int MaxInventoryCapacity => 5;
+        public static int MaxInventoryCapacity => 10;
         public static float MaxSpeed => 60f;
 
         public int Energy;

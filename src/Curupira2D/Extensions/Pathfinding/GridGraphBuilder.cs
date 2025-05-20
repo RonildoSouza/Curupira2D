@@ -1,5 +1,6 @@
 ﻿using Curupira2D.AI.Pathfinding.Graphs;
 using Curupira2D.ECS;
+using Curupira2D.Extensions.TiledMap;
 using Microsoft.Xna.Framework;
 using System;
 using TiledLib;

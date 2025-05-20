@@ -2,26 +2,27 @@
 using Curupira2D.AI.BehaviorTree.Leafs;
 using Curupira2D.Desktop.Samples.Systems.BehaviorTreeAndPathfinder;
 using Curupira2D.ECS;
+using System;
 
 namespace Curupira2D.Desktop.Samples.BTree.Leafs
 {
     public class DepositGoldAction(Scene scene) : Leaf
     {
-        readonly MinerControllerSystem minerControllerSystem = scene.GetSystem<MinerControllerSystem>();
-        float elapsedTime = 0f;
+        private readonly MinerControllerSystem _minerControllerSystem = scene.GetSystem<MinerControllerSystem>();
+        private TimeSpan _elapsedTime = TimeSpan.Zero;
 
         public override BehaviorState Update(IBlackboard blackboard)
         {
-            if (minerControllerSystem.MinerState.CurrentMinerAction != MinerState.MinerAction.Idle
-                || !minerControllerSystem.MinerState.IsInventoryFull)
+            if (_minerControllerSystem.MinerState.CurrentMinerAction != MinerState.MinerAction.Idle
+                || !_minerControllerSystem.MinerState.IsInventoryFull)
                 return Failure();
 
-            elapsedTime += scene.DeltaTime;
-            if (elapsedTime >= 1)
+            _elapsedTime += scene.ElapsedGameTime;
+            if (_elapsedTime >= TimeSpan.FromSeconds(0.3))
             {
-                blackboard.Remove("NearbyGoldMinePath");
-                minerControllerSystem.MinerState.InventoryCapacity = 0;
-                elapsedTime = 0f;
+                blackboard.Remove("NearbyGoldMine", false);
+                _minerControllerSystem.MinerState.InventoryCapacity = 0;
+                _elapsedTime = TimeSpan.Zero;
 
                 return Success();
             }

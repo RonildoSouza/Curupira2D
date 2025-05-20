@@ -13,7 +13,7 @@ namespace Curupira2D.Desktop.Samples.Systems.BehaviorTreeAndPathfinder
     class GoldMineControllerSystem : ECS.System, ILoadable, IUpdatable
     {
         Texture2D _goldMineTexture;
-        static readonly IDictionary<string, int> _goldMinesAndAvailable = new Dictionary<string, int>();
+        readonly IDictionary<string, int> _goldMinesAndAvailable = new Dictionary<string, int>();
 
         public void LoadContent()
         {
@@ -21,7 +21,8 @@ namespace Curupira2D.Desktop.Samples.Systems.BehaviorTreeAndPathfinder
 
             for (int i = 0; i < 4; i++)
             {
-                _goldMinesAndAvailable.Add($"goldMine{i}", 100);
+                // Entity unique id and amount of gold available
+                _goldMinesAndAvailable.Add($"goldMine{i}", 40);
 
                 Scene.CreateEntity(_goldMinesAndAvailable.Keys.ElementAt(i), default, "goldMines")
                     .AddComponent(new SpriteComponent(
@@ -36,10 +37,6 @@ namespace Curupira2D.Desktop.Samples.Systems.BehaviorTreeAndPathfinder
             for (int i = 0; i < _goldMinesAndAvailable.Count; i++)
             {
                 var entityUniqueId = _goldMinesAndAvailable.Keys.ElementAt(i);
-
-                if (_goldMinesAndAvailable[entityUniqueId] >= 100)
-                    continue;
-
                 var entity = Scene.GetEntity(entityUniqueId);
 
                 if (entity == null || !entity.Active)
@@ -47,39 +44,50 @@ namespace Curupira2D.Desktop.Samples.Systems.BehaviorTreeAndPathfinder
 
                 var spriteComponent = entity.GetComponent<SpriteComponent>();
 
-                if (_goldMinesAndAvailable[entityUniqueId] == 0)
+                // State gold mine based on the amount of gold available
+                if (_goldMinesAndAvailable[entityUniqueId] >= 30)
                 {
-                    spriteComponent.SourceRectangle = new Rectangle(84, 0, 28, 28);
-                    //_goldMinesAndAvailable[entityUniqueId] = -1;
+                    spriteComponent.SourceRectangle = new Rectangle(0, 0, 28, 28);
                     continue;
                 }
 
-                if (_goldMinesAndAvailable[entityUniqueId] >= 75)
+                if (_goldMinesAndAvailable[entityUniqueId] < 30 && _goldMinesAndAvailable[entityUniqueId] >= 20)
                 {
                     spriteComponent.SourceRectangle = new Rectangle(28, 0, 28, 28);
                     continue;
                 }
 
-                if (_goldMinesAndAvailable[entityUniqueId] <= 50)
+                if (_goldMinesAndAvailable[entityUniqueId] < 20 && _goldMinesAndAvailable[entityUniqueId] >= 10)
                 {
                     spriteComponent.SourceRectangle = new Rectangle(56, 0, 28, 28);
                     continue;
                 }
 
-                if (_goldMinesAndAvailable[entityUniqueId] < 0)
-                    entity.SetActive(false);
+                if (_goldMinesAndAvailable[entityUniqueId] < 10 && _goldMinesAndAvailable[entityUniqueId] >= 0)
+                {
+                    spriteComponent.SourceRectangle = new Rectangle(84, 0, 28, 28);
+                    continue;
+                }
             }
         }
 
-        public static bool ThereIsGoldAvailable(string entityUniqueId)
-            => _goldMinesAndAvailable.TryGetValue(entityUniqueId, out int available) && available > 0;
+        public bool ThereIsGoldAvailable(string entityUniqueId)
+            => _goldMinesAndAvailable.TryGetValue(entityUniqueId ?? string.Empty, out int available) && available > 0;
 
-        private int GetGoldMineState(string entityUniqueId)
+        public void DecreaseAvailableGold(string entityUniqueId)
         {
-            if (_goldMinesAndAvailable.TryGetValue(entityUniqueId, out int available))
-                return available;
+            if (_goldMinesAndAvailable.TryGetValue(entityUniqueId ?? string.Empty, out int available))
+            {
+                available--;
+                if (available <= 0)
+                {
+                    _goldMinesAndAvailable.Remove(entityUniqueId);
+                    Scene.RemoveEntity(entityUniqueId);
+                    return;
+                }
 
-            return 0;
+                _goldMinesAndAvailable[entityUniqueId] = available;
+            }
         }
     }
 }

@@ -5,11 +5,11 @@ using Curupira2D.ECS;
 
 namespace Curupira2D.Desktop.Samples.BTree.Conditions
 {
-    public class HasSpaceInventoryCondition(Scene scene) : Leaf
+    public class HasFreeSpaceInInventoryCondition(Scene scene) : Leaf
     {
-        readonly MinerControllerSystem minerControllerSystem = scene.GetSystem<MinerControllerSystem>();
+        private readonly MinerControllerSystem _minerControllerSystem = scene.GetSystem<MinerControllerSystem>();
 
         public override BehaviorState Update(IBlackboard blackboard)
-            => minerControllerSystem.MinerState.IsInventoryFull ? Failure() : Success();
+            => _minerControllerSystem?.MinerState.IsInventoryFull ?? true ? Failure() : Success();
     }
 }
