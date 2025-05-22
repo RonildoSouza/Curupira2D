@@ -7,7 +7,7 @@ namespace Curupira2D.AI.Extensions
 {
     public static class BehaviorExtensions
     {
-        public static string GetBehaviorTreeStructure(this Behavior node) => node.GetBehaviorTreeStructureWithState(false);
+        public static string GetBehaviorTreeStructure(this Behavior node, bool withState = false) => node.GetBehaviorTreeStructureWithState(withState);
 
         internal static string GetBehaviorTreeStructureWithState(this Behavior node, bool withState = true)
         {

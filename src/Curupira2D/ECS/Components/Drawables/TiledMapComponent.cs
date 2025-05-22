@@ -5,13 +5,13 @@ using TiledLib;
 
 namespace Curupira2D.ECS.Components.Drawables
 {
-    public class TiledMapComponent : SpriteComponent
+    public sealed class TiledMapComponent : DrawableComponent
     {
-        public TiledMapComponent(
-            Map map,
-            Texture2D texture,
-            Color color = default,
-            bool drawInUICamera = false) : base(texture: texture, color: color, drawInUICamera: drawInUICamera)
+        private Texture2D _texture;
+        private Color[] _textureData;
+
+        public TiledMapComponent(Map map, Texture2D texture, Color color = default, bool drawInUICamera = false)
+            : base(texture, color: color, drawInUICamera: drawInUICamera)
         {
             Map = map;
 
@@ -19,13 +19,13 @@ namespace Curupira2D.ECS.Components.Drawables
                 Origin = new Vector2(Map.CellWidth * 0.5f, Map.CellHeight * 0.5f);
         }
 
+        public override float LayerDepth => throw new NotImplementedException("Layer depth can't be define!");
+
         public override Texture2D Texture
         {
             get => _texture;
             set => _texture = value;
         }
-
-        public override float LayerDepth => throw new NotImplementedException("Layer depth can't be define!");
 
         public override Color[] TextureData
         {

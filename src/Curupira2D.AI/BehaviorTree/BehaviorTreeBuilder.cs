@@ -67,6 +67,12 @@ namespace Curupira2D.AI.BehaviorTree
         public BehaviorTreeBuilder Delay(int milliseconds) => PushParent(new Delay(milliseconds));
 
         /// <summary>
+        /// Return <see cref="BehaviorState.Running"/> for a set amount of time before executing its child.
+        /// The timer resets when both it and its child are not <see cref="BehaviorState.Running"/>
+        /// </summary>
+        public BehaviorTreeBuilder Delay(TimeSpan timeSpan) => Delay(timeSpan.Milliseconds);
+
+        /// <summary>
         /// Return <see cref="BehaviorState.Success"/> if its child returns <see cref="BehaviorState.Failure"/> and vice versa.
         /// </summary>
         public BehaviorTreeBuilder Inverter() => PushParent(new Inverter());

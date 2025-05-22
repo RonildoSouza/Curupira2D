@@ -15,7 +15,17 @@
 
         public IEnumerable<string> Keys() => _data.Keys;
 
-        public void Remove(string key) => _data.Remove(key);
+        public void Remove(string key, bool exactly = true)
+        {
+            if (exactly)
+            {
+                _data.Remove(key);
+                return;
+            }
+
+            foreach (var keyToRemove in _data.Keys.Where(_ => _.Contains(key)))
+                _data.Remove(keyToRemove);
+        }
 
         public void Set<T>(string key, T value) where T : notnull => _data[key] = value;
     }

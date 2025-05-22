@@ -1,7 +1,7 @@
-﻿using System.Diagnostics;
-using Curupira2D.AI.BehaviorTree.Composites;
+﻿using Curupira2D.AI.BehaviorTree.Composites;
 using Curupira2D.AI.BehaviorTree.Decorators;
 using Curupira2D.AI.Extensions;
+using System.Diagnostics;
 
 namespace Curupira2D.AI.BehaviorTree
 {
@@ -54,6 +54,6 @@ namespace Curupira2D.AI.BehaviorTree
             }
         }
 
-        public string GetTreeStructure() => _root.GetBehaviorTreeStructure();
+        public string GetTreeStructure(bool withState = false) => _root.GetBehaviorTreeStructure(withState);
     }
 }

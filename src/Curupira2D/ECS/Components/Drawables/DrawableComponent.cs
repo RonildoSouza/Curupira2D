@@ -6,6 +6,7 @@ namespace Curupira2D.ECS.Components.Drawables
     public abstract class DrawableComponent : IComponent
     {
         protected DrawableComponent(
+            Texture2D texture,
             SpriteEffects spriteEffect = SpriteEffects.FlipVertically,
             Color color = default,
             Rectangle? sourceRectangle = null,
@@ -13,6 +14,7 @@ namespace Curupira2D.ECS.Components.Drawables
             Vector2 scale = default,
             bool drawInUICamera = false)
         {
+            Texture = texture;
             SpriteEffect = spriteEffect;
             Color = color == default ? Color.White : color;
             SourceRectangle = sourceRectangle;
@@ -21,6 +23,8 @@ namespace Curupira2D.ECS.Components.Drawables
             DrawInUICamera = drawInUICamera;
         }
 
+        public virtual Texture2D Texture { get; set; }
+        public Vector2 TextureSize => Texture.Bounds.Size.ToVector2();
         public Vector2 Origin { get; set; }
         public SpriteEffects SpriteEffect { get; set; }
         public Color Color { get; set; }

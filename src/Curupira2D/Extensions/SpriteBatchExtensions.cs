@@ -8,8 +8,11 @@ namespace Curupira2D.Extensions
     public static class SpriteBatchExtensions
     {
         #region Draw Methods
-        public static void Draw<TSpriteComponent>(this SpriteBatch spriteBatch, Vector2 position, float rotationInDegrees, TSpriteComponent spriteComponent) where TSpriteComponent : SpriteComponent
+        public static void Draw<T>(this SpriteBatch spriteBatch, Vector2 position, float rotationInDegrees, T spriteComponent) where T : DrawableComponent
         {
+            if (spriteComponent == null || spriteComponent.Texture == null)
+                return;
+
             spriteBatch.Draw(
                 spriteComponent.Texture,
                 spriteComponent.Position ?? position,
@@ -22,16 +25,19 @@ namespace Curupira2D.Extensions
                 spriteComponent.LayerDepth);
         }
 
-        public static void Draw<TSpriteComponent>(this SpriteBatch spriteBatch, Vector2 position, TSpriteComponent spriteComponent) where TSpriteComponent : SpriteComponent
+        public static void Draw<T>(this SpriteBatch spriteBatch, Vector2 position, T spriteComponent) where T : DrawableComponent
             => spriteBatch.Draw(position, 0f, spriteComponent);
 
-        public static void Draw<TSpriteComponent>(this SpriteBatch spriteBatch, Entity entity, TSpriteComponent spriteComponent) where TSpriteComponent : SpriteComponent
+        public static void Draw<T>(this SpriteBatch spriteBatch, Entity entity, T spriteComponent) where T : DrawableComponent
             => spriteBatch.Draw(entity.Position, entity.Rotation, spriteComponent);
         #endregion
 
         #region DrawString Methods
         public static void DrawString(this SpriteBatch spriteBatch, Vector2 position, float rotationInDegrees, TextComponent textComponent)
         {
+            if (textComponent == null)
+                return;
+
             spriteBatch.DrawString(
                 textComponent.SpriteFont,
                 textComponent.Text,

@@ -18,13 +18,13 @@ jobs:
         dotnet-version: 8.x
         
     - name: Restore dependencies
-      run: dotnet restore src/Curupira2D-NoSamples.sln
+      run: dotnet restore src/Curupira2D.sln
       
     - name: Build
-      run: dotnet build --no-restore src/Curupira2D-NoSamples.sln
+      run: dotnet build --no-restore src/Curupira2D.sln
 
     - name: Test
-      run: dotnet test --no-build --verbosity normal src/Curupira2D-NoSamples.sln
+      run: dotnet test --no-build --verbosity normal src/Curupira2D.sln
   
   publish:
     needs: [build]
