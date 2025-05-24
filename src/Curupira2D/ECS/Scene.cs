@@ -34,7 +34,6 @@ namespace Curupira2D.ECS
         /// The time in seconds since the last update.
         /// </summary>
         public float DeltaTime { get => _deltaTime == 0 ? 1f / 60f : _deltaTime; private set => _deltaTime = value; }
-        public TimeSpan ElapsedGameTime { get; private set; }
         public int ScreenWidth => GameCore.GraphicsDevice.Viewport.Width;
         public int ScreenHeight => GameCore.GraphicsDevice.Viewport.Height;
         public Vector2 ScreenSize => new(ScreenWidth, ScreenHeight);
@@ -73,7 +72,6 @@ namespace Curupira2D.ECS
         {
             GameTime = gameTime;
             DeltaTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
-            ElapsedGameTime = gameTime.ElapsedGameTime;
 
             KeyboardInputManager.Begin();
             GamePadInputManager.Begin();
