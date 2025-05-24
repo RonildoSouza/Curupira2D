@@ -57,7 +57,7 @@ namespace Curupira2D.Diagnostics
                 {
                     case MonoGamePlatform.Android:
                         _spriteBatch.Begin();
-                        _spriteBatch.DrawString(_fontArial18, _text, new Vector2((GraphicsDevice.Viewport.Width * 0.5f) - (_textSize.X * 0.5f), _textSize.Y * 1.1f), gameCore.DebugOptions.TextColor);
+                        _spriteBatch.DrawString(_fontArial18, _text ?? string.Empty, new Vector2((GraphicsDevice.Viewport.Width * 0.5f) - (_textSize.X * 0.5f), _textSize.Y * 1.1f), gameCore.DebugOptions.TextColor);
                         _spriteBatch.End();
                         break;
                     default:
