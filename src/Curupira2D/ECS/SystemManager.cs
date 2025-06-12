@@ -8,9 +8,12 @@ namespace Curupira2D.ECS
 {
     internal sealed class SystemManager : IDisposable
     {
-        readonly List<ILoadable> _loadableSystems = [];
-        readonly List<IUpdatable> _updatableSystems = [];
-        readonly List<IRenderable> _renderableSystems = [];
+        private readonly List<ILoadable> _loadableSystems = [];
+        private readonly List<IUpdatable> _updatableSystems = [];
+        private readonly List<IRenderable> _renderableSystems = [];
+        private bool _disposed = false;
+
+        ~SystemManager() => Dispose(disposing: false);
 
         public void LoadableSystemsIteration()
         {
@@ -107,10 +110,21 @@ namespace Curupira2D.ECS
 
         public void Dispose()
         {
-            RemoveAll();
-            GC.Collect();
+            Dispose(disposing: true);
+            GC.SuppressFinalize(this);
         }
 
-        static bool SystemIsValid(ISystem system) => system.Scene != null && system.Scene.GameTime != null;
+        private void Dispose(bool disposing)
+        {
+            if (_disposed)
+                return;
+
+            if (disposing)
+                RemoveAll();
+
+            _disposed = true;
+        }
+
+        private static bool SystemIsValid(ISystem system) => system.Scene != null && system.Scene.GameTime != null;
     }
 }

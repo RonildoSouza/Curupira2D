@@ -1,7 +1,6 @@
 ﻿using Curupira2D.ECS.Components.Physics;
 using Curupira2D.ECS.Systems.Attributes;
 using Microsoft.Xna.Framework;
-using nkast.Aether.Physics2D.Common;
 using nkast.Aether.Physics2D.Diagnostics;
 using nkast.Aether.Physics2D.Dynamics;
 using System;
@@ -15,6 +14,9 @@ namespace Curupira2D.ECS.Systems.Physics
     {
         World _world;
         DebugView _debugView;
+        bool _disposed = false;
+
+        ~PhysicsSystem() => Dispose(disposing: false);
 
         public void LoadContent()
         {
@@ -29,9 +31,8 @@ namespace Curupira2D.ECS.Systems.Physics
 
             for (int i = 0; i < entities.Count; i++)
             {
-                var entity = entities[i];
+                var entity = entities.ElementAt(i);
                 var bodyComponent = entity.GetComponent<BodyComponent>();
-                //var drawableComponent = entity.GetDrawableComponent();
 
                 Fixture fixture = null;
 
@@ -47,10 +48,10 @@ namespace Curupira2D.ECS.Systems.Physics
                         fixture = bodyComponent.CreateRectangle(bodyComponent.Size.X, bodyComponent.Size.Y, bodyComponent.Density, bodyComponent.Offset);
                         break;
                     case EntityShape.Polygon:
-                        fixture = bodyComponent.CreatePolygon(new Vertices(bodyComponent.Vertices), bodyComponent.Density);
+                        fixture = bodyComponent.CreatePolygon([.. bodyComponent.Vertices], bodyComponent.Density);
                         break;
                     case EntityShape.PolyLine:
-                        fixture = bodyComponent.CreateChainShape(new Vertices(bodyComponent.Vertices));
+                        fixture = bodyComponent.CreateChainShape([.. bodyComponent.Vertices]);
                         break;
                 }
 
@@ -65,7 +66,8 @@ namespace Curupira2D.ECS.Systems.Physics
                     fixture.Restitution = bodyComponent.Restitution;
                     fixture.Friction = bodyComponent.Friction;
                 }
-            };
+            }
+            ;
 
             if (Scene.GameCore.DebugOptions.DebugActive && entities.Any())
             {
@@ -133,6 +135,21 @@ namespace Curupira2D.ECS.Systems.Physics
                 }
             }
             catch (Exception) { }
+        }
+
+        protected override void Dispose(bool disposing)
+        {
+            if (_disposed)
+                return;
+
+            if (disposing)
+            {
+                _world = null;
+                _debugView?.Dispose();
+            }
+
+            _disposed = true;
+            base.Dispose(disposing);
         }
     }
 }

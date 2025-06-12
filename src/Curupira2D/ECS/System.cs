@@ -9,7 +9,7 @@ using System.Reflection;
 
 namespace Curupira2D.ECS
 {
-    public interface ISystem
+    public interface ISystem : IDisposable
     {
         Scene Scene { get; }
         bool MatchActiveEntitiesAndComponents(Entity entity);
@@ -18,12 +18,14 @@ namespace Curupira2D.ECS
 
     public abstract class System : ISystem
     {
-        readonly List<Type> _requiredComponents = [];
+        private readonly List<Type> _requiredComponents = [];
 
         public System()
         {
             SetupRequiredComponents();
         }
+
+        ~System() => Dispose(disposing: false);
 
         public Scene Scene { get; private set; }
 
@@ -53,7 +55,7 @@ namespace Curupira2D.ECS
                 AddRequiredComponent(requiredComponentAttrs.ElementAt(i).ComponentTypes);
         }
 
-        void AddRequiredComponent(Type[] types)
+        private void AddRequiredComponent(Type[] types)
         {
             for (int i = 0; i < types.Length; i++)
             {
@@ -66,14 +68,22 @@ namespace Curupira2D.ECS
             }
         }
 
-        void AssertRequiredComponents(List<Type> requiredComponentTypes)
+        private void AssertRequiredComponents(List<Type> requiredComponentTypes)
         {
             var implementOnlyILoadable = GetType().GetTypeInfo().ImplementedInterfaces.Count() == 2
                 && GetType().GetTypeInfo().ImplementedInterfaces.Contains(typeof(ISystem))
                 && GetType().GetTypeInfo().ImplementedInterfaces.Contains(typeof(ILoadable));
 
-            if (!requiredComponentTypes.Any() && GetType().Name != nameof(DebugSystem) && !implementOnlyILoadable)
+            if (requiredComponentTypes.Count == 0 && GetType().Name != nameof(DebugSystem) && !implementOnlyILoadable)
                 throw new Exception($"You should add required component for the system {GetType().Name}");
         }
+
+        public void Dispose()
+        {
+            Dispose(disposing: true);
+            GC.SuppressFinalize(this);
+        }
+
+        protected virtual void Dispose(bool disposing) { }
     }
 }

@@ -12,34 +12,26 @@ using System.Linq;
 
 namespace Curupira2D
 {
-    public sealed class Quadtree : IDisposable
+    /// <summary></summary>
+    /// <param name="bounds">The 2D space that the node occupies</param>
+    /// <param name="level">The current node level (0 being the topmost)</param>
+    public sealed class Quadtree(Rectangle bounds, int level = 0) : IDisposable
     {
-        private const int MAX_OBJECTS = 10;
-        private const int MAX_LEVELS = 5;
-
-        private Rectangle _bounds;
-        private readonly int _level;
+        const int MAX_OBJECTS = 10;
+        const int MAX_LEVELS = 5;
+        bool _disposed = false;
 
         /// <summary>
         /// The list of objects in our current node
         /// </summary>
-        private List<Entity> _objects;
+        List<Entity> _objects = [];
 
         /// <summary>
         /// The four subnodes. Nodes fill out in a counter clockwise mannor
         /// </summary>
-        private readonly Quadtree[] _nodes;
+        readonly Quadtree[] _nodes = new Quadtree[4];
 
-        /// <summary></summary>
-        /// <param name="bounds">The 2D space that the node occupies</param>
-        /// <param name="level">The current node level (0 being the topmost)</param>
-        public Quadtree(Rectangle bounds, int level = 0)
-        {
-            _bounds = bounds;
-            _level = level;
-            _objects = new List<Entity>();
-            _nodes = new Quadtree[4];
-        }
+        ~Quadtree() => Dispose(disposing: false);
 
         /// <summary>
         /// Gets the count of how many objects are in this current node.
@@ -86,7 +78,7 @@ namespace Curupira2D
 
             _objects.Add(entity);
 
-            if (_objects.Count > MAX_OBJECTS && _level < MAX_LEVELS)
+            if (_objects.Count > MAX_OBJECTS && level < MAX_LEVELS)
             {
                 if (_nodes[0] == null)
                     Split();
@@ -173,21 +165,35 @@ namespace Curupira2D
 
         public void Dispose()
         {
-            Clear();
-            _objects = null;
+            Dispose(disposing: true);
+            GC.SuppressFinalize(this);
+        }
+
+        void Dispose(bool disposing)
+        {
+            if (_disposed)
+                return;
+
+            if (disposing)
+            {
+                Clear();
+                _objects = null;
+            }
+
+            _disposed = true;
         }
 
         /// <summary>
         /// Splits the node into 4 subnodes, dividing the node into four equal parts and initializing
         /// the four subnodes with the new bounds.
         /// </summary>
-        private void Split()
+        void Split()
         {
-            var subWidth = _bounds.Width / 2;
-            var subHeight = _bounds.Height / 2;
-            var x = _bounds.X;
-            var y = _bounds.Y;
-            var newLevel = _level + 1;
+            var subWidth = bounds.Width / 2;
+            var subHeight = bounds.Height / 2;
+            var x = bounds.X;
+            var y = bounds.Y;
+            var newLevel = level + 1;
 
             //Right/Top
             _nodes[0] = new Quadtree(new Rectangle(x + subWidth, y + subHeight, subWidth, subHeight), newLevel);
@@ -208,10 +214,10 @@ namespace Curupira2D
         /// </summary>
         /// <param name="hitBox">The rectangle being checked</param>
         /// <returns>The node that the object fits into, -1 means it fits in the parent node</returns>
-        private int GetIndex(Rectangle hitBox)
+        int GetIndex(Rectangle hitBox)
         {
-            double verticalMidpoint = _bounds.X + _bounds.Width / 2;
-            double horizontalMidpoint = _bounds.Y + _bounds.Height / 2;
+            double verticalMidpoint = bounds.X + bounds.Width / 2;
+            double horizontalMidpoint = bounds.Y + bounds.Height / 2;
 
             // Object can completely fit within the top quadrants
             var topQuadrant = hitBox.Y < horizontalMidpoint && hitBox.Y + hitBox.Height < horizontalMidpoint;

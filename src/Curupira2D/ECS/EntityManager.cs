@@ -7,7 +7,10 @@ namespace Curupira2D.ECS
 {
     internal sealed class EntityManager : IDisposable
     {
-        readonly List<Entity> _entities = new List<Entity>();
+        readonly List<Entity> _entities = [];
+        bool _disposed = false;
+
+        ~EntityManager() => Dispose(disposing: false);
 
         public Entity Create(string uniqueId, Vector2 position, string group = null, bool isCollidable = true)
         {
@@ -25,7 +28,7 @@ namespace Curupira2D.ECS
 
         public Entity Get(string uniqueId) => _entities.FirstOrDefault(_ => _.UniqueId == uniqueId);
 
-        public IReadOnlyList<Entity> GetAll(Func<Entity, bool> match) => _entities.Where(match).ToList();
+        public IReadOnlyList<Entity> GetAll(Func<Entity, bool> match) => [.. _entities.Where(match)];
 
         public void Remove(Predicate<Entity> match) => _entities.RemoveAll(match);
 
@@ -34,10 +37,8 @@ namespace Curupira2D.ECS
             Remove(_ =>
             {
                 if (_.UniqueId == uniqueId && _.Children.Any())
-                {
                     foreach (var child in _.Children)
                         Remove(child.UniqueId);
-                }
 
                 return _.UniqueId == uniqueId;
             });
@@ -49,9 +50,19 @@ namespace Curupira2D.ECS
 
         public void Dispose()
         {
-            RemoveAll();
+            Dispose(disposing: true);
+            GC.SuppressFinalize(this);
+        }
 
-            GC.Collect();
+        void Dispose(bool disposing)
+        {
+            if (_disposed)
+                return;
+
+            if (disposing)
+                RemoveAll();
+
+            _disposed = true;
         }
     }
 }
