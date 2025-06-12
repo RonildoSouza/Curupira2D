@@ -35,7 +35,7 @@ namespace Curupira2D.Diagnostics
 
                     var title = !string.IsNullOrEmpty(gameCore.GetCurrentScene()?.Title) ? gameCore.GetCurrentScene().Title : GetType().Assembly.GetName().Name;
                     gameCore.Window.Title = $"{title} v{gameCore.GetVersion()}" +
-                               $" | {GraphicsDevice.Viewport.Width}x{GraphicsDevice.Viewport.Height}" +
+                               $"\r\n        {GraphicsDevice.Viewport.Width}x{GraphicsDevice.Viewport.Height}" +
                                $" | FPS: {_totalFrames}" +
                                $" | {_totalMemory:F} MB";
 
