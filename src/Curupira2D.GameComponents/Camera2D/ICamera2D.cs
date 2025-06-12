@@ -6,10 +6,11 @@
 
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using System;
 
 namespace Curupira2D.GameComponents.Camera2D
 {
-    public interface ICamera2D : IGameComponent
+    public interface ICamera2D : IGameComponent, IDisposable
     {
         /// <summary>
         /// The Viewport reference for the camera

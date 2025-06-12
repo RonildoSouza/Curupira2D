@@ -7,12 +7,13 @@ using System.Linq;
 
 namespace Curupira2D.ECS
 {
-    public sealed class Entity : IEquatable<Entity>
+    public sealed class Entity : IEquatable<Entity>, IDisposable
     {
-        readonly Dictionary<Type, IComponent> _components = new Dictionary<Type, IComponent>();
-        readonly List<Entity> _children = new List<Entity>();
+        readonly Dictionary<Type, IComponent> _components = [];
+        readonly List<Entity> _children = [];
         Vector2 _tempPosition;
         float _tempRotation;
+        bool _disposed = false;
 
         internal event EventHandler<EventArgs> OnChange;
 
@@ -28,6 +29,8 @@ namespace Curupira2D.ECS
 
         internal Entity(string uniqueId, float x, float y, string group, bool isCollidable)
             : this(uniqueId, new Vector2(x, y), group, isCollidable) { }
+
+        ~Entity() => Dispose(disposing: false);
 
         public string UniqueId { get; }
         public Vector2 Position { get; private set; }
@@ -163,6 +166,28 @@ namespace Curupira2D.ECS
         public bool HasAnyComponentTypes(IEnumerable<Type> componentTypes) => componentTypes.Any(_ => HasComponent(_));
         #endregion
 
+        public void Dispose()
+        {
+            Dispose(disposing: true);
+            GC.SuppressFinalize(this);
+        }
+
+        void Dispose(bool disposing)
+        {
+            if (_disposed)
+                return;
+
+            if (disposing)
+            {
+                _components.Clear();
+                _children.Clear();
+                OnChange = null;
+            }
+
+            _disposed = true;
+        }
+
         bool HasComponent(Type componentType) => _components.ContainsKey(componentType);
+
     }
 }

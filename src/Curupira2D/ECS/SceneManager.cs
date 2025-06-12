@@ -5,7 +5,10 @@ namespace Curupira2D.ECS
 {
     internal sealed class SceneManager : IDisposable
     {
-        readonly List<Scene> _scenes = new List<Scene>();
+        readonly List<Scene> _scenes = [];
+        bool _disposed = false;
+
+        ~SceneManager() => Dispose(disposing: false);
 
         public Scene CurrentScene { get; private set; }
         public IReadOnlyList<Scene> Scenes => _scenes;
@@ -31,10 +34,22 @@ namespace Curupira2D.ECS
 
         public void Dispose()
         {
-            _scenes.Clear();
-            CurrentScene.Dispose();
+            Dispose(disposing: true);
+            GC.SuppressFinalize(this);
+        }
 
-            GC.Collect();
+        void Dispose(bool disposing)
+        {
+            if (_disposed)
+                return;
+
+            if (disposing)
+            {
+                _scenes.Clear();
+                CurrentScene.Dispose();
+            }
+
+            _disposed = true;
         }
     }
 }

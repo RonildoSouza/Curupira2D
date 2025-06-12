@@ -7,7 +7,7 @@ namespace Curupira2D.Diagnostics
 {
     public class DebugComponent(GameCore gameCore) : DrawableGameComponent(gameCore), IEquatable<DebugComponent>
     {
-        SpriteFont _fontArial18;
+        SpriteFont _diagnosticsFont;
         SpriteBatch _spriteBatch;
         string _text;
         Vector2 _textSize;
@@ -18,7 +18,7 @@ namespace Curupira2D.Diagnostics
         protected override void LoadContent()
         {
             _spriteBatch = (gameCore.GetCurrentScene()?.SpriteBatch) ?? new SpriteBatch(GraphicsDevice);
-            _fontArial18 = gameCore.Content.Load<SpriteFont>("FontArial18");
+            _diagnosticsFont = gameCore.Content.Load<SpriteFont>("DiagnosticsFont");
             base.LoadContent();
         }
 
@@ -40,7 +40,7 @@ namespace Curupira2D.Diagnostics
                                $" | {_totalMemory:F} MB";
 
                     _text = gameCore.Window.Title;
-                    _textSize = _fontArial18.MeasureString(_text);
+                    _textSize = _diagnosticsFont.MeasureString(_text);
                     _totalFrames = 0;
                     _elapsedTime = TimeSpan.Zero;
                 }
@@ -57,7 +57,7 @@ namespace Curupira2D.Diagnostics
                 {
                     case MonoGamePlatform.Android:
                         _spriteBatch.Begin();
-                        _spriteBatch.DrawString(_fontArial18, _text ?? string.Empty, new Vector2((GraphicsDevice.Viewport.Width * 0.5f) - (_textSize.X * 0.5f), _textSize.Y * 1.1f), gameCore.DebugOptions.TextColor);
+                        _spriteBatch.DrawString(_diagnosticsFont, _text ?? string.Empty, new Vector2((GraphicsDevice.Viewport.Width * 0.5f) - (_textSize.X * 0.5f), _textSize.Y * 1.1f), gameCore.DebugOptions.TextColor);
                         _spriteBatch.End();
                         break;
                     default:

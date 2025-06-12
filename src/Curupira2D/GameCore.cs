@@ -12,7 +12,7 @@ namespace Curupira2D
     public abstract class GameCore : Game
     {
         readonly GraphicsDeviceManager _graphics;
-        readonly SceneManager _sceneManager = new SceneManager();
+        readonly SceneManager _sceneManager = new();
         readonly int _width;
         readonly int _height;
         readonly bool _disabledExit;

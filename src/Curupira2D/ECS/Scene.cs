@@ -20,6 +20,9 @@ namespace Curupira2D.ECS
         PhysicsSystem _physicsSystem;
         float _deltaTime;
         readonly List<IGameComponent> _gameComponents = [];
+        bool _disposed = false;
+
+        ~Scene() => Dispose(disposing: false);
 
         public GameCore GameCore { get; private set; }
         public SpriteBatch SpriteBatch { get; private set; }
@@ -39,6 +42,7 @@ namespace Curupira2D.ECS
         public Vector2 ScreenSize => new(ScreenWidth, ScreenHeight);
         public Vector2 ScreenCenter => new(ScreenWidth * 0.5f, ScreenHeight * 0.5f);
         public SpriteSortMode SpriteSortMode { get; set; } = SpriteSortMode.FrontToBack;
+        public SamplerState SamplerState { get; set; } = SamplerState.PointClamp;
 
         public KeyboardInputManager KeyboardInputManager { get; private set; }
         public GamePadInputManager GamePadInputManager { get; private set; }
@@ -90,6 +94,7 @@ namespace Curupira2D.ECS
             #region Begin/End sprite batch to Camera
             SpriteBatch.Begin(
                 sortMode: SpriteSortMode,
+                samplerState: SamplerState,
                 rasterizerState: RasterizerState.CullClockwise,
                 effect: Camera2D.SpriteBatchEffect);
 
@@ -108,6 +113,7 @@ namespace Curupira2D.ECS
             #region Begin/End sprite batch to UI Camera
             SpriteBatch.Begin(
                 sortMode: SpriteSortMode,
+                samplerState: SamplerState,
                 rasterizerState: RasterizerState.CullClockwise,
                 effect: UICamera2D.SpriteBatchEffect);
 
@@ -236,9 +242,9 @@ namespace Curupira2D.ECS
 
         public Entity GetEntity(string uniqueId) => _entityManager.Get(uniqueId);
 
-        public IReadOnlyList<Entity> GetEntities(Func<Entity, bool> match) => _entityManager.GetAll(match);
+        public IReadOnlyCollection<Entity> GetEntities(Func<Entity, bool> match) => _entityManager.GetAll(match);
 
-        public IReadOnlyList<Entity> GetEntities(string group) => GetEntities(e => e.Group == group);
+        public IReadOnlyCollection<Entity> GetEntities(string group) => GetEntities(e => e.Group == group);
 
         public void RemoveEntity(Predicate<Entity> match)
         {
@@ -271,15 +277,27 @@ namespace Curupira2D.ECS
 
         public virtual void Dispose()
         {
-            _systemManager.Dispose();
-            _entityManager.Dispose();
-            GameCore.Dispose();
-            SpriteBatch.Dispose();
-            Camera2D = null;
-            UICamera2D = null;
-            Quadtree.Dispose();
+            Dispose(disposing: true);
+            GC.SuppressFinalize(this);
+        }
 
-            GC.Collect();
+        void Dispose(bool disposing)
+        {
+            if (_disposed)
+                return;
+
+            if (disposing)
+            {
+                _systemManager.Dispose();
+                _entityManager.Dispose();
+                GameCore.Dispose();
+                SpriteBatch.Dispose();
+                Camera2D.Dispose();
+                UICamera2D.Dispose();
+                Quadtree.Dispose();
+            }
+
+            _disposed = true;
         }
 
         internal void SetGameCore(GameCore gameCore)

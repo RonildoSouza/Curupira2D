@@ -22,7 +22,7 @@ namespace Curupira2D.ECS.Systems.Drawables
 
             for (int i = 0; i < entities.Count; i++)
             {
-                var tiledMapEntity = entities[i];
+                var tiledMapEntity = entities.ElementAt(i);
                 var tiledMapComponent = tiledMapEntity.GetComponent<TiledMapComponent>();
 
                 foreach (var objectLayer in tiledMapComponent.Map.GetAll<ObjectLayer>(_ => _.Visible))
@@ -43,11 +43,11 @@ namespace Curupira2D.ECS.Systems.Drawables
             }
         }
 
-        public void Draw(ref IReadOnlyList<Entity> entities)
+        public void Draw(ref IReadOnlyCollection<Entity> entities)
         {
             for (int i = 0; i < entities.Count; i++)
             {
-                var tiledMapEntity = entities[i];
+                var tiledMapEntity = entities.ElementAt(i);
                 var tiledMapComponent = tiledMapEntity.GetComponent<TiledMapComponent>();
 
                 if (tiledMapComponent == null)

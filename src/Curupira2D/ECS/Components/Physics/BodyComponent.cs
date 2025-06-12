@@ -64,8 +64,8 @@ namespace Curupira2D.ECS.Components.Physics
             get => _restitution;
             set
             {
-                if (value < 0 || value > 1)
-                    throw new ArgumentOutOfRangeException("The restitution value must be between 0 and 1!");
+                ArgumentOutOfRangeException.ThrowIfLessThan(value, 0, "The restitution value must be between 0 and 1!");
+                ArgumentOutOfRangeException.ThrowIfGreaterThan(value, 1, "The restitution value must be between 0 and 1!");
 
                 _restitution = value;
             }

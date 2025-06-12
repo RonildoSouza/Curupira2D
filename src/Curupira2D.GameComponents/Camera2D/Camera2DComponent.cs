@@ -20,11 +20,11 @@ namespace Curupira2D.GameComponents.Camera2D
         private Vector2 _origin = Vector2.Zero;
         private bool _hasChanged;
 
-        public Camera2DComponent(Game game, BasicEffect _spriteBatchEffect = null) : base(game)
+        public Camera2DComponent(Game game, BasicEffect spriteBatchEffect = null) : base(game)
         {
             Viewport = game.GraphicsDevice.Viewport;
 
-            SpriteBatchEffect = _spriteBatchEffect ?? new BasicEffect(game.GraphicsDevice);
+            SpriteBatchEffect = spriteBatchEffect ?? new BasicEffect(game.GraphicsDevice);
             SpriteBatchEffect.TextureEnabled = true;
             SpriteBatchEffect.VertexColorEnabled = true;
         }
@@ -179,12 +179,13 @@ namespace Curupira2D.GameComponents.Camera2D
             _rotation = 0;
             _zoom = Vector2.One;
             _origin = Vector2.Zero;
+            _hasChanged = true;
         }
 
         /// <summary>
         /// Updates the values for our transformation matrix and the inverse matrix.  
         /// </summary>
-        void UpdateMatrices()
+        private void UpdateMatrices()
         {
             //  Create a translation matrix based on the position of the camera
             var positionTranslationMatrix = Matrix.CreateTranslation(new Vector3
@@ -215,12 +216,12 @@ namespace Curupira2D.GameComponents.Camera2D
             _inverseMatrix = Matrix.Invert(_transformationMatrix);
         }
 
-        void UpdateProjection()
+        private void UpdateProjection()
         {
             Projection = Matrix.CreateOrthographic(Viewport.Width * _zoom.X, Viewport.Height * _zoom.Y, 0f, -1f);
         }
 
-        void UpdateView()
+        private void UpdateView()
         {
             var cameraPosition = new Vector3(_position, 0f);
             var cameraUpVector = Vector3.TransformNormal(Vector3.Up, Matrix.CreateRotationZ(_rotation));
