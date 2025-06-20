@@ -9,7 +9,7 @@ namespace Curupira2D.Extensions
     {
         public static Body GetEntityBody(this List<Body> bodies, Entity entity)
         {
-            if (!bodies.Any() || entity == null)
+            if (bodies.Count == 0 || entity == null)
                 return null;
 
             return bodies.FirstOrDefault(_ => _.Tag is string && _.Tag.ToString() == entity.UniqueId);

@@ -1,10 +1,4 @@
-﻿/*
- * https://manbeardgames.com/tutorials/2d-camera/
- * https://stackoverflow.com/questions/712296/xna-2d-camera-engine-that-follows-sprite
- * http://www.david-amador.com/2009/10/xna-camera-2d-with-zoom-and-rotation/
- */
-
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 
@@ -40,7 +34,7 @@ namespace Curupira2D.GameComponents.Camera2D
         /// <summary>
         /// Gets or Sets the zoom level of the camera
         /// </summary>
-        Vector2 Zoom { get; set; }
+        float Zoom { get; set; }
 
         /// <summary>
         /// Gets or Sets the origin point of the camera relative to the ViewPort
@@ -48,16 +42,13 @@ namespace Curupira2D.GameComponents.Camera2D
         Vector2 Origin { get; set; }
 
         /// <summary>
-        /// Gets or Sets the camera's x-coordinate position relative to the world space of the game
+        /// Gets the projection matrix used to transform 3D coordinates into 2D screen space.
         /// </summary>
-        float X { get; set; }
+        Matrix Projection { get; }
 
         /// <summary>
-        /// Gets or Sets the camera's y-coordinate position relative to the world space of the game
+        /// Gets the view matrix used to transform objects from world space to view space.
         /// </summary>
-        float Y { get; set; }
-
-        Matrix Projection { get; }
         Matrix View { get; }
 
         /// <summary>

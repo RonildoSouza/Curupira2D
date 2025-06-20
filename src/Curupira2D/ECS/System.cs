@@ -70,7 +70,7 @@ namespace Curupira2D.ECS
 
         private void AssertRequiredComponents(List<Type> requiredComponentTypes)
         {
-            var implementOnlyILoadable = GetType().GetTypeInfo().ImplementedInterfaces.Count() == 2
+            var implementOnlyILoadable = GetType().GetTypeInfo().ImplementedInterfaces.Count() == 3
                 && GetType().GetTypeInfo().ImplementedInterfaces.Contains(typeof(ISystem))
                 && GetType().GetTypeInfo().ImplementedInterfaces.Contains(typeof(ILoadable));
 

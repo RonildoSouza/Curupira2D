@@ -39,7 +39,7 @@ namespace Curupira2D.GameComponents.Joystick
             if (_joystickConfiguration.BackgroundTexture == null)
             {
                 var texture = new Texture2D(GraphicsDevice, 1, 1);
-                texture.SetData(new Color[] { _joystickConfiguration.Color != Color.White ? _joystickConfiguration.Color : Color.Black });
+                texture.SetData([_joystickConfiguration.Color != Color.White ? _joystickConfiguration.Color : Color.Black]);
 
                 _joystickConfiguration.BackgroundTexture = texture;
 
@@ -50,7 +50,7 @@ namespace Curupira2D.GameComponents.Joystick
             if (_joystickConfiguration.HandleTexture == null)
             {
                 var texture = new Texture2D(GraphicsDevice, 1, 1);
-                texture.SetData(new Color[] { Color.Gray });
+                texture.SetData([Color.Gray]);
 
                 _joystickConfiguration.HandleTexture = texture;
             }
@@ -99,13 +99,13 @@ namespace Curupira2D.GameComponents.Joystick
                         direction.X = _joystickConfiguration.InvertX_Axis ? 1 : -1; // LEFT
 
                     if (touchPositionInBound.Y < half.Y * 0.9f)
-                        direction.Y = _joystickConfiguration.InvertY_Axis ? 1 : -1; // UP
+                        direction.Y = _joystickConfiguration.InvertY_Axis ? -1 : 1; // UP
 
                     if (touchPositionInBound.X > half.X * 1.1f)
                         direction.X = _joystickConfiguration.InvertX_Axis ? -1 : 1; // RIGHT
 
                     if (touchPositionInBound.Y > (half.Y * 1.1f))
-                        direction.Y = _joystickConfiguration.InvertY_Axis ? -1 : 1; // DOWN
+                        direction.Y = _joystickConfiguration.InvertY_Axis ? 1 : -1; // DOWN
 
                     Direction = direction;
 

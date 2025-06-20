@@ -47,12 +47,10 @@ namespace Curupira2D.GameComponents
         void Load(Game game)
         {
             _spriteBatch = game.Services.GetService<SpriteBatch>();
-
-            if (_spriteBatch == null)
-                _spriteBatch = new SpriteBatch(GraphicsDevice);
+            _spriteBatch ??= new SpriteBatch(GraphicsDevice);
 
             _texture = new Texture2D(GraphicsDevice, 1, 1, false, SurfaceFormat.Color);
-            _texture.SetData(new[] { Color.White });
+            _texture.SetData([Color.White]);
         }
 
         public bool Equals(LineGridComponent other)

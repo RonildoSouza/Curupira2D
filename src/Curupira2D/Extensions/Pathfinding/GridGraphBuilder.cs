@@ -31,11 +31,9 @@ namespace Curupira2D.Extensions.Pathfinding
         }
 
         public static System.Drawing.Point Vector2ToGridGraphPoint(this Vector2 vector2, Map map, Scene scene)
-            => new((int)vector2.X / (scene.ScreenWidth / map.Width), (int)scene.InvertPositionY(vector2.Y) / (scene.ScreenHeight / map.Height));
+            => new((int)vector2.X / (scene.ScreenWidth / map.Width), (int)(vector2.Y / (scene.ScreenHeight / map.Height)));
 
         public static Vector2 GridGraphPointToPositionScene(this System.Drawing.Point point, Map map, Scene scene)
-            => scene.PositionToScene(new Vector2(
-                (point.X * (scene.ScreenWidth / map.Width)) + (map.CellWidth * 0.5f),
-                (point.Y * (scene.ScreenHeight / map.Height)) + (map.CellHeight * 0.5f)));
+            => new((point.X * (scene.ScreenWidth / map.Width)) + (map.CellWidth * 0.5f), (point.Y * (scene.ScreenHeight / map.Height)) + (map.CellHeight * 0.5f));
     }
 }

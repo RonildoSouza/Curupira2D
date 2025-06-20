@@ -1,7 +1,6 @@
 ﻿using Curupira2D.ECS.Components.Drawables;
 using Curupira2D.ECS.Systems.Drawables;
 using Curupira2D.ECS.Systems.Physics;
-using Curupira2D.Extensions;
 using Curupira2D.GameComponents.Camera2D;
 using Curupira2D.Input;
 using Microsoft.Xna.Framework;
@@ -95,8 +94,8 @@ namespace Curupira2D.ECS
             SpriteBatch.Begin(
                 sortMode: SpriteSortMode,
                 samplerState: SamplerState,
-                rasterizerState: RasterizerState.CullClockwise,
-                effect: Camera2D.SpriteBatchEffect);
+                transformMatrix: Camera2D.TransformationMatrix
+                );
 
             _systemManager.RenderableSystemsIteration(system =>
             {
@@ -104,7 +103,7 @@ namespace Curupira2D.ECS
                 {
                     var drawableComponent = _.GetComponent(_ => _.Value is DrawableComponent) as DrawableComponent;
                     return system.MatchActiveEntitiesAndComponents(_) && (!drawableComponent?.DrawInUICamera ?? false);
-                }).Any();
+                }).Count != 0;
             });
 
             SpriteBatch.End();
@@ -114,8 +113,8 @@ namespace Curupira2D.ECS
             SpriteBatch.Begin(
                 sortMode: SpriteSortMode,
                 samplerState: SamplerState,
-                rasterizerState: RasterizerState.CullClockwise,
-                effect: UICamera2D.SpriteBatchEffect);
+                transformMatrix: UICamera2D.TransformationMatrix
+                );
 
             _systemManager.RenderableSystemsIteration(system =>
             {
@@ -123,17 +122,13 @@ namespace Curupira2D.ECS
                 {
                     var drawableComponent = _.GetComponent(_ => _.Value is DrawableComponent) as DrawableComponent;
                     return system.MatchActiveEntitiesAndComponents(_) && (drawableComponent?.DrawInUICamera ?? false);
-                }).Any();
+                }).Count != 0;
             });
 
             SpriteBatch.End();
             #endregion
 
-            #region Begin/End sprite batch to physics system debug data
-            SpriteBatch.Begin();
             _physicsSystem.DrawDebugData();
-            SpriteBatch.End();
-            #endregion
         }
 
         public virtual void UnloadContent()
@@ -160,15 +155,11 @@ namespace Curupira2D.ECS
 
         public float InvertPositionX(float x) => ScreenWidth - x;
 
+        public Vector2 InvertPositionX(Vector2 position) => new(InvertPositionX(position.X), position.Y);
+
         public float InvertPositionY(float y) => ScreenHeight - y;
 
-        public Vector2 PositionToScene(Vector2 position)
-        {
-            position.Y = InvertPositionY(position.Y);
-            return position;
-        }
-
-        public Vector2 PositionToScene(Point position) => PositionToScene(position.ToVector2());
+        public Vector2 InvertPositionY(Vector2 position) => new(position.X, InvertPositionY(position.Y));
 
         public void SetFallbackCleanColor() => CleanColor = FallbackCleanColor;
 
@@ -271,8 +262,6 @@ namespace Curupira2D.ECS
         public bool ExistsEntities(Func<Entity, bool> match) => _entityManager.Exists(match);
 
         public bool ExistsEntities(string uniqueId) => ExistsEntities(e => e.UniqueId == uniqueId);
-
-        public Vector2 GetEntityPosition(string uniqueId) => GetEntity(uniqueId).GetPositionInScene(this);
         #endregion
 
         public virtual void Dispose()
@@ -321,7 +310,7 @@ namespace Curupira2D.ECS
             GameCore.UICamera2D.Position = cameraInitialPosition;
             UICamera2D = GameCore.UICamera2D;
 
-            Gravity = new Vector2(0f, -9.80665f);
+            Gravity = new Vector2(0f, 9.80665f);
             CleanColor = FallbackCleanColor = Color.LightGray;
 
             Quadtree = new Quadtree(GameCore.GraphicsDevice.Viewport.Bounds);

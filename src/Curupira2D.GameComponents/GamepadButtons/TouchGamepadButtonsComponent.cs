@@ -66,7 +66,7 @@ namespace Curupira2D.GameComponents.GamepadButtons
             ButtonTouched = Buttons.None;
             var touchCollections = TouchPanel.GetState();
 
-            if (!touchCollections.Any())
+            if (touchCollections.Count == 0)
                 return;
 
             var touchPositions = touchCollections.Select(_ => new Rectangle(_.Position.ToPoint(), Point.Zero));
