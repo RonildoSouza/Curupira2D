@@ -15,6 +15,7 @@ namespace Curupira2D.ECS.Systems.Physics
         World _world;
         DebugView _debugView;
         bool _disposed = false;
+        static Matrix _projection = Matrix.Identity;
 
         ~PhysicsSystem() => Dispose(disposing: false);
 
@@ -67,9 +68,8 @@ namespace Curupira2D.ECS.Systems.Physics
                     fixture.Friction = bodyComponent.Friction;
                 }
             }
-            ;
 
-            if (Scene.GameCore.DebugOptions.DebugActive && entities.Any())
+            if (Scene.GameCore.DebugOptions.DebugActive && entities.Count != 0)
             {
                 _debugView = new DebugView(_world);
                 _debugView.AppendFlags(DebugViewFlags.Shape);
@@ -83,6 +83,8 @@ namespace Curupira2D.ECS.Systems.Physics
                 _debugView.StaticShapeColor = Color.Red;
 
                 _debugView.LoadContent(Scene.GameCore.GraphicsDevice, Scene.GameCore.Content);
+
+                _projection = Matrix.CreateOrthographicOffCenter(0f, Scene.ScreenWidth, Scene.ScreenHeight, 0f, 0f, -1);
             }
         }
 
@@ -93,7 +95,7 @@ namespace Curupira2D.ECS.Systems.Physics
             if (Scene.Gravity != default && Scene.Gravity != _world.Gravity)
                 _world.Gravity = Scene.Gravity;
 
-            if (entities.Any() && entities.Count != _world.BodyList.Count)
+            if (entities.Count != 0 && entities.Count != _world.BodyList.Count)
             {
                 Task.Factory.StartNew(() =>
                 {
@@ -118,7 +120,7 @@ namespace Curupira2D.ECS.Systems.Physics
 
             _world.Step(Scene.DeltaTime);
 
-            if (Scene.GameCore.DebugOptions.DebugActive && entities.Any())
+            if (Scene.GameCore.DebugOptions.DebugActive && entities.Count != 0)
                 _debugView.UpdatePerformanceGraph(_world.UpdateTime);
         }
 
@@ -129,9 +131,9 @@ namespace Curupira2D.ECS.Systems.Physics
                 if (Scene.GameCore.DebugOptions.DebugActive && Scene.ExistsEntities(_ => MatchActiveEntitiesAndComponents(_)))
                 {
                     if (Scene.GameCore.DebugOptions.DebugWithUICamera2D)
-                        _debugView.RenderDebugData(Scene.UICamera2D.Projection, Scene.UICamera2D.View);
+                        _debugView.RenderDebugData(_projection, Scene.UICamera2D.TransformationMatrix);
                     else
-                        _debugView.RenderDebugData(Scene.Camera2D.Projection, Scene.Camera2D.View);
+                        _debugView.RenderDebugData(_projection, Scene.Camera2D.TransformationMatrix);
                 }
             }
             catch (Exception) { }

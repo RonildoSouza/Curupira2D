@@ -37,7 +37,7 @@ namespace Curupira2D.ECS.Systems.Drawables
                             .FirstOrDefault();
 
                         if (entity != null && entity.Position == default)
-                            entity.SetPosition(pointObject.ToVector2(tiledMapComponent.Map, Scene));
+                            entity.SetPosition(pointObject.ToVector2(tiledMapComponent.Map));
                     }
                 }
             }
@@ -122,7 +122,7 @@ namespace Curupira2D.ECS.Systems.Drawables
                 if (baseObject is EllipseObject ellipseObject)
                 {
                     var posX = (float)ellipseObject.X + (float)ellipseObject.Width * 0.5f;
-                    var posY = Scene.InvertPositionY((float)ellipseObject.Y + (float)ellipseObject.Height * 0.5f);
+                    var posY = (float)ellipseObject.Y + (float)ellipseObject.Height * 0.5f;
                     var ellipseBodyComponent = new BodyComponent((float)ellipseObject.Width, (float)ellipseObject.Height, EntityType.Static, EntityShape.Ellipse);
 
                     SetPhysicsProperties(ellipseObject, objectLayer, ref ellipseBodyComponent);
@@ -135,7 +135,7 @@ namespace Curupira2D.ECS.Systems.Drawables
                 if (baseObject is RectangleObject rectangleObject)
                 {
                     var posX = (float)rectangleObject.X + (float)rectangleObject.Width * 0.5f;
-                    var posY = Scene.InvertPositionY((float)rectangleObject.Y + (float)rectangleObject.Height * 0.5f);
+                    var posY = (float)rectangleObject.Y + (float)rectangleObject.Height * 0.5f;
                     var rectangleBodyComponent = new BodyComponent((float)rectangleObject.Width, (float)rectangleObject.Height, EntityType.Static, EntityShape.Rectangle);
 
                     SetPhysicsProperties(rectangleObject, objectLayer, ref rectangleBodyComponent);
@@ -189,18 +189,18 @@ namespace Curupira2D.ECS.Systems.Drawables
                     break;
                 case TileOrientation.FlippedAD:
                     tileSpriteEffect = SpriteEffects.FlipHorizontally;
-                    tileRotation = 90f;
+                    tileRotation = -90f;
                     break;
                 case TileOrientation.Rotate90CW:
-                    tileRotation = -90f;
+                    tileRotation = 90f;
                     break;
                 case TileOrientation.Rotate180CCW:
                     tileSpriteEffect = SpriteEffects.FlipHorizontally;
-                    tileRotation = 270f;
+                    tileRotation = -270f;
                     break;
                 case TileOrientation.Rotate270CCW:
                     tileSpriteEffect = SpriteEffects.FlipVertically;
-                    tileRotation = -270f;
+                    tileRotation = 270f;
                     break;
             }
 
@@ -219,7 +219,7 @@ namespace Curupira2D.ECS.Systems.Drawables
             bodyComponent.Friction = float.TryParse(friction, out float frictionValue) ? frictionValue : bodyComponent.Friction;
         }
 
-        (int TilePosX, int TilePosY) GetTilePositionsToScreen(int x, int y, Tile tile, Map map)
+        static (int TilePosX, int TilePosY) GetTilePositionsToScreen(int x, int y, Tile tile, Map map)
         {
             int tilePosX;
             int tilePosY;
@@ -230,18 +230,18 @@ namespace Curupira2D.ECS.Systems.Drawables
                 var height = tile.Height != map.CellHeight ? map.CellHeight : tile.Height;
 
                 tilePosX = (x - y) * (int)(width * 0.5f);
-                tilePosY = (int)Scene.InvertPositionY((x + y) * (int)(height * 0.5f));
+                tilePosY = (x + y) * (int)(height * 0.5f);
 
                 return (tilePosX, tilePosY);
             }
 
             tilePosX = x * tile.Width + (int)(tile.Width * 0.5f);
-            tilePosY = (int)Scene.InvertPositionY(y * tile.Height + (int)(tile.Height * 0.5f));
+            tilePosY = y * tile.Height + (int)(tile.Height * 0.5f);
 
             return (tilePosX, tilePosY);
         }
 
-        (Vector2 Position, IEnumerable<Vector2> Vertices) GetPositionAndVerticesOfPolyObjects(BaseObject baseObject, Map map)
+        static (Vector2 Position, IEnumerable<Vector2> Vertices) GetPositionAndVerticesOfPolyObjects(BaseObject baseObject, Map map)
         {
             Vector2 position;
             IEnumerable<Vector2> vertices = [];
@@ -255,21 +255,21 @@ namespace Curupira2D.ECS.Systems.Drawables
 
             if (map.Orientation == Orientation.isometric)
             {
-                var positionOffset = baseObject.GetIsometricOffsetPositionY(map);
+                var isometricOffsetPositionY = baseObject.GetIsometricOffsetPositionY(map);
 
-                position = new Vector2((float)baseObject.X - (float)baseObject.Y, Scene.InvertPositionY((float)baseObject.X + (float)baseObject.Y) + positionOffset);
+                position = new Vector2((float)baseObject.X - (float)baseObject.Y, (float)baseObject.X + (float)baseObject.Y - isometricOffsetPositionY);
                 vertices = positions.Select(_ => CartesianToIsometricOfPolyObjects(_.X, _.Y));
 
                 return (position, vertices);
             }
 
-            position = new Vector2((float)baseObject.X, Scene.InvertPositionY((float)baseObject.Y));
-            vertices = positions.Select(_ => new Vector2((float)_.X, (float)baseObject.Height - (float)_.Y));
+            position = new Vector2((float)baseObject.X, (float)baseObject.Y);
+            vertices = positions.Select(_ => new Vector2((float)_.X, (float)_.Y));
 
             return (position, vertices);
 
             static Vector2 CartesianToIsometricOfPolyObjects(double x, double y)
-                => new() { X = (float)(x - y), Y = (float)(-(x + y) * 0.5f) };
+                => new() { X = (float)(x - y), Y = (float)((x + y) * 0.5f) };
         }
     }
 }

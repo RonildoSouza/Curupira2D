@@ -13,7 +13,7 @@ namespace Curupira2D.ECS.Systems.Attributes
             if (!system.GetTypeInfo().ImplementedInterfaces.Contains(typeof(ISystem)))
                 throw new ArgumentException($"{nameof(RequiredComponentAttribute)} should be use with {nameof(System)} type classes");
 
-            if (componentTypes == null || !componentTypes.Any())
+            if (componentTypes == null || componentTypes.Length == 0)
                 throw new ArgumentException($"The argument {nameof(componentTypes)} is required!");
 
             if (!componentTypes.All(c => c.GetTypeInfo().ImplementedInterfaces.Contains(typeof(IComponent))))

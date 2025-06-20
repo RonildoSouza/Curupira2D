@@ -14,7 +14,7 @@ namespace Curupira2D.Extensions
         public static Map LoadTiledMap(this ContentManager content, Stream tiledMapStream)
         {
             if (content == null || tiledMapStream == null)
-                throw new ArgumentNullException($"Argument {nameof(content)} or {nameof(tiledMapStream)} can't be null!");
+                ArgumentNullException.ThrowIfNull($"Argument {nameof(content)} or {nameof(tiledMapStream)} can't be null!");
 
             tiledMapStream = FixStreamPosition(tiledMapStream);
             return Map.FromStream(tiledMapStream);
@@ -23,7 +23,7 @@ namespace Curupira2D.Extensions
         public static Map LoadTiledMap(this ContentManager content, string tiledMapRelativePath)
         {
             if (string.IsNullOrEmpty(tiledMapRelativePath))
-                throw new ArgumentNullException($"Argument {nameof(tiledMapRelativePath)} can't be null or empty!");
+                ArgumentNullException.ThrowIfNull($"Argument {nameof(tiledMapRelativePath)} can't be null or empty!");
 
             var tiledMapExtension = Path.GetExtension(tiledMapRelativePath);
             if (tiledMapExtension != ".tmx" && tiledMapExtension != ".json" && tiledMapExtension != ".tmj")
@@ -38,7 +38,7 @@ namespace Curupira2D.Extensions
         {
             var map = content.LoadTiledMap(tiledMapRelativePath);
 
-            tilesetRelativePath ??= Regex.Replace(tiledMapRelativePath, @"\.tmx|\.json|\.tmj", string.Empty);
+            tilesetRelativePath ??= Regex.Replace(tiledMapRelativePath, @"\.tmx|\.json|\.tmj", string.Empty, RegexOptions.None, TimeSpan.FromSeconds(30));
             var tilesetTexture = content.Load<Texture2D>(tilesetRelativePath);
 
             return new TiledMapComponent(map, tilesetTexture, color, fixedPosition);

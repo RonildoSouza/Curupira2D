@@ -14,11 +14,9 @@ namespace Curupira2D.Extensions
             return vector2;
         }
 
-        public static Vector2 AngleToVector(this float angle)
-             => new((float)Math.Sin(angle), -(float)Math.Cos(angle));
+        public static Vector2 AngleToVector(this float angle) => new((float)Math.Sin(angle), (float)Math.Cos(angle));
 
-        public static float VectorToAngle(this Vector2 vector)
-             => (float)Math.Atan2(vector.X, -vector.Y);
+        public static float VectorToAngle(this Vector2 vector) => (float)Math.Atan2(vector.X, vector.Y);
 
         public static Vector2 CartesianToIsometric(this Vector2 cartesianPosition)
                 => new() { X = cartesianPosition.X - cartesianPosition.Y, Y = (cartesianPosition.X + cartesianPosition.Y) * 0.5f };

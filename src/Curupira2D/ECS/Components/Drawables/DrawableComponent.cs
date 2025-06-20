@@ -7,7 +7,7 @@ namespace Curupira2D.ECS.Components.Drawables
     {
         protected DrawableComponent(
             Texture2D texture,
-            SpriteEffects spriteEffect = SpriteEffects.FlipVertically,
+            SpriteEffects spriteEffect = SpriteEffects.None,
             Color color = default,
             Rectangle? sourceRectangle = null,
             float layerDepth = 0f,

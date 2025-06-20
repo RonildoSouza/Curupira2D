@@ -1,35 +1,24 @@
 ﻿/*
- * https://manbeardgames.com/tutorials/2d-camera/
  * https://stackoverflow.com/questions/712296/xna-2d-camera-engine-that-follows-sprite
  * http://www.david-amador.com/2009/10/xna-camera-2d-with-zoom-and-rotation/
  */
 
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using System;
 
 namespace Curupira2D.GameComponents.Camera2D
 {
-    public class Camera2DComponent : GameComponent, ICamera2D
+    public class Camera2DComponent(Game game) : GameComponent(game), ICamera2D
     {
         private Matrix _transformationMatrix = Matrix.Identity;
         private Matrix _inverseMatrix = Matrix.Identity;
         private Vector2 _position = Vector2.Zero;
         private float _rotation = 0;
-        private Vector2 _zoom = Vector2.One;
+        private float _zoom = 1f;
         private Vector2 _origin = Vector2.Zero;
         private bool _hasChanged;
 
-        public Camera2DComponent(Game game, BasicEffect spriteBatchEffect = null) : base(game)
-        {
-            Viewport = game.GraphicsDevice.Viewport;
-
-            SpriteBatchEffect = spriteBatchEffect ?? new BasicEffect(game.GraphicsDevice);
-            SpriteBatchEffect.TextureEnabled = true;
-            SpriteBatchEffect.VertexColorEnabled = true;
-        }
-
-        public Viewport Viewport { get; set; }
+        public Viewport Viewport { get; set; } = game.GraphicsDevice.Viewport;
         public Matrix TransformationMatrix => _transformationMatrix;
         public Matrix InverseMatrix => _inverseMatrix;
         public Vector2 Position
@@ -38,7 +27,8 @@ namespace Curupira2D.GameComponents.Camera2D
             set
             {
                 //  If the value hasn't actually changed, just return back
-                if (_position == value) { return; }
+                if (_position == value)
+                    return;
 
                 //  Set the position value
                 _position = value;
@@ -53,7 +43,8 @@ namespace Curupira2D.GameComponents.Camera2D
             set
             {
                 //  If the value hasn't actually changed, just return back
-                if (_rotation == value) { return; }
+                if (_rotation == value)
+                    return;
 
                 //  Set the rotation value
                 _rotation = value;
@@ -62,19 +53,15 @@ namespace Curupira2D.GameComponents.Camera2D
                 _hasChanged = true;
             }
         }
-        public Vector2 Zoom
+        public float Zoom
         {
             get { return _zoom; }
             set
             {
-                //  If the value hasn't actually changed, just return back
-                if (_zoom == value) { return; }
-
-                if (value.X <= 0)
-                    value.X = 1f;
-
-                if (value.Y <= 0)
-                    value.Y = 1f;
+                // If the value hasn't actually changed, just return back
+                // Negative zoom will flip image
+                if (_zoom == value || value <= 0f)
+                    return;
 
                 //  Set the zoom value
                 _zoom = value;
@@ -89,7 +76,8 @@ namespace Curupira2D.GameComponents.Camera2D
             set
             {
                 //  If the value hasn't actually changed, just return back
-                if (_origin == value) { return; }
+                if (_origin == value)
+                    return;
 
                 //  Set the origin value
                 _origin = value;
@@ -98,39 +86,13 @@ namespace Curupira2D.GameComponents.Camera2D
                 _hasChanged = true;
             }
         }
-        public float X
-        {
-            get { return _position.X; }
-            set
-            {
-                //  If the value hasn't actually changed, just return back
-                if (_position.X == value) { return; }
-
-                //  Set the position x value
-                _position.X = value;
-
-                //  Flag that a change has been made
-                _hasChanged = true;
-            }
-        }
-        public float Y
-        {
-            get { return _position.Y; }
-            set
-            {
-                //  If the value hasn't actually changed, just return back
-                if (_position.Y == value) { return; }
-
-                //  Set the position y value
-                _position.Y = value;
-
-                //  Flag that a change has been made
-                _hasChanged = true;
-            }
-        }
         public Matrix Projection { get; private set; }
         public Matrix View { get; private set; }
-        public BasicEffect SpriteBatchEffect { get; private set; }
+        public BasicEffect SpriteBatchEffect => new(game.GraphicsDevice)
+        {
+            TextureEnabled = true,
+            VertexColorEnabled = true
+        };
 
         public override void Update(GameTime gameTime)
         {
@@ -177,7 +139,7 @@ namespace Curupira2D.GameComponents.Camera2D
         {
             _position = Vector2.Zero;
             _rotation = 0;
-            _zoom = Vector2.One;
+            _zoom = 1f;
             _origin = Vector2.Zero;
             _hasChanged = true;
         }
@@ -188,26 +150,16 @@ namespace Curupira2D.GameComponents.Camera2D
         private void UpdateMatrices()
         {
             //  Create a translation matrix based on the position of the camera
-            var positionTranslationMatrix = Matrix.CreateTranslation(new Vector3
-            {
-                X = -(int)Math.Floor(_position.X),
-                Y = -(int)Math.Floor(_position.Y),
-                Z = 0
-            });
+            var positionTranslationMatrix = Matrix.CreateTranslation(new Vector3(-_position.X, -_position.Y, 0f));
 
             //  Create a rotation matrix around the Z axis
             var rotationMatrix = Matrix.CreateRotationZ(_rotation);
 
             //  Create a scale matrix based on the zoom
-            var scaleMatrix = Matrix.CreateScale(new Vector3(_zoom.X, _zoom.Y, 1));
+            var scaleMatrix = Matrix.CreateScale(new Vector3(_zoom, _zoom, 1));
 
             //  Create a translation matrix based on the origin position of the camera
-            var originTranslationMatrix = Matrix.CreateTranslation(new Vector3
-            {
-                X = (int)Math.Floor(_origin.X),
-                Y = (int)Math.Floor(_origin.Y),
-                Z = 0
-            });
+            var originTranslationMatrix = Matrix.CreateTranslation(new Vector3(_origin.X, _origin.Y, 0f));
 
             //  Perform matrix multiplication of all of the above to create our transformation matrix
             _transformationMatrix = positionTranslationMatrix * rotationMatrix * scaleMatrix * originTranslationMatrix;
@@ -218,7 +170,7 @@ namespace Curupira2D.GameComponents.Camera2D
 
         private void UpdateProjection()
         {
-            Projection = Matrix.CreateOrthographic(Viewport.Width * _zoom.X, Viewport.Height * _zoom.Y, 0f, -1f);
+            Projection = Matrix.CreateOrthographic(Viewport.Width * _zoom, Viewport.Height * _zoom, 0f, -1f);
         }
 
         private void UpdateView()

@@ -11,7 +11,7 @@ namespace Curupira2D.ECS.Components.Drawables
         public TextComponent(
             SpriteFont spriteFont,
             string text,
-            SpriteEffects spriteEffect = SpriteEffects.FlipVertically,
+            SpriteEffects spriteEffect = SpriteEffects.None,
             Color color = default,
             Rectangle? sourceRectangle = null,
             float layerDepth = 0f,
