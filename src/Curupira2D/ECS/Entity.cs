@@ -77,8 +77,15 @@ namespace Curupira2D.ECS
             return this;
         }
 
+        public Entity Activate() => SetActive(true);
+
+        public Entity Deactivate() => SetActive(false);
+
         public Entity SetActive(bool active)
         {
+            if (Active == active)
+                return this;
+
             OnChange?.Invoke(this, EventArgs.Empty);
             Active = active;
             return this;
@@ -188,6 +195,5 @@ namespace Curupira2D.ECS
         }
 
         bool HasComponent(Type componentType) => _components.ContainsKey(componentType);
-
     }
 }
