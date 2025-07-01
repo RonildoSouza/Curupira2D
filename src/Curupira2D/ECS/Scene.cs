@@ -292,7 +292,9 @@ namespace Curupira2D.ECS
         internal void SetGameCore(GameCore gameCore)
         {
             var entities = _entityManager.GetAll(_ => true);
-            Parallel.ForEach(entities, _ => _.OnChange -= Entity_OnChange);
+
+            for (var i = 0; i < entities.Count; i++)
+                entities[i].OnChange -= Entity_OnChange;
 
             GameCore = gameCore;
             SpriteBatch = new SpriteBatch(GameCore.GraphicsDevice);
