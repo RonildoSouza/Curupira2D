@@ -13,10 +13,6 @@
 
 #---------------------------------- Content ---------------------------------#
 
-#begin Fonts/Debug.spritefont
-/importer:FontDescriptionImporter
-/processor:FontDescriptionProcessor
-/processorParam:PremultiplyAlpha=True
-/processorParam:TextureFormat=Compressed
-/build:Fonts/Debug.spritefont
+#begin DiagnosticsFont.xnb
+/copy:DiagnosticsFont.xnb
 
