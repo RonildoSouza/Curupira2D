@@ -35,7 +35,7 @@ namespace Curupira2D.Diagnostics
 
                     var title = !string.IsNullOrEmpty(gameCore.GetCurrentScene()?.Title) ? gameCore.GetCurrentScene().Title : GetType().Assembly.GetName().Name;
                     gameCore.Window.Title = $"{title} v{gameCore.GetVersion()}" +
-                               $"\r\n        {GraphicsDevice.Viewport.Width}x{GraphicsDevice.Viewport.Height}" +
+                               $" - {GraphicsDevice.Viewport.Width}x{GraphicsDevice.Viewport.Height}" +
                                $" | FPS: {_totalFrames}" +
                                $" | {_totalMemory:F} MB";
 
@@ -56,8 +56,20 @@ namespace Curupira2D.Diagnostics
                 switch (PlatformInfo.MonoGamePlatform)
                 {
                     case MonoGamePlatform.Android:
+                        _text = _text?.Replace(" - ", "\r\n") ?? string.Empty;
+                        var scale = Vector2.One * 2f;
+
                         _spriteBatch.Begin();
-                        _spriteBatch.DrawString(_diagnosticsFont, _text ?? string.Empty, new Vector2((GraphicsDevice.Viewport.Width * 0.5f) - (_textSize.X * 0.5f), _textSize.Y * 1.1f), gameCore.DebugOptions.TextColor);
+                        _spriteBatch.DrawString(
+                            spriteFont: _diagnosticsFont,
+                            text: _text,
+                            position: new Vector2((GraphicsDevice.Viewport.Width * 0.5f) - (_textSize.X * 0.5f * scale.X), _textSize.Y * 1.1f * scale.Y),
+                            color: gameCore.DebugOptions.TextColor,
+                            rotation: 0f,
+                            origin: Vector2.Zero,
+                            scale: Vector2.One * 2f,
+                            effects: SpriteEffects.None,
+                            layerDepth: 1f);
                         _spriteBatch.End();
                         break;
                     default:
