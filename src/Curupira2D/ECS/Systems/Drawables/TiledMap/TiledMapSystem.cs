@@ -3,7 +3,6 @@ using Curupira2D.ECS.Components.Physics;
 using Curupira2D.ECS.Systems.Attributes;
 using Curupira2D.Extensions.TiledMap;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,87 +15,120 @@ namespace Curupira2D.ECS.Systems.Drawables
     [RequiredComponent(typeof(TiledMapSystem), typeof(TiledMapComponent))]
     public sealed class TiledMapSystem : System, ILoadable, IRenderable
     {
+        private static TiledMapComponent _tiledMapComponent;
+        private static List<TileLayer> _tileLayers;
+        private static readonly Dictionary<int, ITileset> _tilesetCached = [];
+        private static readonly Dictionary<int, List<TileInfo>> _tilesToDrawCached = [];
+
         public void LoadContent()
         {
-            var entities = Scene.GetEntities(_ => MatchActiveEntitiesAndComponents(_));
-
-            for (int i = 0; i < entities.Count; i++)
-            {
-                var tiledMapEntity = entities.ElementAt(i);
-                var tiledMapComponent = tiledMapEntity.GetComponent<TiledMapComponent>();
-
-                foreach (var objectLayer in tiledMapComponent.Map.GetAll<ObjectLayer>(_ => _.Visible))
+            _tiledMapComponent = Scene.GetEntities(MatchActiveEntitiesAndComponents).Single().GetComponent<TiledMapComponent>();
+            _tileLayers = [.. _tiledMapComponent.Map.Layers
+                .OfType<TileLayer>()
+                .OrderBy(_ =>
                 {
-                    CreateCollisionEntities(objectLayer, tiledMapComponent.Map);
+                    var propertyValueOrder = _.Properties.GetValue(TiledMapSystemConstants.Properties.Order);
+                    return string.IsNullOrEmpty(propertyValueOrder) ? _.Id : int.Parse(propertyValueOrder);
+                })];
 
-                    // Gets entity with the same name as the point object (spawn) and sets the position
-                    foreach (var pointObject in objectLayer.GetAll<PointObject>())
-                    {
-                        var entity = Scene
-                            .GetEntities(_ => _.UniqueId == pointObject.Name || _.UniqueId == pointObject.Properties.GetValue(TiledMapSystemConstants.Properties.EntityUniqueId))
-                            .FirstOrDefault();
+            GetTilesToDraw(_tiledMapComponent, _tileLayers);
 
-                        if (entity != null && entity.Position == default)
-                            entity.SetPosition(pointObject.ToVector2(tiledMapComponent.Map));
-                    }
+            foreach (var objectLayer in _tiledMapComponent.Map.GetAll<ObjectLayer>(_ => _.Visible))
+            {
+                CreateCollisionEntities(objectLayer, _tiledMapComponent.Map);
+
+                // Gets entity with the same name as the point object (spawn) and sets the position
+                foreach (var pointObject in objectLayer.GetAll<PointObject>())
+                {
+                    var entity = Scene
+                        .GetEntities(_ => _.UniqueId == pointObject.Name || _.UniqueId == pointObject.Properties.GetValue(TiledMapSystemConstants.Properties.EntityUniqueId))
+                        .FirstOrDefault();
+
+                    if (entity != null && entity.Position == default)
+                        entity.SetPosition(pointObject.ToVector2(_tiledMapComponent.Map));
                 }
             }
         }
 
         public void Draw(ref IReadOnlyCollection<Entity> entities)
         {
-            for (int i = 0; i < entities.Count; i++)
+            foreach (var layer in _tileLayers)
             {
-                var tiledMapEntity = entities.ElementAt(i);
-                var tiledMapComponent = tiledMapEntity.GetComponent<TiledMapComponent>();
-
-                if (tiledMapComponent == null)
+                if (!layer.Visible)
                     continue;
 
-                var layers = tiledMapComponent.Map.Layers
-                    .OfType<TileLayer>()
-                    .OrderBy(_ =>
-                    {
-                        var propertyValueOrder = _.Properties.GetValue(TiledMapSystemConstants.Properties.Order);
-                        return string.IsNullOrEmpty(propertyValueOrder) ? _.Id : int.Parse(propertyValueOrder);
-                    });
+                var propertyValueOrder = layer.Properties.GetValue(TiledMapSystemConstants.Properties.Order);
+                var valueOrder = string.IsNullOrEmpty(propertyValueOrder) ? layer.Id : int.Parse(propertyValueOrder);
 
-                foreach (var layer in layers.Where(_ => _.Visible))
+                if (!string.IsNullOrEmpty(propertyValueOrder) && valueOrder > _tileLayers.Count)
+                    throw new InvalidOperationException($"Tile layers \"{layer.Name}\" has an invalid {TiledMapSystemConstants.Properties.Order} value. " +
+                        $"The value must be less than or equal to the number of tile layers.");
+
+                foreach (var tileInfo in _tilesToDrawCached.Where(_ => _.Key == layer.Id).SelectMany(_ => _.Value))
                 {
-                    var propertyValueOrder = layer.Properties.GetValue(TiledMapSystemConstants.Properties.Order);
-                    var valueOrder = string.IsNullOrEmpty(propertyValueOrder) ? layer.Id : int.Parse(propertyValueOrder);
+                    var tilePosition = Scene.Camera2D.WorldToScreen(tileInfo.Position.ToVector2());
 
-                    if (!string.IsNullOrEmpty(propertyValueOrder) && valueOrder > layers.Count())
-                        throw new InvalidOperationException($"Tile layer \"{layer.Name}\" has an invalid {TiledMapSystemConstants.Properties.Order} value. " +
-                            $"The value must be less than or equal to the number of tile layers.");
+                    if (!Scene.UICamera2D.IsInView(
+                        tilePosition.X - tileInfo.Tile.Width, tilePosition.Y - tileInfo.Tile.Height, Scene.ScreenWidth, Scene.ScreenHeight))
+                        continue;
 
-                    for (int y = 0; y < layer.Height; y++)
+                    var destinationRectangle = new Rectangle(tileInfo.Position.X, tileInfo.Position.Y, tileInfo.Tile.Width, tileInfo.Tile.Height);
+                    var sourceRectangle = new Rectangle(tileInfo.Tile.Left, tileInfo.Tile.Top, tileInfo.Tile.Width, tileInfo.Tile.Height);
+
+                    Scene.SpriteBatch.Draw(
+                        _tiledMapComponent.Texture,
+                        destinationRectangle,
+                        sourceRectangle,
+                        Color.White * (float)layer.Opacity,
+                        MathHelper.ToRadians(tileInfo.Rotation),
+                        _tiledMapComponent.Origin,
+                        tileInfo.SpriteEffect | _tiledMapComponent.SpriteEffect,
+                        (_tileLayers.Count - valueOrder) / 1000f);
+                }
+            }
+        }
+
+        static ITileset GetTilesetCached(int tileLayerId, TiledMapComponent tiledMapComponent)
+        {
+            if (!_tilesetCached.TryGetValue(tileLayerId, out var tileset))
+            {
+                tileset = tiledMapComponent.Map.Tilesets.Length == 1
+                    ? tiledMapComponent.Map.Tilesets[0]
+                    : tiledMapComponent.Map.Tilesets.First(ts => tileLayerId >= ts.FirstGid && tileLayerId < ts.FirstGid + ts.TileCount);
+
+                _tilesetCached[tileLayerId] = tileset;
+            }
+
+            return tileset;
+        }
+
+        static void GetTilesToDraw(TiledMapComponent tiledMapComponent, List<TileLayer> tileLayers)
+        {
+            foreach (var tileLayer in tileLayers)
+            {
+                if (!tileLayer.Visible)
+                    continue;
+
+                List<TileInfo> tilesToDraw = [];
+
+                for (int y = 0; y < tileLayer.Height; y++)
+                {
+                    for (int x = 0; x < tileLayer.Width; x++)
                     {
-                        for (int x = 0; x < layer.Width; x++)
-                        {
-                            if (!layer.HasTile(x, y))
-                                continue;
+                        if (!tileLayer.HasTile(x, y))
+                            continue;
 
-                            var gid = layer.GetGlobalTileId(x, y);
-                            var id = Utils.GetId(gid);
-                            var tileset = tiledMapComponent.Map.Tilesets.Single(_ => id >= _.FirstGid && _.FirstGid + _.TileCount > id);
-                            var tile = tileset[gid];
+                        var gid = tileLayer.GetGlobalTileId(x, y);
+                        var id = Utils.GetId(gid);
+                        var tileset = GetTilesetCached(id, tiledMapComponent);
+                        var tile = tileset[gid];
+                        var tilePosition = GetTilePositionsToScreen(x, y, tile, tiledMapComponent.Map);
 
-                            var (tileSpriteEffect, tileRotation) = GetTileOrientation(tile);
-                            var (tilePosX, tilePosY) = GetTilePositionsToScreen(x, y, tile, tiledMapComponent.Map);
-
-                            Scene.SpriteBatch.Draw(
-                                tiledMapComponent.Texture,
-                                new Rectangle(tilePosX, tilePosY, tile.Width, tile.Height),
-                                new Rectangle(tile.Left, tile.Top, tile.Width, tile.Height),
-                                Color.White * (float)layer.Opacity,
-                                MathHelper.ToRadians(tileRotation),
-                                tiledMapComponent.Origin,
-                                tileSpriteEffect | tiledMapComponent.SpriteEffect,
-                                (layers.Count() - valueOrder) / 1000f);
-                        }
+                        tilesToDraw.Add(new TileInfo(tile, tilePosition));
                     }
                 }
+
+                _tilesToDrawCached.Add(tileLayer.Id, tilesToDraw);
             }
         }
 
@@ -173,40 +205,6 @@ namespace Curupira2D.ECS.Systems.Drawables
             }
         }
 
-        static (SpriteEffects TileSpriteEffect, float TileRotation) GetTileOrientation(Tile tile)
-        {
-            var tileSpriteEffect = SpriteEffects.None;
-            var tileRotation = 0f;
-
-            switch (tile.Orientation)
-            {
-                case TileOrientation.FlippedH:
-                    tileSpriteEffect = SpriteEffects.FlipHorizontally;
-                    break;
-                case TileOrientation.FlippedV:
-                    tileSpriteEffect = SpriteEffects.FlipHorizontally;
-                    tileRotation = 180f;
-                    break;
-                case TileOrientation.FlippedAD:
-                    tileSpriteEffect = SpriteEffects.FlipHorizontally;
-                    tileRotation = -90f;
-                    break;
-                case TileOrientation.Rotate90CW:
-                    tileRotation = 90f;
-                    break;
-                case TileOrientation.Rotate180CCW:
-                    tileSpriteEffect = SpriteEffects.FlipHorizontally;
-                    tileRotation = -270f;
-                    break;
-                case TileOrientation.Rotate270CCW:
-                    tileSpriteEffect = SpriteEffects.FlipVertically;
-                    tileRotation = 270f;
-                    break;
-            }
-
-            return (tileSpriteEffect, tileRotation);
-        }
-
         static void SetPhysicsProperties(BaseObject baseObject, ObjectLayer objectLayer, ref BodyComponent bodyComponent)
         {
             var restitution = baseObject.Properties.GetValue(TiledMapSystemConstants.Properties.Physics.Restitution)
@@ -219,7 +217,7 @@ namespace Curupira2D.ECS.Systems.Drawables
             bodyComponent.Friction = float.TryParse(friction, out float frictionValue) ? frictionValue : bodyComponent.Friction;
         }
 
-        static (int TilePosX, int TilePosY) GetTilePositionsToScreen(int x, int y, Tile tile, Map map)
+        static Point GetTilePositionsToScreen(int x, int y, Tile tile, Map map)
         {
             int tilePosX;
             int tilePosY;
@@ -232,13 +230,13 @@ namespace Curupira2D.ECS.Systems.Drawables
                 tilePosX = (x - y) * (int)(width * 0.5f);
                 tilePosY = (x + y) * (int)(height * 0.5f);
 
-                return (tilePosX, tilePosY);
+                return new Point(tilePosX, tilePosY);
             }
 
             tilePosX = x * tile.Width + (int)(tile.Width * 0.5f);
             tilePosY = y * tile.Height + (int)(tile.Height * 0.5f);
 
-            return (tilePosX, tilePosY);
+            return new Point(tilePosX, tilePosY);
         }
 
         static (Vector2 Position, IEnumerable<Vector2> Vertices) GetPositionAndVerticesOfPolyObjects(BaseObject baseObject, Map map)

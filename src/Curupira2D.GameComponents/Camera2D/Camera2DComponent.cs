@@ -119,19 +119,23 @@ namespace Curupira2D.GameComponents.Camera2D
 
         public Vector2 WorldToScreen(float x, float y) => WorldToScreen(new Vector2(x, y));
 
-        public bool IsInView(Vector2 position, Texture2D texture)
+        public bool IsInView(Vector2 position, int width, int height)
         {
             // If the object is not within the horizontal bounds of the screen
-            if (position.X + texture.Width < Position.X - Origin.X || position.X > Position.X + Origin.X)
+            if ((position.X + width) < (Position.X - Origin.X) || position.X > (Position.X + Origin.X))
                 return false;
 
             // If the object is not within the vertical bounds of the screen
-            if (position.Y + texture.Height < Position.Y - Origin.Y || position.Y > Position.Y + Origin.Y)
+            if ((position.Y + height) < (Position.Y - Origin.Y) || position.Y > (Position.Y + Origin.Y))
                 return false;
 
             // In View
             return true;
         }
+
+        public bool IsInView(float x, float y, int width, int height) => IsInView(new Vector2(x, y), width, height);
+
+        public bool IsInView(Vector2 position, Texture2D texture) => IsInView(position, texture.Width, texture.Height);
 
         public bool IsInView(float x, float y, Texture2D texture) => IsInView(new Vector2(x, y), texture);
 
