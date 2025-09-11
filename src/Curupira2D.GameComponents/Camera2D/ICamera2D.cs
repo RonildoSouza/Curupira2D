@@ -91,6 +91,27 @@ namespace Curupira2D.GameComponents.Camera2D
         /// This can be used to increase performance by not drawing objects directly in the viewport
         /// </summary>
         /// <param name="position">The position.</param>
+        /// <param name="width">The texture width.</param>
+        /// <param name="height">The texture height.</param>
+        /// <returns><c>true</c> if [is in view] [the specified position]; otherwise, <c>false</c>.</returns>
+        bool IsInView(Vector2 position, int width, int height);
+
+        /// <summary>
+        /// Determines whether the target is in view given the specified position.
+        /// This can be used to increase performance by not drawing objects directly in the viewport
+        /// </summary>
+        /// <param name="x">The position x.</param>
+        /// <param name="y">The position y.</param>
+        /// <param name="width">The texture width.</param>
+        /// <param name="height">The texture height.</param>
+        /// <returns><c>true</c> if [is in view] [the specified position]; otherwise, <c>false</c>.</returns>
+        bool IsInView(float x, float y, int width, int height);
+
+        /// <summary>
+        /// Determines whether the target is in view given the specified position.
+        /// This can be used to increase performance by not drawing objects directly in the viewport
+        /// </summary>
+        /// <param name="position">The position.</param>
         /// <param name="texture">The texture.</param>
         /// <returns><c>true</c> if [is in view] [the specified position]; otherwise, <c>false</c>.</returns>
         bool IsInView(Vector2 position, Texture2D texture);
