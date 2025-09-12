@@ -3,6 +3,7 @@ using Curupira2D.ECS.Components.Physics;
 using Curupira2D.ECS.Systems.Attributes;
 using Curupira2D.Extensions.TiledMap;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,14 +16,19 @@ namespace Curupira2D.ECS.Systems.Drawables
     [RequiredComponent(typeof(TiledMapSystem), typeof(TiledMapComponent))]
     public sealed class TiledMapSystem : System, ILoadable, IRenderable
     {
-        private static TiledMapComponent _tiledMapComponent;
-        private static List<TileLayer> _tileLayers;
-        private static readonly Dictionary<int, ITileset> _tilesetCached = [];
-        private static readonly Dictionary<int, List<TileInfo>> _tilesToDrawCached = [];
+        private TiledMapComponent _tiledMapComponent;
+        private List<TileLayer> _tileLayers;
+        private readonly Dictionary<int, ITileset> _tilesetCached = [];
+        private readonly Dictionary<int, List<(Tile Tile, Point TilePosition)>> _tilesToDrawCached = [];
 
         public void LoadContent()
         {
-            _tiledMapComponent = Scene.GetEntities(MatchActiveEntitiesAndComponents).Single().GetComponent<TiledMapComponent>();
+            var mapEntity = Scene.GetEntities(MatchActiveEntitiesAndComponents).SingleOrDefault();
+
+            if (mapEntity == null)
+                return;
+
+            _tiledMapComponent = mapEntity.GetComponent<TiledMapComponent>();
             _tileLayers = [.. _tiledMapComponent.Map.Layers
                 .OfType<TileLayer>()
                 .OrderBy(_ =>
@@ -64,31 +70,32 @@ namespace Curupira2D.ECS.Systems.Drawables
                     throw new InvalidOperationException($"Tile layers \"{layer.Name}\" has an invalid {TiledMapSystemConstants.Properties.Order} value. " +
                         $"The value must be less than or equal to the number of tile layers.");
 
-                foreach (var tileInfo in _tilesToDrawCached.Where(_ => _.Key == layer.Id).SelectMany(_ => _.Value))
+                foreach (var (tile, tilePosition) in _tilesToDrawCached.Where(_ => _.Key == layer.Id).SelectMany(_ => _.Value))
                 {
-                    var tilePosition = Scene.Camera2D.WorldToScreen(tileInfo.Position.ToVector2());
+                    var tilePositionToScreen = Scene.Camera2D.WorldToScreen(tilePosition.ToVector2());
 
                     if (!Scene.UICamera2D.IsInView(
-                        tilePosition.X - tileInfo.Tile.Width, tilePosition.Y - tileInfo.Tile.Height, Scene.ScreenWidth, Scene.ScreenHeight))
+                        tilePositionToScreen.X - tile.Width, tilePositionToScreen.Y - tile.Height, Scene.ScreenWidth, Scene.ScreenHeight))
                         continue;
 
-                    var destinationRectangle = new Rectangle(tileInfo.Position.X, tileInfo.Position.Y, tileInfo.Tile.Width, tileInfo.Tile.Height);
-                    var sourceRectangle = new Rectangle(tileInfo.Tile.Left, tileInfo.Tile.Top, tileInfo.Tile.Width, tileInfo.Tile.Height);
+                    var destinationRectangle = new Rectangle(tilePosition.X, tilePosition.Y, tile.Width, tile.Height);
+                    var sourceRectangle = new Rectangle(tile.Left, tile.Top, tile.Width, tile.Height);
+                    var (tileSpriteEffect, tileRotation) = GetTileOrientation(tile);
 
                     Scene.SpriteBatch.Draw(
                         _tiledMapComponent.Texture,
                         destinationRectangle,
                         sourceRectangle,
                         Color.White * (float)layer.Opacity,
-                        MathHelper.ToRadians(tileInfo.Rotation),
+                        MathHelper.ToRadians(tileRotation),
                         _tiledMapComponent.Origin,
-                        tileInfo.SpriteEffect | _tiledMapComponent.SpriteEffect,
+                        tileSpriteEffect | _tiledMapComponent.SpriteEffect,
                         (_tileLayers.Count - valueOrder) / 1000f);
                 }
             }
         }
 
-        static ITileset GetTilesetCached(int tileLayerId, TiledMapComponent tiledMapComponent)
+        ITileset GetTilesetCached(int tileLayerId, TiledMapComponent tiledMapComponent)
         {
             if (!_tilesetCached.TryGetValue(tileLayerId, out var tileset))
             {
@@ -102,14 +109,14 @@ namespace Curupira2D.ECS.Systems.Drawables
             return tileset;
         }
 
-        static void GetTilesToDraw(TiledMapComponent tiledMapComponent, List<TileLayer> tileLayers)
+        void GetTilesToDraw(TiledMapComponent tiledMapComponent, List<TileLayer> tileLayers)
         {
             foreach (var tileLayer in tileLayers)
             {
                 if (!tileLayer.Visible)
                     continue;
 
-                List<TileInfo> tilesToDraw = [];
+                List<(Tile Tile, Point TilePosition)> tilesToDraw = [];
 
                 for (int y = 0; y < tileLayer.Height; y++)
                 {
@@ -124,7 +131,7 @@ namespace Curupira2D.ECS.Systems.Drawables
                         var tile = tileset[gid];
                         var tilePosition = GetTilePositionsToScreen(x, y, tile, tiledMapComponent.Map);
 
-                        tilesToDraw.Add(new TileInfo(tile, tilePosition));
+                        tilesToDraw.Add((tile, tilePosition));
                     }
                 }
 
@@ -268,6 +275,40 @@ namespace Curupira2D.ECS.Systems.Drawables
 
             static Vector2 CartesianToIsometricOfPolyObjects(double x, double y)
                 => new() { X = (float)(x - y), Y = (float)((x + y) * 0.5f) };
+        }
+
+        static (SpriteEffects TileSpriteEffect, float TileRotation) GetTileOrientation(Tile tile)
+        {
+            var tileSpriteEffect = SpriteEffects.None;
+            var tileRotation = 0f;
+
+            switch (tile.Orientation)
+            {
+                case TileOrientation.FlippedH:
+                    tileSpriteEffect = SpriteEffects.FlipHorizontally;
+                    break;
+                case TileOrientation.FlippedV:
+                    tileSpriteEffect = SpriteEffects.FlipHorizontally;
+                    tileRotation = 180f;
+                    break;
+                case TileOrientation.FlippedAD:
+                    tileSpriteEffect = SpriteEffects.FlipHorizontally;
+                    tileRotation = -90f;
+                    break;
+                case TileOrientation.Rotate90CW:
+                    tileRotation = 90f;
+                    break;
+                case TileOrientation.Rotate180CCW:
+                    tileSpriteEffect = SpriteEffects.FlipHorizontally;
+                    tileRotation = -270f;
+                    break;
+                case TileOrientation.Rotate270CCW:
+                    tileSpriteEffect = SpriteEffects.FlipVertically;
+                    tileRotation = 270f;
+                    break;
+            }
+
+            return (tileSpriteEffect, tileRotation);
         }
     }
 }
