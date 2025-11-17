@@ -74,8 +74,7 @@ namespace Curupira2D.ECS.Systems.Drawables
                 {
                     var tilePositionToScreen = Scene.Camera2D.WorldToScreen(tilePosition.ToVector2());
 
-                    if (!Scene.UICamera2D.IsInView(
-                        tilePositionToScreen.X - tile.Width, tilePositionToScreen.Y - tile.Height, Scene.ScreenWidth, Scene.ScreenHeight))
+                    if (!Scene.UICamera2D.IsInView(tilePositionToScreen.X, tilePositionToScreen.Y, tile.Width, tile.Height))
                         continue;
 
                     var destinationRectangle = new Rectangle(tilePosition.X, tilePosition.Y, tile.Width, tile.Height);
