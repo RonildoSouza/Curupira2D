@@ -74,13 +74,16 @@ namespace Curupira2D.ECS.Systems.Drawables
                 {
                     var tilePositionToScreen = Scene.Camera2D.WorldToScreen(tilePosition.ToVector2());
 
-                    if (!Scene.UICamera2D.IsInView(
-                        tilePositionToScreen.X - tile.Width, tilePositionToScreen.Y - tile.Height, Scene.ScreenWidth, Scene.ScreenHeight))
+                    if (!Scene.UICamera2D.IsInView(tilePositionToScreen.X, tilePositionToScreen.Y, tile.Width, tile.Height))
                         continue;
 
                     var destinationRectangle = new Rectangle(tilePosition.X, tilePosition.Y, tile.Width, tile.Height);
                     var sourceRectangle = new Rectangle(tile.Left, tile.Top, tile.Width, tile.Height);
                     var (tileSpriteEffect, tileRotation) = GetTileOrientation(tile);
+
+                    var layerDepth = valueOrder <= _tileLayers.Count
+                        ? (_tileLayers.Count - valueOrder) / 1000f
+                        : _tileLayers.Count / 1000f;
 
                     Scene.SpriteBatch.Draw(
                         _tiledMapComponent.Texture,
@@ -90,7 +93,7 @@ namespace Curupira2D.ECS.Systems.Drawables
                         MathHelper.ToRadians(tileRotation),
                         _tiledMapComponent.Origin,
                         tileSpriteEffect | _tiledMapComponent.SpriteEffect,
-                        (_tileLayers.Count - valueOrder) / 1000f);
+                        layerDepth);
                 }
             }
         }
@@ -137,6 +140,8 @@ namespace Curupira2D.ECS.Systems.Drawables
 
                 _tilesToDrawCached.Add(tileLayer.Id, tilesToDraw);
             }
+
+            _tiledMapComponent.LayersAndTiles = _tilesToDrawCached;
         }
 
         void CreateCollisionEntities(ObjectLayer objectLayer, Map map)
@@ -291,6 +296,7 @@ namespace Curupira2D.ECS.Systems.Drawables
                     tileSpriteEffect = SpriteEffects.FlipHorizontally;
                     tileRotation = 180f;
                     break;
+                case TileOrientation.FlippedH | TileOrientation.FlippedV:
                 case TileOrientation.FlippedAD:
                     tileSpriteEffect = SpriteEffects.FlipHorizontally;
                     tileRotation = -90f;

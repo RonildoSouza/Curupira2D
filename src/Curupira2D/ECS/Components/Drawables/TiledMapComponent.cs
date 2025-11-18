@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
+using System.Collections.Generic;
 using TiledLib;
 
 namespace Curupira2D.ECS.Components.Drawables
@@ -40,6 +41,8 @@ namespace Curupira2D.ECS.Components.Drawables
                 return _textureData;
             }
         }
+
+        public Dictionary<int, List<(Tile Tile, Point TilePosition)>> LayersAndTiles { get; internal set; }
 
         public Map Map { get; }
     }

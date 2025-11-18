@@ -122,11 +122,11 @@ namespace Curupira2D.GameComponents.Camera2D
         public bool IsInView(Vector2 position, int width, int height)
         {
             // If the object is not within the horizontal bounds of the screen
-            if ((position.X + width) < (Position.X - Origin.X) || position.X > (Position.X + Origin.X))
+            if ((position.X + width) < (Position.X - Origin.X) || (position.X - width) > (Position.X + Origin.X))
                 return false;
 
             // If the object is not within the vertical bounds of the screen
-            if ((position.Y + height) < (Position.Y - Origin.Y) || position.Y > (Position.Y + Origin.Y))
+            if ((position.Y + height) < (Position.Y - Origin.Y) || (position.Y - height) > (Position.Y + Origin.Y))
                 return false;
 
             // In View
