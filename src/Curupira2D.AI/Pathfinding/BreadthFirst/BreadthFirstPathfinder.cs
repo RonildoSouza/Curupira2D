@@ -20,8 +20,11 @@ namespace Curupira2D.AI.Pathfinding.BreadthFirst
             {
                 var current = frontier.Dequeue();
 
+                if (current == null)
+                    break;
+
                 // Early Exit
-                if (current != null && current.Equals(goal))
+                if (current.Equals(goal))
                 {
                     foundPath = true;
                     break;

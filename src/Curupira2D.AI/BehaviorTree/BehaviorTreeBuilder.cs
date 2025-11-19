@@ -17,7 +17,7 @@ namespace Curupira2D.AI.BehaviorTree
         #region Leafs
         public BehaviorTreeBuilder Leaf<T>(params object[] args) where T : Behavior
         {
-            var leaf = (T)Activator.CreateInstance(typeof(T), args);
+            var leaf = Activator.CreateInstance(typeof(T), args) as T;
 
             if (leaf is not Leafs.Leaf)
                 throw new InvalidOperationException("Leaf nodes must inherit Leaf class!");
