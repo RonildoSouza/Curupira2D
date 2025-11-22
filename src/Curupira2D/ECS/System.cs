@@ -35,7 +35,7 @@ namespace Curupira2D.ECS
             Scene = scene;
         }
 
-        protected void AddRequiredComponent<TComponent>() where TComponent : IComponent => AddRequiredComponent(new Type[] { typeof(TComponent) });
+        protected void AddRequiredComponent<TComponent>() where TComponent : IComponent => AddRequiredComponent([typeof(TComponent)]);
 
         protected bool MatchComponents(Entity entity)
         {

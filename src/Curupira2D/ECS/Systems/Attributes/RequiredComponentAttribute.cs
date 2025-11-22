@@ -22,7 +22,7 @@ namespace Curupira2D.ECS.Systems.Attributes
             ComponentTypes = componentTypes;
         }
 
-        public RequiredComponentAttribute(Type system, Type componentType) : this(system, new Type[] { componentType }) { }
+        public RequiredComponentAttribute(Type system, Type componentType) : this(system, [componentType]) { }
 
         public Type[] ComponentTypes { get; }
     }
