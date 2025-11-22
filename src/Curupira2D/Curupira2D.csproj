@@ -22,7 +22,7 @@
   <ItemGroup>
     <PackageReference Include="Aether.Physics2D.Diagnostics.MG" Version="2.2.0" />
     <PackageReference Include="Aether.Physics2D.MG" Version="2.2.0" />
-    <PackageReference Include="MonoGame.Framework.DesktopGL" Version="3.8.4.1">
+    <PackageReference Include="MonoGame.Framework.DesktopGL" Version="3.8.5-develop.13">
       <PrivateAssets>All</PrivateAssets>
     </PackageReference>
     <PackageReference Include="TiledLib" Version="5.0.0" />
