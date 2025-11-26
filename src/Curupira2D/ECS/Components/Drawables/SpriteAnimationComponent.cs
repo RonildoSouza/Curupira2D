@@ -46,7 +46,7 @@ namespace Curupira2D.ECS.Components.Drawables
             Texture2D texture,
             int frameRowsCount,
             int frameColumnsCount,
-            int frameTimeMilliseconds,
+            float frameTimeMilliseconds,
             AnimateType animateType = AnimateType.All,
             Rectangle? sourceRectangle = null,
             bool isLooping = false,

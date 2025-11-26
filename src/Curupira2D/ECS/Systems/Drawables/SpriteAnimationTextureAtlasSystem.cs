@@ -7,8 +7,8 @@ using System.Linq;
 
 namespace Curupira2D.ECS.Systems.Drawables
 {
-    [RequiredComponent(typeof(SpriteAnimationTextureAtlas), typeof(SpriteAnimationTextureAtlasComponent))]
-    public sealed class SpriteAnimationTextureAtlas : System, IRenderable
+    [RequiredComponent(typeof(SpriteAnimationTextureAtlasSystem), typeof(SpriteAnimationTextureAtlasComponent))]
+    public sealed class SpriteAnimationTextureAtlasSystem : System, IRenderable
     {
         public void Draw(ref IReadOnlyCollection<Entity> entities)
         {
@@ -17,35 +17,29 @@ namespace Curupira2D.ECS.Systems.Drawables
                 var entity = entities.ElementAt(i);
                 var spriteAnimationComponent = entity.GetComponent<SpriteAnimationTextureAtlasComponent>();
 
-                Animate(ref spriteAnimationComponent);
-                Scene.SpriteBatch.Draw(entity, spriteAnimationComponent);
-            }
-        }
+                if (!spriteAnimationComponent.IsPlaying)
+                    return;
 
-        void Animate(ref SpriteAnimationTextureAtlasComponent spriteAnimationComponent)
-        {
-            //if (spriteAnimationComponent.SourceRectangle == Rectangle.Empty || spriteAnimationComponent.SourceRectangle.Value.Width == 0 || spriteAnimationComponent.SourceRectangle.Value.Height == 0)
-            //    throw new ArgumentException($"The argument {nameof(spriteAnimationComponent.SourceRectangle)} cannot be Empty or Width or Height be equals Zero!");
+                spriteAnimationComponent.ElapsedTime += (Scene.GameTime?.ElapsedGameTime).GetValueOrDefault();
 
-            if (!spriteAnimationComponent.IsPlaying)
-                return;
-
-            spriteAnimationComponent.ElapsedTime += (Scene.GameTime?.ElapsedGameTime).GetValueOrDefault();
-
-            if (spriteAnimationComponent.ElapsedTime >= spriteAnimationComponent.FrameTime)
-            {
-                spriteAnimationComponent.CurrentTextureAtlasIndex++;
-
-                if (spriteAnimationComponent.CurrentTextureAtlasIndex > spriteAnimationComponent.TotalTextureAtlases)
+                if (spriteAnimationComponent.ElapsedTime >= spriteAnimationComponent.FrameTime)
                 {
-                    spriteAnimationComponent.CurrentTextureAtlasIndex = 0;
-                    spriteAnimationComponent.IsPlaying = spriteAnimationComponent.IsLooping;
+                    if (spriteAnimationComponent.CurrentTextureAtlasIndex > spriteAnimationComponent.TextureAtlases.Count - 1)
+                    {
+                        spriteAnimationComponent.CurrentTextureAtlasIndex = 0;
+                        spriteAnimationComponent.IsPlaying = spriteAnimationComponent.IsLooping;
+                    }
+
+                    var currentTextureAtlas = spriteAnimationComponent.TextureAtlases[spriteAnimationComponent.CurrentTextureAtlasIndex];
+                    spriteAnimationComponent.SourceRectangle = currentTextureAtlas.Frame.ToRectangle();
+                    spriteAnimationComponent.Origin = currentTextureAtlas.Pivot.ToVector2();
+                    spriteAnimationComponent.CurrentTextureAtlas = currentTextureAtlas;
+
+                    spriteAnimationComponent.CurrentTextureAtlasIndex++;
+                    spriteAnimationComponent.ElapsedTime = TimeSpan.Zero;
                 }
 
-                var currentTextureAtlas = spriteAnimationComponent.TextureAtlases[spriteAnimationComponent.CurrentTextureAtlasIndex];
-                spriteAnimationComponent.SourceRectangle = currentTextureAtlas.Frame.ToRectangle();
-
-                spriteAnimationComponent.ElapsedTime = TimeSpan.Zero;
+                Scene.SpriteBatch.Draw(entity, spriteAnimationComponent);
             }
         }
     }

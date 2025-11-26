@@ -8,8 +8,7 @@ namespace Curupira2D.ECS.Components.Drawables
 {
     public sealed class SpriteAnimationTextureAtlasComponent : DrawableComponent
     {
-        //private Texture2D _texture;
-        //private Color[] _textureData;
+        private Color[] _textureData;
 
         public SpriteAnimationTextureAtlasComponent(
             Texture2D texture,
@@ -27,78 +26,51 @@ namespace Curupira2D.ECS.Components.Drawables
             FrameTime = frameTime;
             IsLooping = isLooping;
             IsPlaying = isPlaying;
-
-            //Origin = new Vector2(FrameWidth * 0.5f, FrameHeight * 0.5f);
         }
 
-        //public SpriteAnimationTextureAtlasComponent(
-        //    Texture2D texture,
-        //    int frameRowsCount,
-        //    int frameColumnsCount,
-        //    int frameTimeMilliseconds,
-        //    AnimateType animateType = AnimateType.All,
-        //    Rectangle? sourceRectangle = null,
-        //    bool isLooping = false,
-        //    bool isPlaying = false,
-        //    SpriteEffects spriteEffect = SpriteEffects.None,
-        //    Color color = default,
-        //    float layerDepth = 0f,
-        //    Vector2 scale = default,
-        //    bool drawInUICamera = false,
-        //    Vector2 textureSizeOffset = default) : this(
-        //        texture,
-        //        frameRowsCount,
-        //        frameColumnsCount,
-        //        TimeSpan.FromMilliseconds(frameTimeMilliseconds),
-        //        animateType,
-        //        sourceRectangle,
-        //        isLooping,
-        //        isPlaying,
-        //        spriteEffect,
-        //        color,
-        //        layerDepth,
-        //        scale,
-        //        drawInUICamera,
-        //        textureSizeOffset)
-        //{ }
+        public SpriteAnimationTextureAtlasComponent(
+            Texture2D texture,
+            List<TextureAtlas> textureAtlas,
+            float frameTimeMilliseconds,
+            bool isLooping = false,
+            bool isPlaying = false,
+            SpriteEffects spriteEffect = SpriteEffects.None,
+            Color color = default,
+            float layerDepth = 0f,
+            Vector2 scale = default,
+            bool drawInUICamera = false) : this(
+                texture,
+                textureAtlas,
+                TimeSpan.FromMilliseconds(frameTimeMilliseconds),
+                isLooping,
+                isPlaying,
+                spriteEffect,
+                color,
+                layerDepth,
+                scale,
+                drawInUICamera)
+        { }
 
         public TimeSpan FrameTime { get; set; }
         public List<TextureAtlas> TextureAtlases { get; set; }
         public bool IsLooping { get; set; }
         public bool IsPlaying { get; set; }
-        //public int FrameWidth => (int)(TextureSize.X - TextureSizeOffset.X) / FrameColumnsCount;
-        //public int FrameHeight => (int)(TextureSize.Y - TextureSizeOffset.Y) / FrameRowsCount;
         public TimeSpan ElapsedTime { get; set; } = TimeSpan.Zero;
-
         public int CurrentTextureAtlasIndex { get; set; }
-        public int TotalTextureAtlases => TextureAtlases.Count;
-        //public Vector2 TextureSizeOffset { get; set; }
+        public TextureAtlas CurrentTextureAtlas { get; internal set; }
 
-        //public override Texture2D Texture
-        //{
-        //    get => _texture;
-        //    set
-        //    {
-        //        _texture = value;
+        public override Color[] TextureData
+        {
+            get
+            {
+                if (Texture is null || !SourceRectangle.HasValue)
+                    return [];
 
-        //        if (FrameColumnsCount > 0 && FrameRowsCount > 0)
-        //            Origin = new Vector2(FrameWidth * 0.5f, FrameHeight * 0.5f);
-        //    }
-        //}
+                _textureData = new Color[SourceRectangle.Value.Width * SourceRectangle.Value.Height];
+                Texture.GetData(0, SourceRectangle, _textureData, 0, SourceRectangle.Value.Width * SourceRectangle.Value.Height);
 
-        public override Color[] TextureData => throw new NotImplementedException();
-        //public override Color[] TextureData
-        //{
-        //    get
-        //    {
-        //        if (_texture is null)
-        //            return [];
-
-        //        _textureData = new Color[SourceRectangle.Value.Width * SourceRectangle.Value.Height];
-        //        _texture.GetData(0, SourceRectangle, _textureData, 0, SourceRectangle.Value.Width * SourceRectangle.Value.Height);
-
-        //        return _textureData;
-        //    }
-        //}
+                return _textureData;
+            }
+        }
     }
 }

@@ -58,6 +58,7 @@ namespace Curupira2D.ECS
             AddSystem<TiledMapSystem>();
             AddSystem<SpriteSystem>();
             AddSystem<SpriteAnimationSystem>();
+            AddSystem<SpriteAnimationTextureAtlasSystem>();
             AddSystem<TextSystem>();
 
             // Always keep this system at the end
