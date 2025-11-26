@@ -1,4 +1,5 @@
 ﻿using Curupira2D.ECS.Components.Drawables;
+using Curupira2D.TexturePacker;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
@@ -52,7 +53,28 @@ namespace Curupira2D.Extensions
             return new TiledMapComponent(map, tilesetTexture, color, fixedPosition);
         }
 
-        static Stream FixStreamPosition(Stream stream)
+        public static TexturePackerData LoadTexturePackerData(this ContentManager content, Stream texturePackerFileStream)
+        {
+            if (content == null || texturePackerFileStream == null)
+                ArgumentNullException.ThrowIfNull($"Argument {nameof(content)} or {nameof(texturePackerFileStream)} can't be null!");
+
+            return TexturePackerFileReader.Read(texturePackerFileStream);
+        }
+
+        public static TexturePackerData LoadTexturePackerData(this ContentManager content, string texturePackerFileRelativePath)
+        {
+            if (string.IsNullOrEmpty(texturePackerFileRelativePath))
+                ArgumentNullException.ThrowIfNull($"Argument {nameof(texturePackerFileRelativePath)} can't be null or empty!");
+
+            if (content == null)
+                ArgumentNullException.ThrowIfNull($"Argument {nameof(content)} can't be null!");
+
+            var texturePackerFilePath = Path.Combine(content.RootDirectory, texturePackerFileRelativePath);
+
+            return TexturePackerFileReader.Read(texturePackerFilePath);
+        }
+
+        private static Stream FixStreamPosition(Stream stream)
         {
             try
             {
