@@ -30,9 +30,7 @@ namespace Curupira2D.Extensions
             if (tiledMapExtension != ".tmx" && tiledMapExtension != ".json" && tiledMapExtension != ".tmj")
                 throw new FormatException("The Tiled Map must have the extension .tmx, .json or .tmj!");
 
-            var tiledMapFilePath = Path.Combine(content.RootDirectory, tiledMapRelativePath);
-
-            return LoadTiledMap(content, TitleContainer.OpenStream(tiledMapFilePath));
+            return LoadTiledMap(content, TitleContainer.OpenStream(Path.Combine(content.RootDirectory, tiledMapRelativePath)));
         }
 
         public static TiledMapComponent CreateTiledMapComponent(this ContentManager content, string tiledMapRelativePath, string tilesetRelativePath = null, Color color = default, bool fixedPosition = false)
@@ -69,9 +67,11 @@ namespace Curupira2D.Extensions
             if (content == null)
                 ArgumentNullException.ThrowIfNull($"Argument {nameof(content)} can't be null!");
 
-            var texturePackerFilePath = Path.Combine(content.RootDirectory, texturePackerFileRelativePath);
+            var texturePackerFileExtension = Path.GetExtension(texturePackerFileRelativePath);
+            if (texturePackerFileExtension != ".json")
+                throw new FormatException("The Texture Packer File must have the extension .json!");
 
-            return TexturePackerFileReader.Read(texturePackerFilePath);
+            return TexturePackerFileReader.Read(Path.Combine(content.RootDirectory, texturePackerFileRelativePath));
         }
 
         private static Stream FixStreamPosition(Stream stream)

@@ -8,7 +8,6 @@ namespace Curupira2D.TexturePacker
     {
         internal static TexturePackerData Read(string path)
         {
-            //using var stream = File.OpenRead(path);
             using var stream = TitleContainer.OpenStream(path);
             return Read(stream);
         }
