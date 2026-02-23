@@ -7,24 +7,24 @@ namespace Curupira2D.AI.Pathfinding.Graphs
 {
     public class GridGraph(int width, int height, bool allowDiagonalSearch = false) : IUnweightedGraph<Point>, IWeightedGraph<Point>, IAStarGraph<Point>
     {
-        protected readonly List<Point> _neighbors = new(4);
+        protected readonly List<Point> _neighbors = new(8);
 
         /// <summary>
         /// East, North, West, South
         /// </summary>,
-        protected static Point[] CardinalDirections => [
+        protected static readonly Point[] CardinalDirections = [
             new(1, 0), new(0, -1), new(-1, 0), new(0, 1),
         ];
 
         /// <summary>
         /// East, North-East, North, North-West, West, South-West, South, South-East
         /// </summary>,
-        protected static Point[] CompassDirections => [
+        protected static readonly Point[] CompassDirections = [
             new(1, 0), new(1, -1), new(0, -1), new(-1, -1),
             new(-1, 0), new(-1, 1), new(0, 1), new(1, 1),
         ];
 
-        protected virtual Point[] Directions => allowDiagonalSearch ? CompassDirections : CardinalDirections;
+        private readonly Point[] _directions = allowDiagonalSearch ? CompassDirections : CardinalDirections;
 
         public int Width => width;
         public int Height => height;
@@ -41,7 +41,7 @@ namespace Curupira2D.AI.Pathfinding.Graphs
         {
             _neighbors.Clear();
 
-            foreach (var dir in Directions)
+            foreach (var dir in _directions)
             {
                 var next = new Point(node.X + dir.X, node.Y + dir.Y);
 
@@ -51,13 +51,45 @@ namespace Curupira2D.AI.Pathfinding.Graphs
 
             // Fixes ugly paths
             if ((node.X + node.Y) % 2 == 0)
-                _neighbors.Reverse();
+                System.Runtime.InteropServices.CollectionsMarshal
+                    .AsSpan(_neighbors)
+                    .Reverse();
 
             return _neighbors;
         }
 
-        public int Cost(Point fromNode, Point toNode) => WeightedNodes.Contains(toNode) ? Weights : DefaultWeight;
+        public int Cost(Point fromNode, Point toNode)
+        {
+            var baseWeight = WeightedNodes.Contains(toNode) ? Weights : DefaultWeight;
 
-        public int Heuristic(Point node, Point goal) => Math.Abs(node.X - goal.X) + Math.Abs(node.Y - goal.Y);
+            if (!allowDiagonalSearch)
+                return baseWeight * 10;
+
+            // Detecta se é movimento diagonal (dx != 0 && dy != 0)
+            var isDiagonal = fromNode.X != toNode.X && fromNode.Y != toNode.Y;
+            return isDiagonal ? baseWeight * 14 : baseWeight * 10;
+        }
+
+        public int Heuristic(Point node, Point goal)
+        {
+            var dx = Math.Abs(node.X - goal.X);
+            var dy = Math.Abs(node.Y - goal.Y);
+
+            if (!allowDiagonalSearch)
+                // Manhattan: admissível para 4-direções
+                return (dx + dy) * DefaultWeight;
+
+            // Octile: admissível para 8-direções
+            // Escala x10 para operar em inteiros e manter precisão relativa nas comparações do A*
+            // D=10, D2=14 (aproximação de √2*10 que evita float puro)
+            const int D = 10;
+            const int D2 = 14; // ≈ √2 * 10
+
+            return D * (dx + dy) + (D2 - 2 * D) * Math.Min(dx, dy);
+        }
+
+        //public int Cost(Point fromNode, Point toNode) => WeightedNodes.Contains(toNode) ? Weights : DefaultWeight;
+
+        //public int Heuristic(Point node, Point goal) => Math.Abs(node.X - goal.X) + Math.Abs(node.Y - goal.Y);
     }
 }

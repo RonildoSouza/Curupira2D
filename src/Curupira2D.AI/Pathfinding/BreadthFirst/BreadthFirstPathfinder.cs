@@ -4,26 +4,32 @@ namespace Curupira2D.AI.Pathfinding.BreadthFirst
 {
     public static class BreadthFirstPathfinder
     {
+        private const int DefaultCapacity = 256;
+        private static readonly long TicksPerTimeSpanTick = Stopwatch.Frequency / TimeSpan.TicksPerSecond;
+
         public static Path<T> FindPath<T>(IUnweightedGraph<T> graph, T start, T goal, TimeSpan timeout = default) where T : notnull
         {
+            if (start.Equals(goal))
+                return new Path<T>(true, new Dictionary<T, T> { { start, start } }, [start]);
+
+            var timeoutTicks = (timeout == default ? TimeSpan.FromSeconds(30) : timeout).Ticks;
+            var startTimestamp = Stopwatch.GetTimestamp();
+
             var foundPath = false;
-            var frontier = new Queue<T>([start]);
-            var cameFrom = new Dictionary<T, T> { { start, start } };
+            var frontier = new Queue<T>(DefaultCapacity);
+            var cameFrom = new Dictionary<T, T>(DefaultCapacity) { { start, start } };
 
-            if (timeout == default)
-                timeout = TimeSpan.FromSeconds(30);
+            frontier.Enqueue(start);
 
-            var stopwatch = new Stopwatch();
-            stopwatch.Start();
-
-            while (frontier.Count > 0 && stopwatch.Elapsed <= timeout)
+            while (frontier.Count > 0)
             {
-                var current = frontier.Dequeue();
-
-                if (current == null)
+                var elapsedTicks = (Stopwatch.GetTimestamp() - startTimestamp) / TicksPerTimeSpanTick;
+                if (elapsedTicks >= timeoutTicks)
                     break;
 
-                // Early Exit
+                var current = frontier.Dequeue();
+
+                // Early exit
                 if (current.Equals(goal))
                 {
                     foundPath = true;
@@ -32,15 +38,12 @@ namespace Curupira2D.AI.Pathfinding.BreadthFirst
 
                 foreach (var next in graph.GetNeighbors(current))
                 {
-                    if (cameFrom.ContainsKey(next))
+                    if (!cameFrom.TryAdd(next, current))
                         continue;
 
                     frontier.Enqueue(next);
-                    cameFrom.Add(next, current);
                 }
             }
-
-            stopwatch.Stop();
 
             return new Path<T>(foundPath, cameFrom, PathRecontruct.Execute(cameFrom, start, goal));
         }
