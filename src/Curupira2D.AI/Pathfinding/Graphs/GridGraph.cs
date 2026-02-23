@@ -65,7 +65,6 @@ namespace Curupira2D.AI.Pathfinding.Graphs
             if (!allowDiagonalSearch)
                 return baseWeight * 10;
 
-            // Detecta se é movimento diagonal (dx != 0 && dy != 0)
             var isDiagonal = fromNode.X != toNode.X && fromNode.Y != toNode.Y;
             return isDiagonal ? baseWeight * 14 : baseWeight * 10;
         }
@@ -76,20 +75,14 @@ namespace Curupira2D.AI.Pathfinding.Graphs
             var dy = Math.Abs(node.Y - goal.Y);
 
             if (!allowDiagonalSearch)
-                // Manhattan: admissível para 4-direções
+                // Manhattan: to 4 directions
                 return (dx + dy) * DefaultWeight;
 
-            // Octile: admissível para 8-direções
-            // Escala x10 para operar em inteiros e manter precisão relativa nas comparações do A*
-            // D=10, D2=14 (aproximação de √2*10 que evita float puro)
+            // Octile: to 8 directions
             const int D = 10;
-            const int D2 = 14; // ≈ √2 * 10
+            const int D2 = 14;
 
             return D * (dx + dy) + (D2 - 2 * D) * Math.Min(dx, dy);
         }
-
-        //public int Cost(Point fromNode, Point toNode) => WeightedNodes.Contains(toNode) ? Weights : DefaultWeight;
-
-        //public int Heuristic(Point node, Point goal) => Math.Abs(node.X - goal.X) + Math.Abs(node.Y - goal.Y);
     }
 }
