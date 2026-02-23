@@ -1,5 +1,4 @@
 ﻿using Curupira2D.AI.Pathfinding.Graphs;
-using Curupira2D.ECS;
 using Curupira2D.Extensions.TiledMap;
 using Microsoft.Xna.Framework;
 using System;
@@ -30,10 +29,18 @@ namespace Curupira2D.Extensions.Pathfinding
             return gridGraph;
         }
 
-        public static System.Drawing.Point Vector2ToGridGraphPoint(this Vector2 vector2, Map map, Scene scene)
-            => new((int)vector2.X / (scene.ScreenWidth / map.Width), (int)(vector2.Y / (scene.ScreenHeight / map.Height)));
+        /// <summary>
+        /// Converts a world-space <see cref="Vector2"/> position to the corresponding
+        /// grid cell <see cref="System.Drawing.Point"/> in the <see cref="GridGraph"/>.
+        /// </summary>
+        public static System.Drawing.Point Vector2ToGridGraphPoint(this Vector2 vector2, Map map)
+            => new((int)(vector2.X / map.CellWidth), (int)(vector2.Y / map.CellHeight));
 
-        public static Vector2 GridGraphPointToPositionScene(this System.Drawing.Point point, Map map, Scene scene)
-            => new((point.X * (scene.ScreenWidth / map.Width)) + (map.CellWidth * 0.5f), (point.Y * (scene.ScreenHeight / map.Height)) + (map.CellHeight * 0.5f));
+        /// <summary>
+        /// Converts a <see cref="GridGraph"/> cell <see cref="System.Drawing.Point"/>
+        /// back to a world-space <see cref="Vector2"/> position, centered on the tile.
+        /// </summary>
+        public static Vector2 GridGraphPointToPositionScene(this System.Drawing.Point point, Map map)
+            => new((point.X * map.CellWidth) + (map.CellWidth * 0.5f), (point.Y * map.CellHeight) + (map.CellHeight * 0.5f));
     }
 }
