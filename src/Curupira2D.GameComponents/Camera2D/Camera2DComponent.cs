@@ -8,7 +8,7 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace Curupira2D.GameComponents.Camera2D
 {
-    public class Camera2DComponent(Game game) : GameComponent(game), ICamera2D
+    public class Camera2DComponent : GameComponent, ICamera2D
     {
         private Matrix _transformationMatrix = Matrix.Identity;
         private Matrix _inverseMatrix = Matrix.Identity;
@@ -18,7 +18,17 @@ namespace Curupira2D.GameComponents.Camera2D
         private Vector2 _origin = Vector2.Zero;
         private bool _hasChanged;
 
-        public Viewport Viewport { get; set; } = game.GraphicsDevice.Viewport;
+        public Camera2DComponent(Game game) : base(game)
+        {
+            Viewport = game.GraphicsDevice.Viewport;
+            SpriteBatchEffect = new(game.GraphicsDevice)
+            {
+                TextureEnabled = true,
+                VertexColorEnabled = true
+            };
+        }
+
+        public Viewport Viewport { get; set; }
         public Matrix TransformationMatrix => _transformationMatrix;
         public Matrix InverseMatrix => _inverseMatrix;
         public Vector2 Position
@@ -26,14 +36,10 @@ namespace Curupira2D.GameComponents.Camera2D
             get { return _position; }
             set
             {
-                //  If the value hasn't actually changed, just return back
                 if (_position == value)
                     return;
 
-                //  Set the position value
                 _position = value;
-
-                //  Flag that a change has been made
                 _hasChanged = true;
             }
         }
@@ -42,14 +48,10 @@ namespace Curupira2D.GameComponents.Camera2D
             get { return _rotation; }
             set
             {
-                //  If the value hasn't actually changed, just return back
                 if (_rotation == value)
                     return;
 
-                //  Set the rotation value
                 _rotation = value;
-
-                //  Flag that a change has been made
                 _hasChanged = true;
             }
         }
@@ -58,15 +60,11 @@ namespace Curupira2D.GameComponents.Camera2D
             get { return _zoom; }
             set
             {
-                // If the value hasn't actually changed, just return back
                 // Negative zoom will flip image
                 if (_zoom == value || value <= 0f)
                     return;
 
-                //  Set the zoom value
                 _zoom = value;
-
-                //  Flag that a change has been made
                 _hasChanged = true;
             }
         }
@@ -75,24 +73,16 @@ namespace Curupira2D.GameComponents.Camera2D
             get { return _origin; }
             set
             {
-                //  If the value hasn't actually changed, just return back
                 if (_origin == value)
                     return;
 
-                //  Set the origin value
                 _origin = value;
-
-                //  Flag that a change has been made
                 _hasChanged = true;
             }
         }
         public Matrix Projection { get; private set; }
         public Matrix View { get; private set; }
-        public BasicEffect SpriteBatchEffect => new(game.GraphicsDevice)
-        {
-            TextureEnabled = true,
-            VertexColorEnabled = true
-        };
+        public BasicEffect SpriteBatchEffect { get; private set; }
 
         public override void Update(GameTime gameTime)
         {
@@ -148,27 +138,14 @@ namespace Curupira2D.GameComponents.Camera2D
             _hasChanged = true;
         }
 
-        /// <summary>
-        /// Updates the values for our transformation matrix and the inverse matrix.  
-        /// </summary>
         private void UpdateMatrices()
         {
-            //  Create a translation matrix based on the position of the camera
             var positionTranslationMatrix = Matrix.CreateTranslation(new Vector3(-_position.X, -_position.Y, 0f));
-
-            //  Create a rotation matrix around the Z axis
             var rotationMatrix = Matrix.CreateRotationZ(_rotation);
-
-            //  Create a scale matrix based on the zoom
             var scaleMatrix = Matrix.CreateScale(new Vector3(_zoom, _zoom, 1));
-
-            //  Create a translation matrix based on the origin position of the camera
             var originTranslationMatrix = Matrix.CreateTranslation(new Vector3(_origin.X, _origin.Y, 0f));
 
-            //  Perform matrix multiplication of all of the above to create our transformation matrix
             _transformationMatrix = positionTranslationMatrix * rotationMatrix * scaleMatrix * originTranslationMatrix;
-
-            //  Get our inverse matrix of the transformation matrix
             _inverseMatrix = Matrix.Invert(_transformationMatrix);
         }
 

@@ -12,7 +12,7 @@ namespace Curupira2D.AI.Pathfinding.Graphs
         public IEnumerable<T> GetNeighbors(T node) => Edges[node];
 
         public int Cost(T fromNode, T toNode)
-            => WeightedNodes.ContainsKey((fromNode, toNode)) ? WeightedNodes[(fromNode, toNode)] : DefaultWeight;
+            => WeightedNodes.TryGetValue((fromNode, toNode), out var w) ? w : DefaultWeight;
 
         public EdgesGraph<T> AddEdgesForNode(T node, T[] edges)
         {

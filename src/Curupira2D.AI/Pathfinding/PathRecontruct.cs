@@ -4,12 +4,11 @@
     {
         public static IReadOnlyList<T> Execute<T>(Dictionary<T, T> cameFrom, T start, T goal) where T : notnull
         {
-            var edges = new List<T>();
-            var current = goal;
+            if (!cameFrom.TryGetValue(goal, out _))
+                return [];
 
-            // no path can be found
-            if (!cameFrom.ContainsKey(goal))
-                return edges;
+            var edges = new List<T>(cameFrom.Count / 2);
+            var current = goal;
 
             while (!current.Equals(start))
             {
@@ -18,7 +17,6 @@
             }
 
             edges.Reverse();
-
             return edges;
         }
     }

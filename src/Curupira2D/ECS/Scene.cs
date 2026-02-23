@@ -58,6 +58,7 @@ namespace Curupira2D.ECS
             AddSystem<TiledMapSystem>();
             AddSystem<SpriteSystem>();
             AddSystem<SpriteAnimationSystem>();
+            AddSystem<SpriteAnimationTextureAtlasSystem>();
             AddSystem<TextSystem>();
 
             // Always keep this system at the end
@@ -239,24 +240,24 @@ namespace Curupira2D.ECS
 
         public void RemoveEntity(Predicate<Entity> match)
         {
-            _entityManager.Remove(match);
-
             var entities = GetEntities(new Func<Entity, bool>(match));
-            Parallel.ForEach(entities, entity => Quadtree.Delete(entity));
+            Parallel.ForEach(entities, Quadtree.Delete);
+
+            _entityManager.Remove(match);
         }
 
         public void RemoveEntity(string uniqueId)
         {
-            _entityManager.Remove(uniqueId);
             Quadtree.Delete(GetEntity(uniqueId));
+            _entityManager.Remove(uniqueId);
         }
 
         public void RemoveEntity(Entity entity) => RemoveEntity(entity?.UniqueId);
 
         public void RemoveAllEntities()
         {
-            _entityManager.RemoveAll();
             Quadtree.Clear();
+            _entityManager.RemoveAll();
         }
 
         public bool ExistsEntities(Func<Entity, bool> match) => _entityManager.Exists(match);

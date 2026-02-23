@@ -4,35 +4,51 @@ namespace Curupira2D.AI.Pathfinding.AStar
 {
     public static class AStarPathfinder
     {
+        private const int DefaultCapacity = 256;
+        private static readonly long TicksPerTimeSpanTick = Stopwatch.Frequency / TimeSpan.TicksPerSecond;
+
         public static Path<T> FindPath<T>(IAStarGraph<T> graph, T start, T goal, TimeSpan timeout = default) where T : notnull
         {
+            if (start.Equals(goal))
+                return new Path<T>(true, new Dictionary<T, T> { { start, start } }, [start], new Dictionary<T, int> { { start, 0 } });
+
+            var timeoutTicks = (timeout == default ? TimeSpan.FromSeconds(30) : timeout).Ticks;
+            var startTimestamp = Stopwatch.GetTimestamp();
+
             var foundPath = false;
-            var frontier = new PriorityQueue<T, int>([(start, 0)]);
-            var cameFrom = new Dictionary<T, T> { { start, start } };
-            var costSoFar = new Dictionary<T, int> { { start, 0 } };
+            var frontier = new PriorityQueue<T, int>(DefaultCapacity);
+            var cameFrom = new Dictionary<T, T>(DefaultCapacity) { { start, start } };
+            var costSoFar = new Dictionary<T, int>(DefaultCapacity) { { start, 0 } };
+            var closedSet = new HashSet<T>(DefaultCapacity);
 
-            if (timeout == default)
-                timeout = TimeSpan.FromSeconds(30);
+            frontier.Enqueue(start, 0);
 
-            var stopwatch = new Stopwatch();
-            stopwatch.Start();
-
-            while (frontier.Count > 0 && stopwatch.Elapsed <= timeout)
+            while (frontier.Count > 0)
             {
+                var elapsedTicks = (Stopwatch.GetTimestamp() - startTimestamp) / TicksPerTimeSpanTick;
+                if (elapsedTicks >= timeoutTicks)
+                    break;
+
                 var current = frontier.Dequeue();
 
-                // Early Exit
-                if (current != null && current.Equals(goal))
+                // Early exit
+                if (current.Equals(goal))
                 {
                     foundPath = true;
                     break;
                 }
 
+                if (!closedSet.Add(current))
+                    continue;
+
                 foreach (var next in graph.GetNeighbors(current))
                 {
+                    if (closedSet.Contains(next))
+                        continue;
+
                     var newCost = costSoFar[current] + graph.Cost(current, next);
 
-                    if (costSoFar.TryGetValue(next, out int value) && newCost > value)
+                    if (costSoFar.TryGetValue(next, out int existingCost) && newCost > existingCost)
                         continue;
 
                     costSoFar[next] = newCost;
@@ -40,8 +56,6 @@ namespace Curupira2D.AI.Pathfinding.AStar
                     frontier.Enqueue(next, newCost + graph.Heuristic(next, goal));
                 }
             }
-
-            stopwatch.Stop();
 
             return new Path<T>(foundPath, cameFrom, PathRecontruct.Execute(cameFrom, start, goal), costSoFar);
         }
