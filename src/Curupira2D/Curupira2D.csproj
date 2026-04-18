@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>net8.0</TargetFramework>
+    <TargetFramework>net9.0</TargetFramework>
     <Authors>Ronildo Souza</Authors>
     <Version>4.1.0-beta.1</Version>
     <PackageOutputPath>..\..\nupkgs</PackageOutputPath>
@@ -8,11 +8,6 @@
     <RepositoryUrl>https://github.com/RonildoSouza/Curupira2D</RepositoryUrl>
     <Description>https://raw.githubusercontent.com/RonildoSouza/Curupira2D/main/README.md</Description>
   </PropertyGroup>
-  <ItemGroup>
-    <Compile Remove="Content\Prototype\**" />
-    <EmbeddedResource Remove="Content\Prototype\**" />
-    <None Remove="Content\Prototype\**" />
-  </ItemGroup>
   <ItemGroup>
     <Compile Remove="Camera.cs" />
     <Compile Remove="ECS\Components\Drawables\PrototypeComponent.cs" />
@@ -22,7 +17,7 @@
   <ItemGroup>
     <PackageReference Include="Aether.Physics2D.Diagnostics.MG" Version="2.2.0" />
     <PackageReference Include="Aether.Physics2D.MG" Version="2.2.0" />
-    <PackageReference Include="MonoGame.Framework.DesktopGL" Version="3.8.4.1">
+    <PackageReference Include="MonoGame.Framework.DesktopGL" Version="3.8.5-preview.4">
       <PrivateAssets>All</PrivateAssets>
     </PackageReference>
     <PackageReference Include="TiledLib" Version="5.0.0" />
@@ -37,9 +32,9 @@
     </AssemblyAttribute>
   </ItemGroup>
   <ItemGroup>
-    <None Update="Content\DiagnosticsFont.xnb">
+    <Content Update="C:\Users\Ronildo\.nuget\packages\aether.physics2d.diagnostics.mg\2.2.0\contentFiles\any\netstandard2.0\Content\DiagnosticsFont.xnb">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
+    </Content>
   </ItemGroup>
   <Target Name="RestoreDotnetTools" BeforeTargets="Restore">
     <Message Text="Restoring dotnet tools" Importance="High" />
