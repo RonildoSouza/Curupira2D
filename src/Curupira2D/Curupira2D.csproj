@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>net8.0</TargetFramework>
+    <TargetFramework>net9.0</TargetFramework>
     <Authors>Ronildo Souza</Authors>
     <Version>4.0.0-beta.1</Version>
     <PackageOutputPath>..\..\nupkgs</PackageOutputPath>
@@ -17,7 +17,7 @@
   <ItemGroup>
     <PackageReference Include="Aether.Physics2D.Diagnostics.MG" Version="2.2.0" />
     <PackageReference Include="Aether.Physics2D.MG" Version="2.2.0" />
-    <PackageReference Include="MonoGame.Framework.DesktopGL" Version="3.8.5-develop.13">
+    <PackageReference Include="MonoGame.Framework.DesktopGL" Version="3.8.5-preview.4">
       <PrivateAssets>All</PrivateAssets>
     </PackageReference>
     <PackageReference Include="TiledLib" Version="5.0.0" />
@@ -30,6 +30,11 @@
     <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
       <_Parameter1>$(MSBuildProjectName).Tests</_Parameter1>
     </AssemblyAttribute>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Update="C:\Users\Ronildo\.nuget\packages\aether.physics2d.diagnostics.mg\2.2.0\contentFiles\any\netstandard2.0\Content\DiagnosticsFont.xnb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <Target Name="RestoreDotnetTools" BeforeTargets="Restore">
     <Message Text="Restoring dotnet tools" Importance="High" />

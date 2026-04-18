@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net8.0</TargetFramework><Authors>Ronildo Souza</Authors>
+    <TargetFramework>net9.0</TargetFramework><Authors>Ronildo Souza</Authors>
     <Version>1.0.0-beta.2</Version>
     <PackageOutputPath>..\..\nupkgs</PackageOutputPath>
     <PackageProjectUrl>https://github.com/RonildoSouza/Curupira2D#readme</PackageProjectUrl>
