@@ -1,7 +1,7 @@
 ﻿namespace Curupira2D.AI.BehaviorTree.Decorators
 {
     /// <summary>
-	/// Will always return <see cref="BehaviorState.Success"/> except when the child node is <see cref="BehaviorState.Running"/>
+	/// Will always return <see cref="BehaviorState.Success"/>/>
 	/// </summary>
     public class AlwaysSuccess : Decorator
     {
@@ -14,7 +14,7 @@
 
             State = childState switch
             {
-                BehaviorState.Running => BehaviorState.Running,
+                //BehaviorState.Running => BehaviorState.Running,
                 _ => BehaviorState.Success
             };
 
