@@ -32,7 +32,7 @@ namespace Curupira2D.Test.BehaviorTree.Decorators
             Assert.Equal(BehaviorState.Success, lastState);
         }
 
-        [Fact(DisplayName = "Return running", Skip = "Not implemented yet")]
+        [Fact(DisplayName = "Return running")]
         [Trait("AlwaysSuccess", "Decorators")]
         public void Should_ReturnLastStateRunning_When_LeafRunning()
         {
