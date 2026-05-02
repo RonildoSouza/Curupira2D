@@ -8,21 +8,28 @@ namespace Curupira2D.Extensions
     public static class EntityCollisionExtensions
     {
         public static bool IsCollidedWithAny(this Entity entity, Scene scene, bool perPixelCollision = false)
-            => IsCollidedWith(entity, scene, _ => perPixelCollision ? entity.PerPixelCollision(_) : entity.GetHitBox().Intersects(_.GetHitBox()));
+            => IsCollidedWith(entity, scene,
+                _ => perPixelCollision ? entity.PerPixelCollisionDetection(_) : entity.AABBCollisionDetection(_));
 
         public static bool IsCollidedWithAny(this Entity entity, Scene scene, string entityGroup, bool perPixelCollision = false)
-            => IsCollidedWith(entity, scene, _ => _.Group == entityGroup && (perPixelCollision ? entity.PerPixelCollision(_) : entity.GetHitBox().Intersects(_.GetHitBox())));
+            => IsCollidedWith(entity, scene,
+                _ => _.Group == entityGroup && (perPixelCollision ? entity.PerPixelCollisionDetection(_) : entity.AABBCollisionDetection(_)));
 
         public static bool IsCollidedWith(this Entity entity, Scene scene, Entity otherEntity, bool perPixelCollision = false)
-            => IsCollidedWith(entity, scene, _ => _.Equals(otherEntity) && (perPixelCollision ? entity.PerPixelCollision(_) : entity.GetHitBox().Intersects(_.GetHitBox())));
+            => IsCollidedWith(entity, scene,
+                _ => _.Equals(otherEntity) && (perPixelCollision ? entity.PerPixelCollisionDetection(_) : entity.AABBCollisionDetection(_)));
 
         public static bool IsCollidedWith(this Entity entity, Scene scene, string otherEntityUniqueId, bool perPixelCollision = false)
-            => IsCollidedWith(entity, scene, _ => _.UniqueId == otherEntityUniqueId && (perPixelCollision ? entity.PerPixelCollision(_) : entity.GetHitBox().Intersects(_.GetHitBox())));
+            => IsCollidedWith(entity, scene,
+                _ => _.UniqueId == otherEntityUniqueId && (perPixelCollision ? entity.PerPixelCollisionDetection(_) : entity.AABBCollisionDetection(_)));
+
+        static bool AABBCollisionDetection(this Entity entity, Entity otherEntity)
+            => entity.GetHitBox().Intersects(otherEntity.GetHitBox());
 
         /// <summary>
         /// https://gamedev.stackexchange.com/questions/15191/is-there-a-good-way-to-get-pixel-perfect-collision-detection-in-xna
         /// </summary>
-        static bool PerPixelCollision(this Entity entity, Entity otherEntity)
+        static bool PerPixelCollisionDetection(this Entity entity, Entity otherEntity)
         {
             var transformA = CreateTranslation(entity);
             var dataA = entity.GetDrawableComponent().TextureData;
