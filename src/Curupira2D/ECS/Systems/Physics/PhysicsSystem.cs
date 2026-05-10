@@ -60,7 +60,7 @@ namespace Curupira2D.ECS.Systems.Physics
 
                 bodyComponent.Tag = entity.UniqueId;
                 bodyComponent.Position = entity.Position;
-                bodyComponent.Rotation = entity.Rotation;
+                bodyComponent.Rotation = MathHelper.ToRadians(entity.Rotation);
 
                 if (fixture != null)
                 {

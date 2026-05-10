@@ -34,6 +34,10 @@ namespace Curupira2D.ECS
 
         public string UniqueId { get; }
         public Vector2 Position { get; private set; }
+
+        /// <summary>
+        /// Gets the current rotation angle, in degrees.
+        /// </summary>
         public float Rotation { get; private set; }
         public bool Active { get; private set; }
         public Entity Parent { get; private set; }
@@ -63,15 +67,20 @@ namespace Curupira2D.ECS
 
         public void SetPositionY(float y) => SetPosition(Position.X, y);
 
-        public Entity SetRotation(float rotationInDegrees)
+        /// <summary>
+        /// Sets the rotation of the entity to the specified angle in degrees.
+        /// </summary>
+        /// <param name="degrees">The angle, in degrees, to set as the entity's rotation.</param>
+        /// <returns>The current instance of the entity with the updated rotation.</returns>
+        public Entity SetRotation(float degrees)
         {
-            if (Rotation != rotationInDegrees)
+            if (Rotation != degrees)
                 _tempRotation = Rotation;
 
-            if (_tempRotation == rotationInDegrees)
+            if (_tempRotation == degrees)
                 return this;
 
-            Rotation = rotationInDegrees;
+            Rotation = degrees;
             OnChange?.Invoke(this, EventArgs.Empty);
 
             return this;
