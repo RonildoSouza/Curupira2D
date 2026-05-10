@@ -39,6 +39,35 @@ namespace Curupira2D.Extensions
                 return RectangleHitBoxBuilder(textComponent, entity, textComponent.TextSize.ToPoint());
             }
 
+            if (entity.Components.Any(_ => _.Key == typeof(BodyComponent)))
+            {
+                var position = Vector2.Zero;
+
+                var bodyComponent = entity.GetComponent<BodyComponent>();
+
+                if (bodyComponent.EntityShape == EntityShape.Circle)
+                {
+                    var radius = bodyComponent.Radius;
+                    var diameter = radius * 2f;
+                    position = new Vector2(entity.Position.X - radius, entity.Position.Y - radius);
+
+                    return new Rectangle(position.ToPoint(), new Point((int)diameter, (int)diameter));
+                }
+
+                if (bodyComponent.EntityShape == EntityShape.Ellipse)
+                {
+                    var radiusX = bodyComponent.Size.X * 0.5f;
+                    var radiusY = bodyComponent.Size.Y * 0.5f;
+                    var size = new Point((int)(radiusX * 2f), (int)(radiusY * 2f));
+                    position = new Vector2(entity.Position.X - radiusX, entity.Position.Y - radiusY);
+
+                    return new Rectangle(position.ToPoint(), size);
+                }
+
+                position = new Vector2(entity.Position.X - bodyComponent.Size.X * 0.5f, entity.Position.Y - bodyComponent.Size.Y * 0.5f);
+                return new Rectangle(position.ToPoint(), bodyComponent.Size.ToPoint());
+            }
+
             return new Rectangle(entity.Position.ToPoint(), Point.Zero);
 
             static Rectangle RectangleHitBoxBuilder(DrawableComponent component, Entity entity, Point sizeIfNullSourceRectangle)
