@@ -17,11 +17,13 @@ namespace Curupira2D.GameComponents.GamepadButtons
 
         public TouchGamepadButtonsComponent(Game game, GamepadButtonsConfiguration gamepadButtonsConfiguration) : base(game)
         {
+            ArgumentNullException.ThrowIfNull(gamepadButtonsConfiguration);
+
             Active = true;
             ButtonTouched = Buttons.None;
 
             _spriteBatch = new SpriteBatch(GraphicsDevice);
-            _gamepadButtonsConfiguration = gamepadButtonsConfiguration ?? throw new ArgumentNullException();
+            _gamepadButtonsConfiguration = gamepadButtonsConfiguration;
             _gamepadButtonsBoundSizeAndLocation = new Rectangle(_gamepadButtonsConfiguration.Position.ToPoint(), new Point(_gamepadButtonsConfiguration.Size));
 
             var gamePadButtonsSize = new Point(_gamepadButtonsConfiguration.Size / 3);

@@ -19,8 +19,10 @@ namespace Curupira2D.GameComponents.Joystick
 
         public TouchJoystickComponent(Game game, JoystickConfiguration joystickConfiguration) : base(game)
         {
+            ArgumentNullException.ThrowIfNull(joystickConfiguration);
+
             Active = true;
-            _joystickConfiguration = joystickConfiguration ?? throw new ArgumentNullException();
+            _joystickConfiguration = joystickConfiguration;
             _joystickBackgroundSizeAndLocation = new Rectangle(_joystickConfiguration.Position.ToPoint(), new Point(_joystickConfiguration.Size));
 
             var joystickHandleSizeValue = (float)_joystickConfiguration.HandleSize / 100;
@@ -44,7 +46,7 @@ namespace Curupira2D.GameComponents.Joystick
                 _joystickConfiguration.BackgroundTexture = texture;
 
                 _joystickBackgroundLineTexture = new Texture2D(GraphicsDevice, 1, 1);
-                _joystickBackgroundLineTexture.SetData(new Color[] { Color.White });
+                _joystickBackgroundLineTexture.SetData([Color.White]);
             }
 
             if (_joystickConfiguration.HandleTexture == null)
@@ -99,13 +101,13 @@ namespace Curupira2D.GameComponents.Joystick
                         direction.X = _joystickConfiguration.InvertX_Axis ? 1 : -1; // LEFT
 
                     if (touchPositionInBound.Y < half.Y * 0.9f)
-                        direction.Y = _joystickConfiguration.InvertY_Axis ? -1 : 1; // UP
+                        direction.Y = _joystickConfiguration.InvertY_Axis ? 1 : -1; // UP
 
                     if (touchPositionInBound.X > half.X * 1.1f)
                         direction.X = _joystickConfiguration.InvertX_Axis ? -1 : 1; // RIGHT
 
                     if (touchPositionInBound.Y > (half.Y * 1.1f))
-                        direction.Y = _joystickConfiguration.InvertY_Axis ? 1 : -1; // DOWN
+                        direction.Y = _joystickConfiguration.InvertY_Axis ? -1 : 1; // DOWN
 
                     Direction = direction;
 
