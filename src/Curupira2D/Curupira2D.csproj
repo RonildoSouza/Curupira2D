@@ -17,10 +17,10 @@
   <ItemGroup>
     <PackageReference Include="Aether.Physics2D.Diagnostics.MG" Version="2.2.0" />
     <PackageReference Include="Aether.Physics2D.MG" Version="2.2.0" />
-    <PackageReference Include="MonoGame.Framework.DesktopGL" Version="3.8.5-preview.4">
+    <PackageReference Include="MonoGame.Framework.DesktopGL" Version="3.8.5-preview.6">
       <PrivateAssets>All</PrivateAssets>
     </PackageReference>
-    <PackageReference Include="TiledLib" Version="5.0.0" />
+    <PackageReference Include="TiledLib" Version="5.3.0" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Curupira2D.AI\Curupira2D.AI.csproj" />

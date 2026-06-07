@@ -33,7 +33,7 @@ namespace Curupira2D.ECS.Systems.Drawables
                 .OfType<TileLayer>()
                 .OrderBy(_ =>
                 {
-                    var propertyValueOrder = _.Properties.GetValue(TiledMapSystemConstants.Properties.Order);
+                    var propertyValueOrder = _.Properties.GetValueOrDefault(TiledMapSystemConstants.Properties.Order);
                     return string.IsNullOrEmpty(propertyValueOrder) ? _.Id : int.Parse(propertyValueOrder);
                 })];
 
@@ -47,7 +47,7 @@ namespace Curupira2D.ECS.Systems.Drawables
                 foreach (var pointObject in objectLayer.GetAll<PointObject>())
                 {
                     var entity = Scene
-                        .GetEntities(_ => _.UniqueId == pointObject.Name || _.UniqueId == pointObject.Properties.GetValue(TiledMapSystemConstants.Properties.EntityUniqueId))
+                        .GetEntities(_ => _.UniqueId == pointObject.Name || _.UniqueId == pointObject.Properties.GetValueOrDefault(TiledMapSystemConstants.Properties.EntityUniqueId))
                         .FirstOrDefault();
 
                     if (entity != null && entity.Position == default)
@@ -63,7 +63,7 @@ namespace Curupira2D.ECS.Systems.Drawables
                 if (!layer.Visible)
                     continue;
 
-                var propertyValueOrder = layer.Properties.GetValue(TiledMapSystemConstants.Properties.Order);
+                var propertyValueOrder = layer.Properties.GetValueOrDefault(TiledMapSystemConstants.Properties.Order);
                 var valueOrder = string.IsNullOrEmpty(propertyValueOrder) ? layer.Id : int.Parse(propertyValueOrder);
 
                 if (!string.IsNullOrEmpty(propertyValueOrder) && valueOrder > _tileLayers.Count)
@@ -149,18 +149,18 @@ namespace Curupira2D.ECS.Systems.Drawables
             var baseObjects = objectLayer.Objects
                 .Where(_ => _.GetType() != typeof(PointObject))
                 // Visible property not set in ReadObject method of TiledLib
-                .Where(_ => _.Properties.GetValue(TiledMapSystemConstants.Properties.Visible) is null
-                    || bool.Parse(_.Properties.GetValue(TiledMapSystemConstants.Properties.Visible)))
+                .Where(_ => _.Properties.GetValueOrDefault(TiledMapSystemConstants.Properties.Visible) is null
+                    || bool.Parse(_.Properties.GetValueOrDefault(TiledMapSystemConstants.Properties.Visible)))
                 .OrderBy(_ =>
                 {
-                    var propertyValueOrder = _.Properties.GetValue(TiledMapSystemConstants.Properties.Order);
+                    var propertyValueOrder = _.Properties.GetValueOrDefault(TiledMapSystemConstants.Properties.Order);
                     return string.IsNullOrEmpty(propertyValueOrder) ? _.Id : int.Parse(propertyValueOrder);
                 });
 
             foreach (var baseObject in baseObjects)
             {
-                var entityUniqueId = baseObject.Properties.GetValue(TiledMapSystemConstants.Properties.EntityUniqueId);
-                var entityGroup = baseObject.Properties.GetValue(TiledMapSystemConstants.Properties.EntityGroup);
+                var entityUniqueId = baseObject.Properties.GetValueOrDefault(TiledMapSystemConstants.Properties.EntityUniqueId);
+                var entityGroup = baseObject.Properties.GetValueOrDefault(TiledMapSystemConstants.Properties.EntityGroup);
 
                 // Creates ellipse type collision entity
                 if (baseObject is EllipseObject ellipseObject)
@@ -219,11 +219,11 @@ namespace Curupira2D.ECS.Systems.Drawables
 
         static void SetPhysicsProperties(BaseObject baseObject, ObjectLayer objectLayer, ref BodyComponent bodyComponent)
         {
-            var restitution = baseObject.Properties.GetValue(TiledMapSystemConstants.Properties.Physics.Restitution)
-                ?? objectLayer.Properties.GetValue(TiledMapSystemConstants.Properties.Physics.Restitution);
+            var restitution = baseObject.Properties.GetValueOrDefault(TiledMapSystemConstants.Properties.Physics.Restitution)
+                ?? objectLayer.Properties.GetValueOrDefault(TiledMapSystemConstants.Properties.Physics.Restitution);
 
-            var friction = baseObject.Properties.GetValue(TiledMapSystemConstants.Properties.Physics.Friction)
-                ?? objectLayer.Properties.GetValue(TiledMapSystemConstants.Properties.Physics.Friction);
+            var friction = baseObject.Properties.GetValueOrDefault(TiledMapSystemConstants.Properties.Physics.Friction)
+                ?? objectLayer.Properties.GetValueOrDefault(TiledMapSystemConstants.Properties.Physics.Friction);
 
             bodyComponent.Restitution = float.TryParse(restitution, out float restitutionValue) ? restitutionValue : bodyComponent.Restitution;
             bodyComponent.Friction = float.TryParse(friction, out float frictionValue) ? frictionValue : bodyComponent.Friction;
