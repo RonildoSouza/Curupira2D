@@ -31,7 +31,7 @@ namespace Curupira2D
             Content.RootDirectory = "Content";
 
             if (DebugOptions.DebugActive)
-                Components.Add(new DebugComponent(this));
+                Components.Add(new DebugGameComponent(this));
         }
 
         public GraphicsDeviceManager GraphicsDeviceManager => _graphics;

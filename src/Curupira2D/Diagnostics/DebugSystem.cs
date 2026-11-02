@@ -12,6 +12,7 @@ namespace Curupira2D.Diagnostics
 {
     public class DebugSystem : ECS.System, ILoadable, IUpdatable
     {
+        private const string DEBUG_UNIQUE_ID = $"***{nameof(DebugSystem)}***";
         SpriteFont _diagnosticsFont;
         readonly StringBuilder _stringBuilder = new();
         TextComponent _textComponent;
@@ -20,9 +21,9 @@ namespace Curupira2D.Diagnostics
         {
             _diagnosticsFont = Scene.GameCore.Content.Load<SpriteFont>("DiagnosticsFont");
 
-            _textComponent = new TextComponent(_diagnosticsFont, _stringBuilder.ToString(), color: Color.Black, layerDepth: 1f, scale: new Vector2(1f));
+            _textComponent = new TextComponent(_diagnosticsFont, _stringBuilder.ToString(), color: Color.Black, layerDepth: 1f, scale: new Vector2(2f));
 
-            Scene.CreateEntity($"***{nameof(DebugSystem)}***", Scene.ScreenCenter, isCollidable: false)
+            Scene.CreateEntity(DEBUG_UNIQUE_ID, Scene.ScreenCenter.X * 1.5f, Scene.ScreenCenter.Y, isCollidable: false)
                 .AddComponent(_textComponent);
         }
 
@@ -30,7 +31,11 @@ namespace Curupira2D.Diagnostics
         {
             _stringBuilder.Clear();
 
-            var entities = Scene.GetEntities(_ => _.Active && _.UniqueId != $"***{nameof(DebugSystem)}***");
+            var entities = Scene.GetEntities(_ =>
+                _.Active
+                && _.UniqueId != DEBUG_UNIQUE_ID
+                && _.HasComponent<DebugComponent>()
+            );
             _stringBuilder.Append(DebugEntityProperties(ref entities));
             //_stringBuilder.Append(DebugComponentProperties(ref entities));
 
@@ -50,6 +55,7 @@ namespace Curupira2D.Diagnostics
                             _,
                             _.GetType().GetProperties(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly)
                                 .Where(_ => _.Name != nameof(Entity.UniqueId)
+                                    && _.Name != nameof(Entity.Active)
                                     && _.Name != nameof(Entity.Children)
                                     && _.Name != nameof(Entity.Parent)
                                     && _.Name != nameof(Entity.Components))
@@ -87,13 +93,13 @@ namespace Curupira2D.Diagnostics
 
         static void BuildDebugEntityString<TKey>(ref StringBuilder stringBuilder, DebugModel<TKey, PropertyInfo> debugModel)
         {
-            stringBuilder.AppendLine($"=> ENTITY: {debugModel.Name}");
+            stringBuilder.AppendLine($"===> ENTITY: {debugModel.Name} <===");
             foreach (var memInfo in debugModel.MembersInfo)
             {
                 foreach (var propInfo in memInfo.Value)
                 {
                     var value = propInfo.GetValue(memInfo.Key);
-                    stringBuilder.AppendLine($"\r\n=> ------ PROPERTY: {propInfo.Name}: {value}");
+                    stringBuilder.AppendLine($"\r\n=> ------ {propInfo.Name}: {value}");
                 }
             }
         }
